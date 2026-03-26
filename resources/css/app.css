@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Poppins', ui-sans-serif, sans-serif;
+
+    --color-bmkg-blue: #003b6f;
+    --color-bmkg-lightblue: #e8f4fd;
+    --color-bmkg-green: #2e7d32;
+    --color-bmkg-teal: #00838f;
+    --color-bmkg-orange: #f57c00;
+    --color-bmkg-gray: #f0f4f8;
+    --color-bmkg-black: #000000;
+}
+
+@layer base {
+    body {
+        font-family: var(--font-sans);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .font-heading {
+        font-family: var(--font-heading);
+    }
+}
+
+@layer components {
+    .info-card {
+        @apply transition-transform duration-200 ease-in-out hover:-translate-y-1;
+        transition-property: transform, box-shadow;
+    }
+
+    .info-card:hover {
+        box-shadow: 0 12px 32px rgba(0, 59, 111, 0.12);
+    }
+}
+
+@layer utilities {
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+/* Live clock tabular numbers */
+#live-clock {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Mobile nav transition */
+#mobile-menu {
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+#mobile-menu.hidden {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    display: block !important;
+}
+#mobile-menu.open {
+    max-height: 600px;
+    opacity: 1;
+}
+
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
