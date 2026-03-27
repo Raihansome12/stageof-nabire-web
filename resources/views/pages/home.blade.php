@@ -361,7 +361,7 @@
             </div>
 
             {{-- Informasi Kejadian Petir --}}
-            <div class="info-card bg-white rounded-2xl p-6 lg:p-8">
+            <div class="info-card bg-white rounded-2xl p-6 lg:p-8 ">
                 <h2 class="font-heading font-bold text-2xl lg:text-3xl text-bmkg-black mb-1">
                     Informasi Kejadian Petir
                 </h2>
@@ -371,11 +371,13 @@
                         {{ \Carbon\Carbon::create()->month($lightningInfo->month)->format('F') }}
                         {{ $lightningInfo->year }} - {{ $lightningInfo->label }}    
                     </p>
-
-                    @if($lightningInfo->map_image)
-                        <img src="{{ asset('storage/' . $lightningInfo->map_image) }}"
+                    @if($lightningMap->image_path)
+                        <div class="flex items-center justify-center bg-gray-100 rounded-xl shadow-sm">
+                            <img src="{{ asset('storage/' . $lightningMap->image_path) }}"
                              alt="Peta Petir"
-                             class="w-full rounded-xl object-contain border border-gray-200"/>
+                             class="w-md rounded-xl object-contain border border-gray-200"/>    
+                        </div>
+                        
                     @else
                         <div class="w-full h-64 bg-gray-200 rounded-xl flex items-center justify-center text-gray-400">
                             <div class="text-center">

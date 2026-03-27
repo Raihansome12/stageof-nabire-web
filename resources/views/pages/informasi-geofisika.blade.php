@@ -3,25 +3,6 @@
 
 @section('content')
 
-{{-- Admin quick-edit bar (only visible to admins) --}}
-@auth
-    @if(auth()->user()->is_admin)
-        <div class="bg-bmkg-blue text-white text-xs px-4 py-2 flex items-center gap-4 justify-end">
-            <span class="text-blue-200 font-medium">Mode Admin:</span>
-            <a href="{{ route('admin.sunrise.index') }}"
-               class="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-md transition-colors">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                Kelola Data TTM
-            </a>
-            <a href="{{ route('admin.lightning.index') }}"
-               class="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-md transition-colors">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                Kelola Peta Petir
-            </a>
-        </div>
-    @endif
-@endauth
-
 
 {{-- Tab Navigation --}}
 <div class="border-b border-gray-200 bg-white sticky top-0 z-30 shadow-sm">
@@ -73,28 +54,39 @@
                 <div class="px-6 pt-5 pb-6">
                     <form method="GET" action="{{ route('informasi-geofisika') }}" id="ttm-form">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                            <div class="flex items-center gap-3 flex-1">
-                                <span class="font-semibold text-gray-800 text-lg whitespace-nowrap">
-                                    Waktu TTM di Wilayah:
-                                </span>
-                                <div class="relative flex-1 max-w-xs">
-                                    <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <circle cx="11" cy="11" r="7" stroke-width="2"></circle>
-                                            <path d="M20 20L17 17" stroke-width="2"></path>
-                                        </svg>
+                            <div class="flex items-center gap-3 flex-1 justify-between">
+                                <div class="flex items-center gap-3 flex-1">
+                                    <span class="font-semibold text-gray-800 text-lg whitespace-nowrap">
+                                        Waktu TTM di Wilayah:
+                                    </span>
+                                    <div class="relative flex-1 max-w-xs">
+                                        <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <circle cx="11" cy="11" r="7" stroke-width="2"></circle>
+                                                <path d="M20 20L17 17" stroke-width="2"></path>
+                                            </svg>
+                                        </div>
+                                        <select
+                                            name="location"
+                                            id="ttm-location-select"
+                                            onchange="document.getElementById('ttm-form').submit()"
+                                            class="w-full bg-gray-100 rounded-lg px-4 py-2 pr-10 text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-bmkg-blue/30 border border-gray-200 hover:bg-gray-50 transition cursor-pointer appearance-none"
+                                        >
+                                            @foreach($ttmRegions as $region)
+                                                <option value="{{ $region }}" @selected($region === $location)>{{ $region }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <select
-                                        name="location"
-                                        id="ttm-location-select"
-                                        onchange="document.getElementById('ttm-form').submit()"
-                                        class="w-full bg-gray-100 rounded-lg px-4 py-2 pr-10 text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-bmkg-blue/30 border border-gray-200 hover:bg-gray-50 transition cursor-pointer appearance-none"
-                                    >
-                                        @foreach($ttmRegions as $region)
-                                            <option value="{{ $region }}" @selected($region === $location)>{{ $region }}</option>
-                                        @endforeach
-                                    </select>
                                 </div>
+                                @auth
+                                    @if(auth()->user()->is_admin)
+                                        <a href="{{ route('admin.sunrise.index') }}"
+                                        class="inline-flex items-center gap-2 text-xs bg-bmkg-blue text-white px-3 py-2 rounded-lg hover:opacity-90 shadow-sm">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            Kelola Data TTM
+                                        </a>
+                                    @endif
+                                @endauth
                             </div>
                         </div>
 
@@ -163,7 +155,7 @@
                                         <td class="px-5 py-3 text-gray-700 whitespace-nowrap">{{ $row->sunrise_time ? \Carbon\Carbon::parse($row->sunrise_time)->format('H:i') . ' WIT' : '-' }}</td>
                                         <td class="px-5 py-3 text-gray-700">{{ $row->azimuth_sunrise ?? '-' }}</td>
                                         <td class="px-5 py-3 text-gray-700 whitespace-nowrap">{{ $row->transit_time ? \Carbon\Carbon::parse($row->transit_time)->format('H:i') . ' WIT' : '-' }}</td>
-                                        <td class="px-5 py-3 text-gray-700">-</td>
+                                        <td class="px-5 py-3 text-gray-700">{{ $row->transit_altitude }}</td>
                                         <td class="px-5 py-3 text-gray-700 whitespace-nowrap">{{ $row->sunset_time  ? \Carbon\Carbon::parse($row->sunset_time)->format('H:i')  . ' WIT' : '-' }}</td>
                                         <td class="px-5 py-3 text-gray-700">{{ $row->azimuth_sunset ?? '-' }}</td>
                                         <td class="px-5 py-3 text-gray-700 whitespace-nowrap">{{ $row->dusk_time    ? \Carbon\Carbon::parse($row->dusk_time)->format('H:i')    . ' WIT' : '-' }}</td>
@@ -222,12 +214,23 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- Section heading --}}
-            <div class="flex items-center gap-3 mb-5">
-                <div class="w-1 h-7 bg-bmkg-blue rounded-full flex-shrink-0"></div>
-                <div>
-                    <h2 class="font-bold text-xl text-gray-800">Peta Sambaran Petir Wilayah Papua Tengah</h2>
-                    <p class="text-xs text-gray-400 mt-0.5">Data per dasarian (10 harian)</p>
+            <div class="flex items-center gap-3 flex-1 justify-between">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-1 h-7 bg-bmkg-blue rounded-full flex-shrink-0"></div>
+                    <div>
+                        <h2 class="font-bold text-xl text-gray-800">Peta Sambaran Petir Wilayah Papua Tengah</h2>
+                        <p class="text-xs text-gray-400 mt-0.5">Data per dasarian (10 harian)</p>
+                    </div>
                 </div>
+                @auth
+                    @if(auth()->user()->is_admin)
+                        <a href="{{ route('admin.lightning.index') }}"
+                        class="inline-flex items-center gap-2 text-xs bg-bmkg-blue text-white px-3 py-2 rounded-lg hover:opacity-90 shadow-sm">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            Kelola Peta Petir
+                        </a>
+                    @endif
+                @endauth
             </div>
 
             {{-- Filter Card --}}

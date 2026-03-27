@@ -8,6 +8,7 @@ use App\Models\LightningMap;
 use App\Models\LightningPeriod;
 use App\Models\LightningSubdistrictStat;
 use App\Models\Sunrise;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -94,7 +95,243 @@ class GeofisikaController extends Controller
             ->with('success', 'Data berhasil dihapus.');
     }
 
-    // ── LIGHTNING PERIOD ──────────────────────────────────────────────────────
+    // ── SUNRISE CSV IMPORT ───────────────────────────────────────────────────
+
+    public function sunriseImportForm()
+    {
+        return view('admin.geofisika.sunrise-import');
+    }
+
+    public function sunriseTemplate()
+    {
+        // Build a sample CSV for the current month with correct column headers
+        $month    = now()->month;
+        $year     = now()->year;
+        $daysInMonth = now()->daysInMonth;
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="template_ttm_' . now()->format('Y_m') . '.csv"',
+        ];
+
+        $callback = function () use ($month, $year, $daysInMonth) {
+            $handle = fopen('php://output', 'w');
+
+            // BOM for Excel UTF-8
+            fputs($handle, "ï»¿");
+
+            // Header row
+            fputcsv($handle, [
+                'location',
+                'date',
+                'dawn_time',
+                'sunrise_time',
+                'azimuth_sunrise',
+                'transit_time',
+                'transit_altitude',
+                'sunset_time',
+                'azimuth_sunset',
+                'dusk_time',
+            ]);
+
+            // Sample rows for every day of the month
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+                $date = sprintf('%04d-%02d-%02d', $year, $month, $day);
+                fputcsv($handle, [
+                    'Nabire',          // location
+                    $date,             // date  YYYY-MM-DD
+                    '05:10',           // dawn_time
+                    '05:32',           // sunrise_time
+                    '65',              // azimuth_sunrise (degrees)
+                    '11:45',           // transit_time
+                    '75.3S',            // transit_altitude
+                    '17:58',           // sunset_time
+                    '295',             // azimuth_sunset
+                    '18:20',           // dusk_time
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function sunriseImport(Request $request)
+    {
+        $request->validate([
+            'csv_file'       => 'required|file|mimes:csv,txt|max:2048',
+            'conflict_mode'  => 'required|in:skip,replace',
+        ]);
+
+        $file = $request->file('csv_file');
+        $path = $file->getRealPath();
+
+        // Strip UTF-8 BOM if present
+        $raw = file_get_contents($path);
+        if (substr($raw, 0, 3) === "ï»¿") {
+            $raw = substr($raw, 3);
+        }
+
+        $lines = array_filter(explode("
+", str_replace("
+", "
+", $raw)));
+        $lines = array_values($lines);
+
+        if (count($lines) < 2) {
+            return back()->withErrors(['csv_file' => 'File CSV kosong atau hanya berisi header.']);
+        }
+
+        // Parse header
+        $header = str_getcsv(array_shift($lines));
+        $header = array_map('trim', $header);
+
+        $required = ['location','date','dawn_time','sunrise_time','azimuth_sunrise',
+                     'transit_time','transit_altitude','sunset_time','azimuth_sunset','dusk_time'];
+
+        $missing = array_diff($required, $header);
+        if ($missing) {
+            return back()->withErrors([
+                'csv_file' => 'Kolom tidak lengkap. Kolom yang hilang: ' . implode(', ', $missing)
+            ]);
+        }
+
+        $colIndex = array_flip($header);
+
+        $inserted = 0;
+        $skipped  = 0;
+        $errors   = [];
+        $rowNum   = 1;
+
+        foreach ($lines as $line) {
+            $rowNum++;
+            $line = trim($line);
+            if ($line === '') continue;
+
+            $cols = str_getcsv($line);
+            $cols = array_map('trim', $cols);
+
+            // Map columns
+            try {
+                $location        = $cols[$colIndex['location']]        ?? '';
+                $date            = $cols[$colIndex['date']]            ?? '';
+                $dawnTime        = $cols[$colIndex['dawn_time']]       ?? '';
+                $sunriseTime     = $cols[$colIndex['sunrise_time']]    ?? '';
+                $azimuthSunrise  = $cols[$colIndex['azimuth_sunrise']] ?? '';
+                $transitTime     = $cols[$colIndex['transit_time']]    ?? '';
+                $transitAlt      = $cols[$colIndex['transit_altitude']]?? '';
+                $sunsetTime      = $cols[$colIndex['sunset_time']]     ?? '';
+                $azimuthSunset   = $cols[$colIndex['azimuth_sunset']]  ?? '';
+                $duskTime        = $cols[$colIndex['dusk_time']]       ?? '';
+            } catch (\Exception $e) {
+                $errors[] = "Baris {$rowNum}: Jumlah kolom tidak sesuai.";
+                continue;
+            }
+
+            // Basic validation
+            if (!$location || !$date) {
+                $errors[] = "Baris {$rowNum}: lokasi atau tanggal kosong.";
+                continue;
+            }
+
+            // Validate date
+            try {
+                $parsedDate = Carbon::createFromFormat('Y-m-d', $date);
+                if (!$parsedDate || $parsedDate->format('Y-m-d') !== $date) {
+                    throw new \Exception();
+                }
+            } catch (\Exception $e) {
+                $errors[] = "Baris {$rowNum}: format tanggal tidak valid ({$date}). Gunakan YYYY-MM-DD.";
+                continue;
+            }
+
+            // Validate times (HH:MM or HH:MM:SS)
+            $timeFields = [
+                'dawn_time'    => $dawnTime,
+                'sunrise_time' => $sunriseTime,
+                'transit_time' => $transitTime,
+                'sunset_time'  => $sunsetTime,
+                'dusk_time'    => $duskTime,
+            ];
+            $timeError = false;
+            foreach ($timeFields as $fieldName => $timeVal) {
+                // Accept HH:MM or HH:MM:SS
+                if (!preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $timeVal)) {
+                    $errors[] = "Baris {$rowNum}: format waktu tidak valid untuk {$fieldName} ({$timeVal}).";
+                    $timeError = true;
+                }
+            }
+            if ($timeError) continue;
+
+            // Normalize time to HH:MM
+            foreach (['dawn_time' => &$dawnTime, 'sunrise_time' => &$sunriseTime,
+                      'transit_time' => &$transitTime, 'sunset_time' => &$sunsetTime,
+                      'dusk_time' => &$duskTime] as $k => &$v) {
+                $v = substr($v, 0, 5); // take HH:MM
+            }
+            unset($v);
+
+            if (!is_numeric($azimuthSunrise) || !is_numeric($azimuthSunset)) {
+                $errors[] = "Baris {$rowNum}: azimuth harus berupa angka.";
+                continue;
+            }
+
+            // Check if record exists (same location + date)
+            $existing = Sunrise::where('location', $location)
+                ->whereDate('date', $date)
+                ->first();
+
+            if ($existing) {
+                if ($request->conflict_mode === 'skip') {
+                    $skipped++;
+                    continue;
+                }
+                // replace
+                $existing->update([
+                    'dawn_time'        => $dawnTime,
+                    'sunrise_time'     => $sunriseTime,
+                    'azimuth_sunrise'  => (int) $azimuthSunrise,
+                    'transit_time'     => $transitTime,
+                    'transit_altitude' => $transitAlt,
+                    'sunset_time'      => $sunsetTime,
+                    'azimuth_sunset'   => (int) $azimuthSunset,
+                    'dusk_time'        => $duskTime,
+                ]);
+                $inserted++;
+            } else {
+                Sunrise::create([
+                    'location'         => $location,
+                    'date'             => $date,
+                    'dawn_time'        => $dawnTime,
+                    'sunrise_time'     => $sunriseTime,
+                    'azimuth_sunrise'  => (int) $azimuthSunrise,
+                    'transit_time'     => $transitTime,
+                    'transit_altitude' => $transitAlt,
+                    'sunset_time'      => $sunsetTime,
+                    'azimuth_sunset'   => (int) $azimuthSunset,
+                    'dusk_time'        => $duskTime,
+                ]);
+                $inserted++;
+            }
+        }
+
+        $message = "Import selesai: {$inserted} baris berhasil diimpor";
+        if ($skipped > 0) $message .= ", {$skipped} dilewati (sudah ada)";
+        if ($errors)      $message .= ", " . count($errors) . " baris gagal";
+
+        $result = [
+            'inserted' => $inserted,
+            'skipped'  => $skipped,
+            'errors'   => $errors,
+            'message'  => $message,
+        ];
+
+        return redirect()->route('admin.sunrise.index')
+            ->with('import_result', $result);
+    }
+
+        // ── LIGHTNING PERIOD ──────────────────────────────────────────────────────
 
     public function lightningIndex()
     {

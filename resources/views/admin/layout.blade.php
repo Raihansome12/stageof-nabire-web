@@ -10,7 +10,7 @@
 <body class="bg-gray-100 min-h-screen flex">
 
     {{-- Sidebar --}}
-    <aside class="w-64 bg-bmkg-blue min-h-screen flex flex-col flex-shrink-0 shadow-xl">
+    <aside class="w-64 bg-bmkg-blue h-screen fixed left-0 flex flex-col flex-shrink-0 shadow-xl">
         <div class="px-6 py-5 border-b border-blue-700">
             <div class="flex items-center gap-3">
                 <img src="{{ asset('img/bmkg-logo.png') }}" alt="BMKG" class="h-9 w-9 object-contain" />
@@ -95,7 +95,7 @@
     </aside>
 
     {{-- Main Content --}}
-    <div class="flex-1 flex flex-col min-w-0">
+    <div class="flex-1 flex flex-col min-w-0 ml-64">
         {{-- Top Bar --}}
         <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between shadow-sm">
             <h1 class="font-bold text-gray-800 text-lg">
@@ -126,7 +126,7 @@
             @endif
         </div>
 
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-6 overflow-y-auto">
             @yield('content')
         </main>
     </div>

@@ -96,6 +96,10 @@ Route::prefix('admin')
             Route::get('/{sunrise}/edit', [GeofisikaController::class, 'sunriseEdit'])   ->name('edit');
             Route::put('/{sunrise}',      [GeofisikaController::class, 'sunriseUpdate']) ->name('update');
             Route::delete('/{sunrise}',   [GeofisikaController::class, 'sunriseDestroy'])->name('destroy');
+            // CSV import
+            Route::get('/import',             [GeofisikaController::class, 'sunriseImportForm'])->name('import');
+            Route::post('/import',            [GeofisikaController::class, 'sunriseImport'])    ->name('import.store');
+            Route::get('/template/download',  [GeofisikaController::class, 'sunriseTemplate']) ->name('template');
         });
 
         // Geofisika — Peta Sambaran Petir
