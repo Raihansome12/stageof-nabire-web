@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Artikel;
+use App\Models\InformasiPublik;
+use App\Models\Staff;
 use App\Models\Sunrise;
 use App\Models\Earthquake;
 use App\Models\LightningMap;
@@ -230,19 +233,23 @@ class HomeController extends Controller
 
     public function publikasi()
     {
-        $buletins = Publication::active()->buletin()->latest('published_at')->paginate(6);
-        $beritas  = Publication::active()->berita()->latest('published_at')->paginate(6);
-        return view('pages.publikasi', compact('buletins', 'beritas'));
+        $buletins = Publication::active()->buletin()->latest('published_at')->paginate(10);
+        $artikels = \App\Models\Artikel::active()->latest('published_at')->paginate(9);
+        return view('pages.publikasi', compact('buletins', 'artikels'));
     }
 
     public function profil()
     {
-        return view('pages.profil');
+        $staffKepala     = Staff::active()->kepala()->orderBy('sort_order')->get();
+        $staffFungsional = Staff::active()->fungsional()->orderBy('sort_order')->get();
+        return view('pages.profil', compact('staffKepala', 'staffFungsional'));
     }
 
     public function informasiPublik()
     {
-        return view('pages.informasi-publik');
+        $beritas     = InformasiPublik::active()->berita()->latest('published_at')->paginate(9);
+        $pengumumans = InformasiPublik::active()->pengumuman()->latest('published_at')->paginate(9);
+        return view('pages.informasi-publik', compact('beritas', 'pengumumans'));
     }
 
     public function layananMasyarakat()

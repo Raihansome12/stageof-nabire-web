@@ -2,7 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\StaffController;
+use App\Http\Controllers\Admin\PublikasiController;
+use App\Http\Controllers\Admin\GeofisikaController;
+use App\Http\Controllers\Admin\InformasiPublikController;
 
+// ── Public routes ─────────────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/profil', [HomeController::class, 'profil'])->name('profil');
 Route::get('/publikasi', [HomeController::class, 'publikasi'])->name('publikasi');
@@ -13,10 +18,107 @@ Route::get('/layanan-masyarakat', [HomeController::class, 'layananMasyarakat'])-
 // Informasi Geofisika (TTM + Petir)
 Route::get('/informasi-geofisika', [HomeController::class, 'informasiGeofisika'])
     ->name('informasi-geofisika');
- 
+
 // API: autocomplete lokasi TTM
 Route::get('/api/ttm/locations', [HomeController::class, 'ttmLocations'])
     ->name('api.ttm.locations');
 
- // API: petir
+// API: petir
 Route::get('/api/petir/data', [HomeController::class, 'petirData'])->name('petir.data');
+
+// ── Auth routes ───────────────────────────────────────────────────────────────
+Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return view('auth.login');
+    })->name('login');
+
+    Route::post('/login', function (\Illuminate\Http\Request $request) {
+        $credentials = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (\Illuminate\Support\Facades\Auth::attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        return back()->withErrors(['email' => 'Email atau password salah.'])->onlyInput('email');
+    });
+});
+
+Route::post('/logout', function (\Illuminate\Http\Request $request) {
+    \Illuminate\Support\Facades\Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/');
+})->middleware('auth')->name('logout');
+
+// ── Admin routes ──────────────────────────────────────────────────────────────
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', 'admin'])
+    ->group(function () {
+
+        // Dashboard
+        Route::get('/', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
+
+        // Staff (Profil)
+        Route::resource('staff', StaffController::class)->except(['show']);
+
+        // Buletin
+        Route::prefix('buletin')->name('buletin.')->group(function () {
+            Route::get('/',               [PublikasiController::class, 'buletinIndex'])   ->name('index');
+            Route::get('/create',         [PublikasiController::class, 'buletinCreate'])  ->name('create');
+            Route::post('/',              [PublikasiController::class, 'buletinStore'])   ->name('store');
+            Route::get('/{buletin}/edit', [PublikasiController::class, 'buletinEdit'])   ->name('edit');
+            Route::put('/{buletin}',      [PublikasiController::class, 'buletinUpdate']) ->name('update');
+            Route::delete('/{buletin}',   [PublikasiController::class, 'buletinDestroy'])->name('destroy');
+        });
+
+        // Artikel
+        Route::prefix('artikel')->name('artikel.')->group(function () {
+            Route::get('/',               [PublikasiController::class, 'artikelIndex'])   ->name('index');
+            Route::get('/create',         [PublikasiController::class, 'artikelCreate'])  ->name('create');
+            Route::post('/',              [PublikasiController::class, 'artikelStore'])   ->name('store');
+            Route::get('/{artikel}/edit', [PublikasiController::class, 'artikelEdit'])   ->name('edit');
+            Route::put('/{artikel}',      [PublikasiController::class, 'artikelUpdate']) ->name('update');
+            Route::delete('/{artikel}',   [PublikasiController::class, 'artikelDestroy'])->name('destroy');
+        });
+
+        // Geofisika — Terbit/Terbenam Matahari
+        Route::prefix('sunrise')->name('sunrise.')->group(function () {
+            Route::get('/',               [GeofisikaController::class, 'sunriseIndex'])   ->name('index');
+            Route::get('/create',         [GeofisikaController::class, 'sunriseCreate'])  ->name('create');
+            Route::post('/',              [GeofisikaController::class, 'sunriseStore'])   ->name('store');
+            Route::get('/{sunrise}/edit', [GeofisikaController::class, 'sunriseEdit'])   ->name('edit');
+            Route::put('/{sunrise}',      [GeofisikaController::class, 'sunriseUpdate']) ->name('update');
+            Route::delete('/{sunrise}',   [GeofisikaController::class, 'sunriseDestroy'])->name('destroy');
+        });
+
+        // Geofisika — Peta Sambaran Petir
+        Route::prefix('lightning')->name('lightning.')->group(function () {
+            Route::get('/',                [GeofisikaController::class, 'lightningIndex'])   ->name('index');
+            Route::get('/create',          [GeofisikaController::class, 'lightningCreate'])  ->name('create');
+            Route::post('/',               [GeofisikaController::class, 'lightningStore'])   ->name('store');
+            Route::get('/{lightning}/edit',[GeofisikaController::class, 'lightningEdit'])   ->name('edit');
+            Route::put('/{lightning}',     [GeofisikaController::class, 'lightningUpdate']) ->name('update');
+            Route::delete('/{lightning}',  [GeofisikaController::class, 'lightningDestroy'])->name('destroy');
+        });
+
+        // Informasi Publik
+        Route::resource('informasi-publik', InformasiPublikController::class)
+            ->except(['show'])
+            ->parameter('informasi-publik', 'informasiPublik');
+    });
+// PDF viewer for buletin
+Route::get('/publikasi/buletin/{buletin}/pdf', function (\App\Models\Publication $buletin) {
+    abort_unless($buletin->type === 'buletin' && $buletin->is_active, 404);
+    $pdfUrl = $buletin->file_path
+        ? asset('storage/'.$buletin->file_path)
+        : $buletin->external_url;
+    abort_unless($pdfUrl, 404);
+    return view('pages.pdf-viewer', compact('buletin', 'pdfUrl'));
+})->name('publikasi.pdf-viewer');

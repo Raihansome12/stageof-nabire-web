@@ -1,0 +1,120 @@
+@extends('admin.layout')
+@section('title', $buletin ? 'Edit Buletin' : 'Tambah Buletin')
+@section('page-title', $buletin ? 'Edit Buletin' : 'Tambah Buletin')
+
+@section('content')
+<div class="max-w-2xl">
+    <div class="bg-white rounded-2xl shadow-sm p-6">
+        <form method="POST"
+              action="{{ $buletin ? route('admin.buletin.update', $buletin) : route('admin.buletin.store') }}"
+              enctype="multipart/form-data"
+              class="space-y-5">
+            @csrf
+            @if($buletin) @method('PUT') @endif
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Judul Buletin <span class="text-red-500">*</span></label>
+                <input type="text" name="title" value="{{ old('title', $buletin?->title) }}" required
+                       class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue"
+                       placeholder="Contoh: Buletin Geofisika April 2026"/>
+                @error('title')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Deskripsi</label>
+                <textarea name="description" rows="3"
+                          class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue resize-none"
+                          placeholder="Deskripsi singkat (opsional)">{{ old('description', $buletin?->description) }}</textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Tanggal Terbit <span class="text-red-500">*</span></label>
+                <input type="date" name="published_at" value="{{ old('published_at', $buletin?->published_at?->format('Y-m-d')) }}" required
+                       class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue"/>
+                @error('published_at')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            {{-- Cover image --}}
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Cover Buletin (Gambar)</label>
+                @if($buletin && $buletin->thumbnail)
+                    <div class="mb-2">
+                        <img src="{{ asset('storage/'.$buletin->thumbnail) }}" class="h-32 rounded-lg object-cover border border-gray-200" alt="Cover saat ini"/>
+                        <p class="text-xs text-gray-400 mt-1">Cover saat ini. Upload baru untuk mengganti.</p>
+                    </div>
+                @endif
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-bmkg-blue transition-colors cursor-pointer" onclick="document.getElementById('thumbnail').click()">
+                    <div id="coverPreviewArea">
+                        <svg class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <p class="text-xs text-gray-500">Klik untuk pilih gambar cover</p>
+                        <p class="text-xs text-gray-400 mt-0.5">JPG, PNG, WebP — maks. 2MB</p>
+                    </div>
+                    <img id="coverPreviewImg" src="" class="hidden max-h-40 mx-auto rounded-lg mt-2"/>
+                </div>
+                <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="hidden"
+                       onchange="previewFile(this,'coverPreviewImg','coverPreviewArea')"/>
+                @error('thumbnail')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            {{-- PDF file --}}
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">File PDF Buletin</label>
+                @if($buletin && $buletin->file_path)
+                    <div class="flex items-center gap-2 mb-2 p-2.5 bg-red-50 border border-red-100 rounded-lg">
+                        <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/></svg>
+                        <span class="text-xs text-red-700 truncate">File PDF sudah ada. Upload baru untuk mengganti.</span>
+                        <a href="{{ asset('storage/'.$buletin->file_path) }}" target="_blank" class="ml-auto text-xs text-bmkg-blue hover:underline shrink-0">Lihat</a>
+                    </div>
+                @endif
+                <input type="file" name="pdf_file" accept="application/pdf"
+                       class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-bmkg-blue file:font-medium hover:file:bg-blue-100 transition-colors"/>
+                <p class="text-xs text-gray-400 mt-1">Maks. 20MB. Pengguna dapat klik cover untuk membuka PDF ini.</p>
+                @error('pdf_file')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">URL Eksternal (opsional)</label>
+                <input type="url" name="external_url" value="{{ old('external_url', $buletin?->external_url) }}"
+                       class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue"
+                       placeholder="https://..."/>
+                <p class="text-xs text-gray-400 mt-1">Gunakan jika PDF dihosting di tempat lain. Diabaikan jika file PDF diupload.</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <input type="hidden" name="is_active" value="0"/>
+                <input type="checkbox" name="is_active" id="is_active" value="1"
+                       {{ old('is_active', $buletin?->is_active ?? true) ? 'checked' : '' }}
+                       class="rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue"/>
+                <label for="is_active" class="text-sm text-gray-700">Tampilkan di halaman publik</label>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <a href="{{ route('admin.buletin.index') }}"
+                   class="flex-1 text-center border border-gray-300 text-gray-700 text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50">Batal</a>
+                <button type="submit"
+                        class="flex-1 bg-bmkg-blue text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90">
+                    {{ $buletin ? 'Simpan Perubahan' : 'Tambah Buletin' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+function previewFile(input, imgId, areaId) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = document.getElementById(imgId);
+            const area = document.getElementById(areaId);
+            img.src = e.target.result;
+            img.classList.remove('hidden');
+            if (area) area.classList.add('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+@endpush
+@endsection

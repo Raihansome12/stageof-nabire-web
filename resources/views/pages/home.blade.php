@@ -433,7 +433,7 @@
                                 {{ $buletin->published_at->format('d M Y') }}
                             </span>
                             @if($buletin->file_path || $buletin->external_url)
-                                <a href="{{ $buletin->file_path ? asset('storage/'.$buletin->file_path) : $buletin->external_url }}"
+                                <a href="{{ route('publikasi.pdf-viewer', $buletin) }}"
                                    target="_blank"
                                    class="text-xs font-semibold text-bmkg-blue hover:underline">
                                     Unduh →
