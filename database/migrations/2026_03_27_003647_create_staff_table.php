@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('nip')->nullable();
             $table->string('photo')->nullable();
-            $table->enum('role', ['kepala', 'fungsional'])->default('fungsional');
+            $table->enum('role', ['kepala', 'fungsional', 'ppnpn'])->default('fungsional');
             $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

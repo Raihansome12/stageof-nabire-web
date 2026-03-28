@@ -3,11 +3,14 @@
 @section('page-title', 'Artikel')
 
 @section('content')
-
-{-- Bulk bar --}
 @php $bulkRoute = 'admin.artikel.bulk-destroy'; $entityName = 'artikel'; @endphp
 @include('admin.partials.bulk-bar')
-<div class="flex items-center justify-end mb-6">
+<div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-2 text-xs text-gray-500">
+        <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"
+               class="rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"/>
+        <label for="selectAll" class="cursor-pointer">Pilih Semua</label>
+    </div>
     <a href="{{ route('admin.artikel.create') }}"
        class="inline-flex items-center gap-2 bg-bmkg-blue text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>

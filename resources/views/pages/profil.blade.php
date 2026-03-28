@@ -56,8 +56,7 @@
 
     {{-- Struktur Organisasi --}}
     <div id="panel-struktur" class="panel-section hidden">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             @auth
                 @if(auth()->user()->is_admin)
                     <div class="mb-6 flex justify-end">
@@ -74,13 +73,13 @@
             <div class="mb-10">
                 <div class="flex items-center gap-3 py-4 mb-6 border-b border-gray-300">
                     <div class="w-1 h-7 bg-bmkg-blue rounded-full flex-shrink-0"></div>
-                    <h1 class="font-heading font-bold text-3xl text-bmkg-blue">Kepala</h1>
+                    <h1 class="font-heading font-bold text-3xl text-bmkg-blue">Kepala Kantor</h1>
                 </div>
                 @if($staffKepala->isNotEmpty())
                     @php $kepala = $staffKepala->first(); @endphp
-                    <div class="bg-white rounded-lg p-4 w-48 text-center shadow-sm">
+                    <div class="bg-white rounded-lg p-4 w-[220px] text-center shadow-sm">
                         @if($kepala->photo)
-                            <img src="{{ asset('storage/'.$kepala->photo) }}" class="mx-auto rounded-lg object-cover mb-3" alt="{{ $kepala->name }}">
+                            <img src="{{ asset('storage/'.$kepala->photo) }}" class="w-[150px] h-[200px] mx-auto rounded-lg object-cover mb-5" alt="{{ $kepala->name }}">
                         @else
                             <div class="w-24 h-24 mx-auto rounded-full bg-blue-200 flex items-center justify-center mb-3">
                                 <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -105,9 +104,9 @@
                 @else
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         @foreach($staffFungsional as $s)
-                            <div class="bg-blue-100 border-2 border-gray-400 rounded-lg p-4 w-48 text-center shadow">
+                            <div class="bg-white rounded-lg p-4 w-[220px] text-center shadow">
                                 @if($s->photo)
-                                    <img src="{{ asset('storage/'.$s->photo) }}" class="w-24 h-24 mx-auto rounded-full object-cover mb-3" alt="{{ $s->name }}">
+                                    <img src="{{ asset('storage/'.$s->photo) }}" class="w-[150px] h-[200px] mx-auto rounded-lg object-cover mb-5" alt="{{ $s->name }}">
                                 @else
                                     <div class="w-24 h-24 mx-auto rounded-full bg-blue-200 flex items-center justify-center mb-3">
                                         <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -115,6 +114,31 @@
                                 @endif
                                 <h2 class="font-semibold text-gray-800">{{ $s->name }}</h2>
                                 <p class="text-sm text-gray-500">NIP. {{ $s->nip ?? '-' }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+            {{-- PPNPN --}}
+            <div class="mt-10">
+                <div class="flex items-center gap-3 py-4 mb-6 border-b border-gray-300">
+                    <div class="w-1 h-7 bg-teal-500 rounded-full flex-shrink-0"></div>
+                    <h1 class="font-heading font-bold text-3xl text-bmkg-blue">PPNPN</h1>
+                </div>
+                @if($staffPpnpn->isEmpty())
+                    <p class="text-gray-400 text-sm">Belum ada data PPNPN.</p>
+                @else
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        @foreach($staffPpnpn as $s)
+                            <div class="bg-white rounded-lg p-4 w-[220px] text-center shadow">
+                                @if($s->photo)
+                                    <img src="{{ asset('storage/'.$s->photo) }}" class="w-[150px] h-[200px] mx-auto rounded-full object-cover mb-3" alt="{{ $s->name }}">
+                                @else
+                                    <div class="w-24 h-24 mx-auto rounded-full bg-blue-200 flex items-center justify-center mb-3">
+                                        <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    </div>
+                                @endif
+                                <h2 class="font-semibold text-gray-800">{{ $s->name }}</h2>
                             </div>
                         @endforeach
                     </div>

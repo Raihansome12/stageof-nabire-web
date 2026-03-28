@@ -33,4 +33,9 @@ class Staff extends Model
     {
         return $query->where('role', 'fungsional');
     }
+
+    public function scopePpnpn($query)
+    {
+        return $query->where('role', 'ppnpn');
+    }
 }

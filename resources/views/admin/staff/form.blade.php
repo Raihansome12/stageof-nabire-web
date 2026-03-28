@@ -33,6 +33,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap <span class="text-red-500">*</span></label>
                 <input type="text" name="name" value="{{ old('name', $staff?->name) }}" required
+                       autocomplete = "off"
                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue focus:border-transparent"
                        placeholder="Nama lengkap pegawai"/>
                 @error('name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
@@ -41,6 +42,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">NIP</label>
                 <input type="text" name="nip" value="{{ old('nip', $staff?->nip) }}"
+                       autocomplete = "off"
                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue focus:border-transparent"
                        placeholder="Nomor Induk Pegawai"/>
                 @error('nip')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
@@ -52,6 +54,7 @@
                         class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue focus:border-transparent bg-white">
                     <option value="kepala"    {{ old('role', $staff?->role) === 'kepala'    ? 'selected' : '' }}>Kepala</option>
                     <option value="fungsional"{{ old('role', $staff?->role) === 'fungsional'? 'selected' : '' }}>Pegawai Fungsional</option>
+                    <option value="ppnpn"     {{ old('role', $staff?->role) === 'ppnpn'     ? 'selected' : '' }}>PPNPN</option>
                 </select>
                 @error('role')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>

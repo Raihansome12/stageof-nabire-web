@@ -19,11 +19,23 @@
 {{-- Filter --}}
 <form method="GET" action="{{ route('admin.gempa.index') }}"
       class="bg-white rounded-2xl shadow-sm p-4 mb-5 flex flex-wrap gap-3 items-end">
-    <div>
+    <!-- <div>
         <label class="block text-xs font-medium text-gray-600 mb-1">Lokasi / Keterangan</label>
         <input type="text" name="search" value="{{ request('search') }}"
                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue w-52"
                placeholder="Cari lokasi..."/>
+    </div> -->
+    <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">Rentang Tanggal</label>
+        <div class="flex items-center gap-2">
+            <input type="date" name="start_date" value="{{ request('start_date') }}"
+                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue">
+            
+            <span class="text-gray-400 text-sm">-</span>
+
+            <input type="date" name="end_date" value="{{ request('end_date') }}"
+                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue">
+        </div>
     </div>
     <div>
         <label class="block text-xs font-medium text-gray-600 mb-1">Magnitudo</label>

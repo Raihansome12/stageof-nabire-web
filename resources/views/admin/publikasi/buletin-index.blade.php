@@ -4,7 +4,6 @@
 
 @section('content')
 
-{{-- Bulk bar --}}
 @php $bulkRoute = 'admin.buletin.bulk-destroy'; $entityName = 'buletin'; @endphp
 @include('admin.partials.bulk-bar')
 <div class="flex items-center justify-between mb-6">

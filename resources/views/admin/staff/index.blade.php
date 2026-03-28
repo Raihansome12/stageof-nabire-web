@@ -7,7 +7,7 @@
 {{-- Bulk bar --}}
 @php $bulkRoute = 'admin.staff.bulk-destroy'; $entityName = 'pegawai'; @endphp
 @include('admin.partials.bulk-bar')
-<div class="flex items-center justify-end mb-6">
+<div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-3 text-xs text-gray-500">
         <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"
                class="rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"/>
@@ -20,7 +20,7 @@
     </a>
 </div>
 
-@foreach([['kepala','Kepala'], ['fungsional','Pegawai Fungsional']] as [$roleKey, $roleLabel])
+@foreach([['kepala','Kepala'], ['fungsional','Pegawai Fungsional'], ['ppnpn','PPNPN']] as [$roleKey, $roleLabel])
     @php $group = $staffList->where('role', $roleKey); @endphp
     <div class="mb-8">
         <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">

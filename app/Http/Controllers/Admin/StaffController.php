@@ -25,7 +25,7 @@ class StaffController extends Controller
         $data = $request->validate([
             'name'       => 'required|string|max:255',
             'nip'        => 'nullable|string|max:50',
-            'role'       => 'required|in:kepala,fungsional',
+            'role'       => 'required|in:kepala,fungsional,ppnpn',
             'sort_order' => 'nullable|integer|min:0',
             'is_active'  => 'boolean',
             'photo'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -54,7 +54,7 @@ class StaffController extends Controller
         $data = $request->validate([
             'name'       => 'required|string|max:255',
             'nip'        => 'nullable|string|max:50',
-            'role'       => 'required|in:kepala,fungsional',
+            'role'       => 'required|in:kepala,fungsional,ppnpn',
             'sort_order' => 'nullable|integer|min:0',
             'is_active'  => 'boolean',
             'photo'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',

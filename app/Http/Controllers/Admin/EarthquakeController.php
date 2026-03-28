@@ -12,9 +12,17 @@ class EarthquakeController extends Controller
     {
         $query = Earthquake::query();
 
-        if ($request->filled('search')) {
-            $query->where('location_description', 'like', '%' . $request->search . '%');
+        // if ($request->filled('search')) {
+        //     $query->where('location_description', 'like', '%' . $request->search . '%');
+        // }
+        if (request('start_date')) {
+            $query->whereDate('occurred_at', '>=', request('start_date'));
         }
+        
+        if (request('end_date')) {
+            $query->whereDate('occurred_at', '<=', request('end_date'));
+        }
+        
         if ($request->filled('mag')) {
             if ($request->mag === 'gte5') $query->where('magnitude', '>=', 5);
             elseif ($request->mag === 'lt5') $query->where('magnitude', '<', 5);

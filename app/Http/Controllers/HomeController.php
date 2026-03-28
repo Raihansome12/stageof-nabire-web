@@ -242,7 +242,8 @@ class HomeController extends Controller
     {
         $staffKepala     = Staff::active()->kepala()->orderBy('sort_order')->get();
         $staffFungsional = Staff::active()->fungsional()->orderBy('sort_order')->get();
-        return view('pages.profil', compact('staffKepala', 'staffFungsional'));
+        $staffPpnpn      = Staff::active()->ppnpn()->orderBy('sort_order')->get();
+        return view('pages.profil', compact('staffKepala', 'staffFungsional', 'staffPpnpn'));
     }
 
     public function informasiPublik()
