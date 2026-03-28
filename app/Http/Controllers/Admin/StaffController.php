@@ -86,4 +86,17 @@ class StaffController extends Controller
         return redirect()->route('admin.staff.index')
             ->with('success', 'Data pegawai berhasil dihapus.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array|min:1', 'ids.*' => 'integer|exists:staff,id']);
+        $staff = \App\Models\Staff::whereIn('id', $request->ids)->get();
+        foreach ($staff as $s) {
+            if ($s->photo) \Illuminate\Support\Facades\Storage::disk('public')->delete($s->photo);
+            $s->delete();
+        }
+        return redirect()->route('admin.staff.index')
+            ->with('success', count($request->ids) . ' data pegawai berhasil dihapus.');
+    }
+
 }

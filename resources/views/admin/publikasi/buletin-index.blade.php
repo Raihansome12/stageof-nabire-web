@@ -3,8 +3,16 @@
 @section('page-title', 'Buletin Bulanan')
 
 @section('content')
+
+{{-- Bulk bar --}}
+@php $bulkRoute = 'admin.buletin.bulk-destroy'; $entityName = 'buletin'; @endphp
+@include('admin.partials.bulk-bar')
 <div class="flex items-center justify-between mb-6">
-    <p class="text-sm text-gray-500">Kelola cover dan file PDF buletin bulanan.</p>
+    <div class="flex items-center gap-2 text-xs text-gray-500">
+        <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"
+               class="rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"/>
+        <label for="selectAll" class="cursor-pointer">Pilih Semua</label>
+    </div>
     <a href="{{ route('admin.buletin.create') }}"
        class="inline-flex items-center gap-2 bg-bmkg-blue text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -19,7 +27,11 @@
 @else
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
         @foreach($buletins as $bul)
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative">
+                {{-- Checkbox --}}
+                <div class="absolute top-2 left-2 z-10">
+                    <input type="checkbox" class="row-cb w-4 h-4 rounded border-gray-300 bg-white/80 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer" value="{{ $bul->id }}"/>
+                </div>
                 {{-- Cover --}}
                 <div class="relative aspect-[3/4] bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center overflow-hidden">
                     @if($bul->thumbnail)
@@ -65,3 +77,7 @@
     <div class="mt-6">{{ $buletins->links() }}</div>
 @endif
 @endsection
+
+@push('scripts')
+@include('admin.partials.bulk-js')
+@endpush

@@ -166,4 +166,30 @@ class PublikasiController extends Controller
         return redirect()->route('admin.artikel.index')
             ->with('success', 'Artikel berhasil dihapus.');
     }
+
+    public function buletinBulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array|min:1', 'ids.*' => 'integer|exists:publications,id']);
+        $items = \App\Models\Publication::whereIn('id', $request->ids)->get();
+        foreach ($items as $item) {
+            if ($item->thumbnail) \Illuminate\Support\Facades\Storage::disk('public')->delete($item->thumbnail);
+            if ($item->file_path)  \Illuminate\Support\Facades\Storage::disk('public')->delete($item->file_path);
+            $item->delete();
+        }
+        return redirect()->route('admin.buletin.index')
+            ->with('success', count($request->ids) . ' buletin berhasil dihapus.');
+    }
+
+    public function artikelBulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array|min:1', 'ids.*' => 'integer|exists:artikels,id']);
+        $items = \App\Models\Artikel::whereIn('id', $request->ids)->get();
+        foreach ($items as $item) {
+            if ($item->photo) \Illuminate\Support\Facades\Storage::disk('public')->delete($item->photo);
+            $item->delete();
+        }
+        return redirect()->route('admin.artikel.index')
+            ->with('success', count($request->ids) . ' artikel berhasil dihapus.');
+    }
+
 }

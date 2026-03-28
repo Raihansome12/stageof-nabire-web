@@ -89,4 +89,17 @@ class InformasiPublikController extends Controller
         return redirect()->route('admin.informasi-publik.index')
             ->with('success', 'Data berhasil dihapus.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array|min:1', 'ids.*' => 'integer|exists:informasi_publik,id']);
+        $items = \App\Models\InformasiPublik::whereIn('id', $request->ids)->get();
+        foreach ($items as $item) {
+            if ($item->photo) \Illuminate\Support\Facades\Storage::disk('public')->delete($item->photo);
+            $item->delete();
+        }
+        return redirect()->route('admin.informasi-publik.index')
+            ->with('success', count($request->ids) . ' item berhasil dihapus.');
+    }
+
 }

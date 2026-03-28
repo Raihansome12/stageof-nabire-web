@@ -530,4 +530,25 @@ class GeofisikaController extends Controller
             ->with('success', 'Data kerapatan harian berhasil disimpan.');
     }
 
+
+    public function sunriseBulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array|min:1', 'ids.*' => 'integer|exists:sunrises,id']);
+        \App\Models\Sunrise::whereIn('id', $request->ids)->delete();
+        return redirect()->route('admin.sunrise.index')
+            ->with('success', count($request->ids) . ' data TTM berhasil dihapus.');
+    }
+
+    public function lightningBulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array|min:1', 'ids.*' => 'integer|exists:lightning_periods,id']);
+        $periods = \App\Models\LightningPeriod::whereIn('id', $request->ids)->with('map')->get();
+        foreach ($periods as $period) {
+            if ($period->map) Storage::disk('public')->delete($period->map->image_path);
+            $period->delete(); // cascades to map, stats, densities
+        }
+        return redirect()->route('admin.lightning.index')
+            ->with('success', count($request->ids) . ' periode petir berhasil dihapus.');
+    }
+
 }

@@ -193,7 +193,21 @@
             </p>
         </div>
     </div>
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-15">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-15">
+    {{-- Admin quick-edit bar --}}
+    <div class="flex justify-end pb-5">
+    @auth
+        @if(auth()->user()->is_admin)
+            <a href="{{ route('admin.gempa.index') }}"
+            class="inline-flex items-center gap-2 text-xs bg-bmkg-blue text-white px-3 py-2 rounded-lg hover:opacity-90 shadow-sm">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Kelola Data Gempa
+            </a>
+        @endif
+    @endauth
+    </div>
+    
+
     {{-- ── Filter bar ──────────────────────────────────── --}}
             <form method="GET" action="{{ route('gempa-bumi') }}" id="filter-form">
                 <div class="filter-bar">

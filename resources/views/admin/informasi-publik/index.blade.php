@@ -3,8 +3,11 @@
 @section('page-title', 'Berita & Pengumuman')
 
 @section('content')
-<div class="flex items-center justify-between mb-6">
-    <p class="text-sm text-gray-500">Kelola berita, siaran pers, dan pengumuman.</p>
+
+{{-- Bulk bar --}}
+@php $bulkRoute = 'admin.informasi-publik.bulk-destroy'; $entityName = 'item'; @endphp
+@include('admin.partials.bulk-bar')
+<div class="flex items-center justify-end mb-6">
     <div class="flex gap-2">
         <a href="{{ route('admin.informasi-publik.create', ['type'=>'berita']) }}"
            class="inline-flex items-center gap-1.5 bg-bmkg-blue text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:opacity-90">
@@ -39,7 +42,8 @@
                 <table class="w-full text-sm">
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr>
-                            <th class="text-left px-5 py-3 font-semibold text-gray-600 w-16">Foto</th>
+                            <th class="px-5 py-3 w-10"><input type="checkbox" class="type-select-all rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer" data-type="{{ $typeKey }}" onchange="toggleTypeSelectAll(this)"/></th>
+                        <th class="text-left px-5 py-3 font-semibold text-gray-600 w-16">Foto</th>
                             <th class="text-left px-5 py-3 font-semibold text-gray-600">Judul</th>
                             <th class="text-left px-5 py-3 font-semibold text-gray-600 hidden md:table-cell">Deskripsi</th>
                             <th class="text-left px-5 py-3 font-semibold text-gray-600 hidden sm:table-cell">Tanggal</th>
@@ -97,3 +101,14 @@
     </div>
 @endforeach
 @endsection
+
+@push('scripts')
+@include('admin.partials.bulk-js')
+<script>
+function toggleTypeSelectAll(masterCb) {
+    const type = masterCb.dataset.type;
+    document.querySelectorAll('.row-cb-' + type).forEach(cb => { cb.checked = masterCb.checked; });
+    updateBulkBar();
+}
+</script>
+@endpush

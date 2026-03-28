@@ -3,8 +3,16 @@
 @section('page-title', 'Data Pegawai')
 
 @section('content')
-<div class="flex items-center justify-between mb-6">
-    <p class="text-sm text-gray-500">Kelola foto, nama, dan NIP pegawai yang ditampilkan di halaman Profil.</p>
+
+{{-- Bulk bar --}}
+@php $bulkRoute = 'admin.staff.bulk-destroy'; $entityName = 'pegawai'; @endphp
+@include('admin.partials.bulk-bar')
+<div class="flex items-center justify-end mb-6">
+    <div class="flex items-center gap-3 text-xs text-gray-500">
+        <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"
+               class="rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"/>
+        <label for="selectAll" class="cursor-pointer">Pilih Semua</label>
+    </div>
     <a href="{{ route('admin.staff.create') }}"
        class="inline-flex items-center gap-2 bg-bmkg-blue text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -29,6 +37,10 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 @foreach($group->sortBy('sort_order') as $staff)
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col items-center text-center relative">
+                        {{-- Checkbox --}}
+                        <div class="absolute top-3 left-3">
+                            <input type="checkbox" class="row-cb w-4 h-4 rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer" value="{{ $staff->id }}"/>
+                        </div>
                         {{-- Active badge --}}
                         <div class="absolute top-3 right-3">
                             @if($staff->is_active)
@@ -71,3 +83,7 @@
     </div>
 @endforeach
 @endsection
+
+@push('scripts')
+@include('admin.partials.bulk-js')
+@endpush

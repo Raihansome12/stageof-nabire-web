@@ -3,8 +3,10 @@
 @section('page-title', 'Peta Sambaran Petir')
 
 @section('content')
-<div class="flex items-center justify-between mb-6">
-    <p class="text-sm text-gray-500">Kelola periode, peta, dan statistik sambaran petir.</p>
+
+@php $bulkRoute = 'admin.lightning.bulk-destroy'; $entityName = 'periode petir'; @endphp
+@include('admin.partials.bulk-bar')
+<div class="flex items-center justify-end mb-6">
     <a href="{{ route('admin.lightning.create') }}"
        class="inline-flex items-center gap-2 bg-bmkg-blue text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:opacity-90">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -21,6 +23,7 @@
         <table class="w-full text-sm min-w-max">
             <thead class="bg-gray-50 border-b border-gray-200">
                 <tr>
+                    <th class="px-4 py-3 w-10"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)" class="rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"/></th>
                     <th class="text-left px-4 py-3 font-semibold text-gray-600">Label</th>
                     <th class="text-left px-4 py-3 font-semibold text-gray-600">Tipe</th>
                     <th class="text-left px-4 py-3 font-semibold text-gray-600">Bulan/Tahun</th>
@@ -32,6 +35,10 @@
             <tbody class="divide-y divide-gray-100">
                 @foreach($periods as $period)
                     <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3 text-center">
+                            <input type="checkbox" class="row-cb rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"
+                                   value="{{ $period->id }}"/>
+                        </td>
                         <td class="px-4 py-3 font-medium text-gray-800">{{ $period->label }}</td>
                         <td class="px-4 py-3">
                             @php
@@ -81,3 +88,7 @@
     <div class="mt-5">{{ $periods->links() }}</div>
 @endif
 @endsection
+
+@push('scripts')
+@include('admin.partials.bulk-js')
+@endpush

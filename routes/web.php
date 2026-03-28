@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\PublikasiController;
 use App\Http\Controllers\Admin\GeofisikaController;
+use App\Http\Controllers\Admin\EarthquakeController;
 use App\Http\Controllers\Admin\InformasiPublikController;
 
 // ── Public routes ─────────────────────────────────────────────────────────────
@@ -67,6 +68,7 @@ Route::prefix('admin')
 
         // Staff (Profil)
         Route::resource('staff', StaffController::class)->except(['show']);
+        Route::delete('staff', [StaffController::class, 'bulkDestroy'])->name('staff.bulk-destroy');
 
         // Buletin
         Route::prefix('buletin')->name('buletin.')->group(function () {
@@ -76,6 +78,7 @@ Route::prefix('admin')
             Route::get('/{buletin}/edit', [PublikasiController::class, 'buletinEdit'])   ->name('edit');
             Route::put('/{buletin}',      [PublikasiController::class, 'buletinUpdate']) ->name('update');
             Route::delete('/{buletin}',   [PublikasiController::class, 'buletinDestroy'])->name('destroy');
+            Route::delete('/',              [PublikasiController::class, 'buletinBulkDestroy'])->name('bulk-destroy');
         });
 
         // Artikel
@@ -86,6 +89,7 @@ Route::prefix('admin')
             Route::get('/{artikel}/edit', [PublikasiController::class, 'artikelEdit'])   ->name('edit');
             Route::put('/{artikel}',      [PublikasiController::class, 'artikelUpdate']) ->name('update');
             Route::delete('/{artikel}',   [PublikasiController::class, 'artikelDestroy'])->name('destroy');
+            Route::delete('/',              [PublikasiController::class, 'artikelBulkDestroy'])->name('bulk-destroy');
         });
 
         // Geofisika — Terbit/Terbenam Matahari
@@ -96,6 +100,7 @@ Route::prefix('admin')
             Route::get('/{sunrise}/edit', [GeofisikaController::class, 'sunriseEdit'])   ->name('edit');
             Route::put('/{sunrise}',      [GeofisikaController::class, 'sunriseUpdate']) ->name('update');
             Route::delete('/{sunrise}',   [GeofisikaController::class, 'sunriseDestroy'])->name('destroy');
+            Route::delete('/',              [GeofisikaController::class, 'sunriseBulkDestroy'])->name('bulk-destroy');
             // CSV import
             Route::get('/import',             [GeofisikaController::class, 'sunriseImportForm'])->name('import');
             Route::post('/import',            [GeofisikaController::class, 'sunriseImport'])    ->name('import.store');
@@ -110,6 +115,7 @@ Route::prefix('admin')
             Route::get('/{lightning}/edit',[GeofisikaController::class, 'lightningEdit'])   ->name('edit');
             Route::put('/{lightning}',     [GeofisikaController::class, 'lightningUpdate']) ->name('update');
             Route::delete('/{lightning}',  [GeofisikaController::class, 'lightningDestroy'])->name('destroy');
+            Route::delete('/',               [GeofisikaController::class, 'lightningBulkDestroy'])->name('bulk-destroy');
             Route::put('/{lightning}/stats',     [GeofisikaController::class, 'syncStats'])    ->name('stats.sync');
             Route::put('/{lightning}/densities', [GeofisikaController::class, 'syncDensities'])->name('densities.sync');
         });
@@ -118,6 +124,18 @@ Route::prefix('admin')
         Route::resource('informasi-publik', InformasiPublikController::class)
             ->except(['show'])
             ->parameter('informasi-publik', 'informasiPublik');
+        Route::delete('informasi-publik', [InformasiPublikController::class, 'bulkDestroy'])->name('informasi-publik.bulk-destroy');
+
+        // Gempa Bumi
+        Route::prefix('gempa')->name('gempa.')->group(function () {
+            Route::get('/',              [EarthquakeController::class, 'index'])       ->name('index');
+            Route::get('/create',        [EarthquakeController::class, 'create'])      ->name('create');
+            Route::post('/',             [EarthquakeController::class, 'store'])       ->name('store');
+            Route::get('/{gempa}/edit',  [EarthquakeController::class, 'edit'])        ->name('edit');
+            Route::put('/{gempa}',       [EarthquakeController::class, 'update'])      ->name('update');
+            Route::delete('/{gempa}',    [EarthquakeController::class, 'destroy'])     ->name('destroy');
+            Route::delete('/',           [EarthquakeController::class, 'bulkDestroy']) ->name('bulk-destroy');
+        });
     });
 // PDF viewer for buletin
 Route::get('/publikasi/buletin/{buletin}/pdf', function (\App\Models\Publication $buletin) {

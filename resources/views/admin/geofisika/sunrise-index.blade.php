@@ -3,8 +3,9 @@
 @section('page-title', 'Terbit-Terbenam Matahari (TTM)')
 
 @section('content')
-<div class="flex flex-wrap items-center justify-between gap-3 mb-6">
-    <p class="text-sm text-gray-500">Kelola data terbit dan terbenam matahari per lokasi dan tanggal.</p>
+@php $bulkRoute = 'admin.sunrise.bulk-destroy'; $entityName = 'data TTM'; @endphp
+@include('admin.partials.bulk-bar')
+<div class="flex flex-wrap items-center justify-end gap-3 mb-6">
     <div class="flex gap-2">
         <a href="{{ route('admin.sunrise.import') }}"
            class="inline-flex items-center gap-2 bg-amber-500 text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity">
@@ -65,14 +66,17 @@
 <form method="GET" action="{{ route('admin.sunrise.index') }}" class="bg-white rounded-2xl shadow-sm p-4 mb-5 flex flex-wrap gap-3 items-end">
     <div>
         <label class="block text-xs font-medium text-gray-600 mb-1">Lokasi</label>
-        <input type="text" name="location" value="{{ request('location') }}" list="locationList"
-               class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue w-44"
-               placeholder="Semua lokasi"/>
-        <datalist id="locationList">
+        <select name="location"
+            class="border border-gray-300 rounded-lg px-3 py-2 text-sm 
+                focus:outline-none focus:ring-2 focus:ring-bmkg-blue 
+                w-44 bg-white">
+            <option value="">Semua</option>
             @foreach($locations as $loc)
-                <option value="{{ $loc }}"/>
+                <option value="{{ $loc }}" {{ request('location') == $loc ? 'selected' : '' }}>
+                    {{ $loc }}
+                </option>
             @endforeach
-        </datalist>
+        </select>
     </div>
     <div>
         <label class="block text-xs font-medium text-gray-600 mb-1">Bulan</label>
@@ -102,6 +106,7 @@
         <table class="w-full text-sm min-w-max">
             <thead class="bg-gray-50 border-b border-gray-200">
                 <tr>
+                    <th class="px-4 py-3 w-10"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)" class="rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"/></th>
                     <th class="text-left px-4 py-3 font-semibold text-gray-600">Lokasi</th>
                     <th class="text-left px-4 py-3 font-semibold text-gray-600">Tanggal</th>
                     <th class="text-left px-4 py-3 font-semibold text-gray-600">Fajar</th>
@@ -115,6 +120,10 @@
             <tbody class="divide-y divide-gray-100">
                 @foreach($sunrises as $row)
                     <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3 text-center">
+                            <input type="checkbox" class="row-cb rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"
+                                   value="{{ $row->id }}"/>
+                        </td>
                         <td class="px-4 py-3 font-medium text-gray-800">{{ $row->location }}</td>
                         <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $row->date->format('d M Y') }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ \Carbon\Carbon::parse($row->dawn_time)->format('H:i') }}</td>
@@ -138,3 +147,7 @@
     <div class="mt-5">{{ $sunrises->links() }}</div>
 @endif
 @endsection
+
+@push('scripts')
+@include('admin.partials.bulk-js')
+@endpush
