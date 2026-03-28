@@ -117,11 +117,11 @@
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-4 py-3 font-medium text-gray-800">{{ $row->location }}</td>
                         <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $row->date->format('d M Y') }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $row->dawn_time }}</td>
-                        <td class="px-4 py-3 text-amber-600 font-medium">{{ $row->sunrise_time }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $row->transit_time }}</td>
-                        <td class="px-4 py-3 text-orange-600 font-medium">{{ $row->sunset_time }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $row->dusk_time }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ \Carbon\Carbon::parse($row->dawn_time)->format('H:i') }}</td>
+                        <td class="px-4 py-3 text-amber-600 font-medium">{{ \Carbon\Carbon::parse($row->sunrise_time)->format('H:i') }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ \Carbon\Carbon::parse($row->transit_time)->format('H:i') }}</td>
+                        <td class="px-4 py-3 text-orange-600 font-medium">{{ \Carbon\Carbon::parse($row->sunset_time)->format('H:i') }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ \Carbon\Carbon::parse($row->dusk_time)->format('H:i') }}</td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex justify-end gap-2">
                                 <a href="{{ route('admin.sunrise.edit', $row) }}"

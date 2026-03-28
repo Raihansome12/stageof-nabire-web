@@ -13,6 +13,7 @@ class Sunrise extends Model
         'sunrise_time',
         'azimuth_sunrise',
         'transit_time',
+        'transit_altitude',
         'sunset_time',
         'azimuth_sunset',
         'dusk_time',

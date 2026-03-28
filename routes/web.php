@@ -110,6 +110,8 @@ Route::prefix('admin')
             Route::get('/{lightning}/edit',[GeofisikaController::class, 'lightningEdit'])   ->name('edit');
             Route::put('/{lightning}',     [GeofisikaController::class, 'lightningUpdate']) ->name('update');
             Route::delete('/{lightning}',  [GeofisikaController::class, 'lightningDestroy'])->name('destroy');
+            Route::put('/{lightning}/stats',     [GeofisikaController::class, 'syncStats'])    ->name('stats.sync');
+            Route::put('/{lightning}/densities', [GeofisikaController::class, 'syncDensities'])->name('densities.sync');
         });
 
         // Informasi Publik

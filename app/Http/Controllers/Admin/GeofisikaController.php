@@ -29,7 +29,7 @@ class GeofisikaController extends Controller
             $query->whereYear('date', $request->year);
         }
 
-        $sunrises  = $query->orderBy('location')->orderBy('date')->paginate(30)->withQueryString();
+        $sunrises  = $query->orderBy('location')->orderBy('date')->paginate(31)->withQueryString();
         $locations = Sunrise::select('location')->distinct()->orderBy('location')->pluck('location');
 
         return view('admin.geofisika.sunrise-index', compact('sunrises', 'locations'));
@@ -144,7 +144,7 @@ class GeofisikaController extends Controller
                     '05:32',           // sunrise_time
                     '65',              // azimuth_sunrise (degrees)
                     '11:45',           // transit_time
-                    '75.3S',            // transit_altitude
+                    '75.3',            // transit_altitude
                     '17:58',           // sunset_time
                     '295',             // azimuth_sunset
                     '18:20',           // dusk_time
@@ -185,7 +185,10 @@ class GeofisikaController extends Controller
 
         // Parse header
         $header = str_getcsv(array_shift($lines));
-        $header = array_map('trim', $header);
+        $header = array_map(function ($h) {
+            $h = preg_replace('/^\xEF\xBB\xBF/', '', $h); // remove BOM
+            return strtolower(trim($h));
+        }, $header);
 
         $required = ['location','date','dawn_time','sunrise_time','azimuth_sunrise',
                      'transit_time','transit_altitude','sunset_time','azimuth_sunset','dusk_time'];
@@ -237,12 +240,22 @@ class GeofisikaController extends Controller
 
             // Validate date
             try {
-                $parsedDate = Carbon::createFromFormat('Y-m-d', $date);
-                if (!$parsedDate || $parsedDate->format('Y-m-d') !== $date) {
+                // Try multiple formats
+                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+                    // Format: YYYY-MM-DD
+                    $parsedDate = Carbon::createFromFormat('Y-m-d', $date);
+                } elseif (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $date)) {
+                    // Format: DD/MM/YYYY
+                    $parsedDate = Carbon::createFromFormat('d/m/Y', $date);
+                } else {
                     throw new \Exception();
                 }
+            
+                // Normalize to DB format
+                $date = $parsedDate->format('Y-m-d');
+            
             } catch (\Exception $e) {
-                $errors[] = "Baris {$rowNum}: format tanggal tidak valid ({$date}). Gunakan YYYY-MM-DD.";
+                $errors[] = "Baris {$rowNum}: format tanggal tidak valid ({$date}). Gunakan YYYY-MM-DD atau DD/MM/YYYY.";
                 continue;
             }
 
@@ -428,4 +441,93 @@ class GeofisikaController extends Controller
         return redirect()->route('admin.lightning.index')
             ->with('success', 'Data periode petir berhasil dihapus.');
     }
+
+    // ── SYNC SUBDISTRICT STATS ────────────────────────────────────────────────
+
+    public function syncStats(Request $request, LightningPeriod $lightning)
+    {
+        $rows = $request->input('stats', []);
+
+        // Collect submitted IDs (empty string = new row)
+        $submittedIds = collect($rows)
+            ->pluck('id')
+            ->filter(fn($id) => $id !== '' && $id !== null)
+            ->map(fn($id) => (int) $id)
+            ->all();
+
+        // Delete rows that were removed in the UI
+        $lightning->subdistrictStats()
+            ->whereNotIn('id', $submittedIds)
+            ->delete();
+
+        // Upsert each submitted row
+        foreach ($rows as $row) {
+            $subdistrict   = trim($row['subdistrict']   ?? '');
+            $total_strikes = (int) ($row['total_strikes'] ?? 0);
+
+            if ($subdistrict === '') continue;
+
+            $id = isset($row['id']) && $row['id'] !== '' ? (int) $row['id'] : null;
+
+            if ($id && $lightning->subdistrictStats()->where('id', $id)->exists()) {
+                $lightning->subdistrictStats()->where('id', $id)->update([
+                    'subdistrict'   => $subdistrict,
+                    'total_strikes' => $total_strikes,
+                ]);
+            } else {
+                $lightning->subdistrictStats()->create([
+                    'subdistrict'   => $subdistrict,
+                    'total_strikes' => $total_strikes,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.lightning.edit', $lightning)
+            ->with('success', 'Data kecamatan berhasil disimpan.');
+    }
+
+    // ── SYNC DAILY DENSITIES ──────────────────────────────────────────────────
+
+    public function syncDensities(Request $request, LightningPeriod $lightning)
+    {
+        $rows = $request->input('densities', []);
+
+        $submittedIds = collect($rows)
+            ->pluck('id')
+            ->filter(fn($id) => $id !== '' && $id !== null)
+            ->map(fn($id) => (int) $id)
+            ->all();
+
+        // Delete rows removed in the UI
+        $lightning->densities()
+            ->whereNotIn('id', $submittedIds)
+            ->delete();
+
+        // Upsert each submitted row
+        foreach ($rows as $row) {
+            $date          = $row['date']          ?? null;
+            $total_density = $row['total_density'] ?? 0;
+
+            if (!$date) continue;
+
+            $id = isset($row['id']) && $row['id'] !== '' ? (int) $row['id'] : null;
+
+            if ($id && $lightning->densities()->where('id', $id)->exists()) {
+                $lightning->densities()->where('id', $id)->update([
+                    'date'          => $date,
+                    'total_density' => (float) $total_density,
+                ]);
+            } else {
+                // Use updateOrCreate to respect the unique(period_id, date) constraint
+                $lightning->densities()->updateOrCreate(
+                    ['date' => $date],
+                    ['total_density' => (float) $total_density]
+                );
+            }
+        }
+
+        return redirect()->route('admin.lightning.edit', $lightning)
+            ->with('success', 'Data kerapatan harian berhasil disimpan.');
+    }
+
 }
