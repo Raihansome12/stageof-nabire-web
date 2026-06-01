@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Artikel;
 use App\Models\InformasiPublik;
+use App\Models\PermohonanData;
 use App\Models\Staff;
 use App\Models\Sunrise;
 use App\Models\Earthquake;
@@ -12,6 +13,8 @@ use App\Models\LightningPeriod;
 use App\Models\Publication;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -253,8 +256,140 @@ class HomeController extends Controller
         return view('pages.informasi-publik', compact('beritas', 'pengumumans'));
     }
 
+    // ── Layanan Masyarakat ────────────────────────────────────────────────────
     public function layananMasyarakat()
     {
         return view('pages.layanan-masyarakat');
+    }
+
+    /**
+     * Handle form submission for Permohonan Data.
+     * Saves to DB, then sends email + WhatsApp notification.
+     */
+    public function layananMasyarakatStore(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_lengkap'      => 'required|string|max:255',
+            'nik'               => 'nullable|string|max:16',
+            'email'             => 'nullable|email|max:255',
+            'no_hp'             => 'required|string|max:20',
+            'instansi'          => 'required|string|max:255',
+            'alamat'            => 'nullable|string|max:1000',
+            'jenis_permohonan'  => 'required|in:pnbp,nol',
+            'jenis_data'        => 'required|string|max:255',
+            'lingkup_kegiatan'  => 'nullable|string|max:255',
+            'file_surat_permohonan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'file_surat_pengantar'  => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'file_surat_pernyataan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'file_proposal'         => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ], [
+            'nama_lengkap.required'     => 'Nama lengkap wajib diisi.',
+            'no_hp.required'            => 'Nomor HP wajib diisi.',
+            'instansi.required'         => 'Instansi wajib diisi.',
+            'jenis_permohonan.required' => 'Jenis permohonan wajib dipilih.',
+            'jenis_data.required'       => 'Jenis data yang diminta wajib diisi.',
+        ]);
+
+        // Store uploaded files
+        foreach (['file_surat_permohonan', 'file_surat_pengantar', 'file_surat_pernyataan', 'file_proposal'] as $field) {
+            if ($request->hasFile($field)) {
+                $validated[$field] = $request->file($field)->store('permohonan-data', 'public');
+            }
+        }
+
+        $permohonan = PermohonanData::create($validated);
+
+        // ── Send Email Notification ───────────────────────────────────────────
+        $this->sendEmailNotification($permohonan);
+
+        // ── Send WhatsApp Notification (via Fonnte / wa.me link) ─────────────
+        // Configure OFFICE_WA_NUMBER and FONNTE_TOKEN in .env
+        $this->sendWhatsAppNotification($permohonan);
+
+        return redirect()->route('layanan-masyarakat')
+            ->with('success', 'Permohonan Anda berhasil dikirim! Kami akan menghubungi Anda segera.');
+    }
+
+    // ── Private helpers ───────────────────────────────────────────────────────
+
+    private function sendEmailNotification(PermohonanData $p): void
+    {
+        $officeEmail = config('mail.office_email', env('OFFICE_EMAIL', 'geofisika.nabire@bmkg.go.id'));
+
+        $subject = "[Permohonan Data] {$p->labelJenisPermohonan()} – {$p->nama_lengkap} ({$p->instansi})";
+
+        $body = "
+Permohonan Data Baru Masuk
+==========================
+ID Permohonan : #{$p->id}
+Tanggal       : {$p->created_at->format('d M Y, H:i')} WIT
+
+IDENTITAS PEMOHON
+-----------------
+Nama Lengkap  : {$p->nama_lengkap}
+NIK           : " . ($p->nik ?: '-') . "
+Instansi      : {$p->instansi}
+No. HP        : {$p->no_hp}
+Email         : " . ($p->email ?: '-') . "
+Alamat        : " . ($p->alamat ?: '-') . "
+
+DETAIL PERMOHONAN
+-----------------
+Jenis Permohonan : {$p->labelJenisPermohonan()}
+Jenis Data       : {$p->jenis_data}
+Lingkup Kegiatan : " . ($p->lingkup_kegiatan ?: '-') . "
+
+Dokumen terlampir: " . ($p->file_surat_permohonan ? 'Ya' : 'Tidak') . "
+
+Kelola permohonan ini di panel admin.
+        ";
+
+        try {
+            Mail::raw($body, function ($message) use ($officeEmail, $subject) {
+                $message->to($officeEmail)->subject($subject);
+            });
+        } catch (\Exception $e) {
+            Log::error('Gagal mengirim email notifikasi permohonan: ' . $e->getMessage());
+        }
+    }
+
+    private function sendWhatsAppNotification(PermohonanData $p): void
+    {
+        // Uses Fonnte API (https://fonnte.com) – set FONNTE_TOKEN and OFFICE_WA_NUMBER in .env
+        $token  = env('FONNTE_TOKEN');
+        $target = env('OFFICE_WA_NUMBER');    // e.g. 6281234567890
+
+        if (!$token || !$target) {
+            Log::info('WhatsApp notification skipped: FONNTE_TOKEN or OFFICE_WA_NUMBER not set.');
+            return;
+        }
+
+        $message = "📋 *Permohonan Data Baru* (#{$p->id})\n\n"
+            . "👤 *{$p->nama_lengkap}*\n"
+            . "🏢 {$p->instansi}\n"
+            . "📱 {$p->no_hp}\n\n"
+            . "📂 *{$p->labelJenisPermohonan()}*\n"
+            . "Jenis Data: {$p->jenis_data}\n\n"
+            . "Silakan cek panel admin untuk detail lengkap.";
+
+        try {
+            $ch = curl_init('https://api.fonnte.com/send');
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => ['target' => $target, 'message' => $message],
+                CURLOPT_HTTPHEADER     => ['Authorization: ' . $token],
+                CURLOPT_TIMEOUT        => 10,
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $result = json_decode($response, true);
+            if (!($result['status'] ?? false)) {
+                Log::warning('WhatsApp notification mungkin gagal: ' . $response);
+            }
+        } catch (\Exception $e) {
+            Log::error('Gagal mengirim WhatsApp: ' . $e->getMessage());
+        }
     }
 }

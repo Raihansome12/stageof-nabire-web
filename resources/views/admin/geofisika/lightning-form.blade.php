@@ -400,17 +400,22 @@ function generateDensityFromRange() {
         tr.innerHTML = `
             <td class="px-3 py-2 text-gray-400 text-xs row-num">${i + 1}</td>
             <td class="px-3 py-2">
+                <input type="hidden" name="densities[${i}][id]" value=""/>
                 <input type="date" name="densities[${i}][date]"
                        value="${dateStr}" required
-                       class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm"/>
+                       class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"/>
             </td>
             <td class="px-3 py-2">
                 <input type="number" name="densities[${i}][total_density]"
                        required min="0" step="0.01"
-                       class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm"
+                       class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                        placeholder="0"/>
             </td>
-            <td></td>
+            <td class="px-3 py-2 text-center">
+                <button type="button" onclick="removeRow(this)" class="text-red-400 hover:text-red-600 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </td>
         `;
 
         tbody.appendChild(tr);
@@ -429,8 +434,10 @@ if (startInput && endInput) {
     startInput.addEventListener('change', generateDensityFromRange);
     endInput.addEventListener('change', generateDensityFromRange);
 
-    // auto generate if already filled
-    if (startInput.value && endInput.value) {
+    // Only auto-generate if creating NEW period (no existing densities)
+    // Check if there are existing density rows with IDs
+    const hasExistingData = document.querySelector('input[name*="[id]"][name*="densities"]') !== null;
+    if (startInput.value && endInput.value && !hasExistingData) {
         generateDensityFromRange();
     }
 }

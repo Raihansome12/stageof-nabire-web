@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PublikasiController;
 use App\Http\Controllers\Admin\GeofisikaController;
 use App\Http\Controllers\Admin\EarthquakeController;
 use App\Http\Controllers\Admin\InformasiPublikController;
+use App\Http\Controllers\Admin\PermohonanDataController;
 
 // ── Public routes ─────────────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -14,7 +15,10 @@ Route::get('/profil', [HomeController::class, 'profil'])->name('profil');
 Route::get('/publikasi', [HomeController::class, 'publikasi'])->name('publikasi');
 Route::get('/gempa-bumi', [HomeController::class, 'gempaBumi'])->name('gempa-bumi');
 Route::get('/informasi-publik', [HomeController::class, 'informasiPublik'])->name('informasi-publik');
+
+// Layanan Masyarakat — GET (display) + POST (submit form)
 Route::get('/layanan-masyarakat', [HomeController::class, 'layananMasyarakat'])->name('layanan-masyarakat');
+Route::post('/layanan-masyarakat', [HomeController::class, 'layananMasyarakatStore'])->name('layanan-masyarakat.store');
 
 // Informasi Geofisika (TTM + Petir)
 Route::get('/informasi-geofisika', [HomeController::class, 'informasiGeofisika'])
@@ -135,6 +139,15 @@ Route::prefix('admin')
             Route::put('/{gempa}',       [EarthquakeController::class, 'update'])      ->name('update');
             Route::delete('/{gempa}',    [EarthquakeController::class, 'destroy'])     ->name('destroy');
             Route::delete('/',           [EarthquakeController::class, 'bulkDestroy']) ->name('bulk-destroy');
+        });
+
+        // ── Permohonan Data Masyarakat ────────────────────────────────────────
+        Route::prefix('permohonan-data')->name('permohonan-data.')->group(function () {
+            Route::get('/',                        [PermohonanDataController::class, 'index'])       ->name('index');
+            Route::get('/{permohonanData}',        [PermohonanDataController::class, 'show'])        ->name('show');
+            Route::put('/{permohonanData}',        [PermohonanDataController::class, 'update'])      ->name('update');
+            Route::delete('/{permohonanData}',     [PermohonanDataController::class, 'destroy'])     ->name('destroy');
+            Route::delete('/',                     [PermohonanDataController::class, 'bulkDestroy']) ->name('bulk-destroy');
         });
     });
 // PDF viewer for buletin
