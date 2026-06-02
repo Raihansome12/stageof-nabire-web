@@ -83,10 +83,32 @@
                                 <li>Proposal skripsi/kegiatan/penelitian</li>
                             </ul>
                         </div>
-                        <a href="#" class="text-gray-600 text-xs italic">
-                            Sumber: Perka BMKG No 12 Tahun 2019
-                        </a>
+                        <div>
+                            <button onclick="openPdfModal()" class="text-blue-600 hover:text-blue-800 hover:underline text-xs italic transition-colors text-left cursor-pointer">
+                                Sumber: Perka BMKG No 12 Tahun 2019
+                            </button>
+                        </div>
 
+                        <div id="documentModal" class="fixed inset-0 z-50 hidden bg-black/60 flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+                            <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="modalContent">
+                                <div class="flex justify-between items-center px-4 py-3 border-b border-gray-200 bg-gray-50">
+                                    <h3 class="font-semibold text-gray-800">Dokumen: Perka BMKG No 12 Tahun 2019</h3>
+                                    <button onclick="closePdfModal()" class="text-gray-500 hover:text-red-600 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div class="flex-1 w-full bg-gray-100">
+                                    <iframe 
+                                        src="https://drive.google.com/file/d/1HkbtFvnA6V6HI172YuLJhhRRsMbwBqbk/preview" 
+                                        class="w-full h-full border-0"
+                                        allow="autoplay">
+                                    </iframe>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -94,7 +116,7 @@
                 <div class="bg-white rounded-2xl shadow-sm">
                     <button onclick="toggleAccordion('tarif')" class="w-full text-left p-6 flex justify-between items-center">
                         <h2 class="font-bold text-base text-bmkg-blue">
-                            Tarif Layanan Geofisika
+                            Ketersediaan Data di Stageof Nabire
                         </h2>
                         <span id="icon-tarif">+</span>
                     </button>
@@ -108,15 +130,15 @@
                                     <tbody class="divide-y divide-gray-100">
                                         <tr>
                                             <td class="py-2">Peta Kegempaan</td>
-                                            <td class="py-2 text-right font-medium">Rp250.000</td>
+                                            <td class="py-2 text-right">Rp250.000</td>
                                         </tr>
                                         <tr>
                                             <td class="py-2">Peta Percepatan Tanah</td>
-                                            <td class="py-2 text-right font-medium">Rp250.000</td>
+                                            <td class="py-2 text-right">Rp250.000</td>
                                         </tr>
                                         <tr>
                                             <td class="py-2">Klaim Asuransi</td>
-                                            <td class="py-2 text-right font-medium">Rp185.000</td>
+                                            <td class="py-2 text-right">Rp185.000</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -135,11 +157,44 @@
                                         <tr><td class="py-2">Kejadian Petir</td><td class="py-2 text-right">Rp75.000</td></tr>
                                     </tbody>
                                 </table>
-                                
                             </div>
-                            <a href="#" class="text-gray-600 text-xs italic">
-                                 Sumber: PP No 47 Tahun 2018
-                                </a>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-200 flex flex-col gap-2 pb-4">
+                            <p class="text-gray-500 text-xs">Untuk informasi lebih lanjut, silakan lihat tautan berikut:</p>
+                            <div class="flex flex-col gap-1 items-start mt-2">
+                                <button type="button" onclick="openTarifModal()" class="text-blue-600 hover:text-blue-800 hover:underline text-xs italic transition-colors text-left cursor-pointer">
+                                    &rarr; Tarif Layanan Meteorologi Klimatologi Geofisika lainnya 
+                                </button>
+                                
+                                <button type="button" onclick="openPdfModal()" class="text-blue-600 hover:text-blue-800 hover:underline text-xs italic transition-colors text-left cursor-pointer">
+                                    &rarr; Sumber: PP No 47 Tahun 2018
+                                </button>
+                            </div>
+
+                            @include('pages.modal-tarif')
+
+                            <div id="documentModal" class="fixed inset-0 z-50 hidden bg-black/60 flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+                                <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="modalContent">
+                                    
+                                    <div class="flex justify-between items-center px-4 py-3 border-b border-gray-200 bg-gray-50">
+                                        <h3 class="font-semibold text-gray-800">Dokumen: PP No 47 Tahun 2018</h3>
+                                        <button onclick="closePdfModal()" class="text-gray-500 hover:text-red-600 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="flex-1 w-full bg-gray-100">
+                                        <iframe 
+                                            src="https://drive.google.com/file/d/1Cvl-kUk0_GuUms1qSCAR-3R2XUEU_EBp/preview" 
+                                            class="w-full h-full border-0"
+                                            allow="autoplay">
+                                        </iframe>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -165,7 +220,7 @@
                                        name="nama_lengkap"
                                        value="{{ old('nama_lengkap') }}"
                                        placeholder="Nama Lengkap *"
-                                       class="w-full border rounded-lg px-4 py-2 text-sm @error('nama_lengkap') border-red-400 @enderror">
+                                       class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('nama_lengkap') border-red-400 @enderror">
                                 @error('nama_lengkap')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
 
@@ -175,7 +230,7 @@
                                        value="{{ old('nik') }}"
                                        placeholder="NIK"
                                        maxlength="16"
-                                       class="w-full border rounded-lg px-4 py-2 text-sm">
+                                       class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm">
                             </div>
 
                             <div>
@@ -183,7 +238,7 @@
                                        name="email"
                                        value="{{ old('email') }}"
                                        placeholder="Email"
-                                       class="w-full border rounded-lg px-4 py-2 text-sm @error('email') border-red-400 @enderror">
+                                       class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('email') border-red-400 @enderror">
                                 @error('email')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
 
@@ -192,7 +247,7 @@
                                        name="no_hp"
                                        value="{{ old('no_hp') }}"
                                        placeholder="No. HP / WhatsApp *"
-                                       class="w-full border rounded-lg px-4 py-2 text-sm @error('no_hp') border-red-400 @enderror">
+                                       class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('no_hp') border-red-400 @enderror">
                                 @error('no_hp')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
 
@@ -201,7 +256,7 @@
                                        name="instansi"
                                        value="{{ old('instansi') }}"
                                        placeholder="Instansi / Sekolah / Perusahaan *"
-                                       class="w-full border rounded-lg px-4 py-2 text-sm @error('instansi') border-red-400 @enderror">
+                                       class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('instansi') border-red-400 @enderror">
                                 @error('instansi')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
 
@@ -209,7 +264,7 @@
                                 <textarea name="alamat"
                                           placeholder="Alamat"
                                           rows="3"
-                                          class="w-full border rounded-lg px-4 py-2 text-sm">{{ old('alamat') }}</textarea>
+                                          class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm">{{ old('alamat') }}</textarea>
                             </div>
                         </div>
 
@@ -222,7 +277,7 @@
                                     name="jenis_data"
                                     value="{{ old('jenis_data') }}"
                                     placeholder="Masukkan Jenis Data yang Diminta *"
-                                    class="w-full border rounded-lg px-4 py-2 text-sm @error('jenis_data') border-red-400 @enderror">
+                                    class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('jenis_data') border-red-400 @enderror">
                                 @error('jenis_data')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
 
@@ -231,7 +286,7 @@
                                 <select name="jenis_permohonan"
                                         id="jenis_permohonan"
                                         onchange="handleJenis(this.value)"
-                                        class="w-full border rounded-lg px-4 py-2 text-sm @error('jenis_permohonan') border-red-400 @enderror">
+                                        class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('jenis_permohonan') border-red-400 @enderror">
                                     <option value="">Pilih Jenis Permohonan *</option>
                                     <option value="pnbp" {{ old('jenis_permohonan') === 'pnbp' ? 'selected' : '' }}>PNBP</option>
                                     <option value="nol"  {{ old('jenis_permohonan') === 'nol'  ? 'selected' : '' }}>Tarif Nol Rupiah</option>
@@ -394,6 +449,72 @@ function handleLingkup(value) {
     const oldJenis = "{{ old('jenis_permohonan') }}";
     if (oldJenis) handleJenis(oldJenis);
 })();
+</script>
+
+<script>
+    const modal = document.getElementById('documentModal');
+    const modalContent = document.getElementById('modalContent');
+
+    function openPdfModal() {
+        // Show the modal container
+        modal.classList.remove('hidden');
+        
+        // Slight delay to allow display:block to apply before animating opacity/scale
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closePdfModal() {
+        // Start exit animation
+        modal.classList.add('opacity-0');
+        modalContent.classList.add('scale-95');
+        
+        // Wait for animation to finish before hiding completely
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300); // 300ms matches the Tailwind duration-300 class
+    }
+
+    // Optional: Close modal if user clicks outside the white box (on the dark background)
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            closePdfModal();
+        }
+    });
+</script>
+
+<script>
+    // --- Script untuk Modal Tarif PTSP BMKG ---
+    const tModal = document.getElementById('tarifModal');
+    const tModalContent = document.getElementById('tarifModalContent');
+
+    function openTarifModal() {
+        tModal.classList.remove('hidden');
+        
+        // Delay sedikit agar animasi transisi bekerja
+        setTimeout(() => {
+            tModal.classList.remove('opacity-0');
+            tModalContent.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeTarifModal() {
+        tModal.classList.add('opacity-0');
+        tModalContent.classList.add('scale-95');
+        
+        setTimeout(() => {
+            tModal.classList.add('hidden');
+        }, 300); 
+    }
+
+    // Menutup modal jika area gelap di luar box diklik
+    tModal.addEventListener('click', function(event) {
+        if (event.target === tModal) {
+            closeTarifModal();
+        }
+    });
 </script>
 
 @endsection
