@@ -59,8 +59,8 @@
                                     <div class="shrink-0">
                                         <img src="{{ asset('img/sunrise.png') }}" alt="Terbit"
                                              class="w-10 h-10 object-contain"
-                                             onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
-                                        <div style="display:none" class="w-10 h-10 text-2xl flex items-center justify-center">🌅</div>
+                                             onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden')"/>
+                                        <div class="hidden w-10 h-10 text-2xl flex items-center justify-center">🌅</div>
                                     </div>
                                     <div>
                                         <p class="font-semibold text-gray-800 text-sm">Terbit</p>
@@ -75,8 +75,8 @@
                                     <div class="shrink-0">
                                         <img src="{{ asset('img/sunset.png') }}" alt="Terbenam"
                                              class="w-10 h-10 object-contain"
-                                             onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
-                                        <div style="display:none" class="w-10 h-10 text-2xl flex items-center justify-center">🌇</div>
+                                             onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden')"/>
+                                        <div class="hidden w-10 h-10 text-2xl flex items-center justify-center">🌇</div>
                                     </div>
                                     <div>
                                         <p class="font-semibold text-gray-800 text-sm">Terbenam</p>
@@ -104,142 +104,6 @@
         @endif
     </div>
 </section>
-<script>
-    function sunriseSlider() {
-        return {
-            visible: 5,
-            cardWidth: 0,
-            gap: 16,
-            current: 0,
-            offset: 0,
-            animating: false,
-            totalReal: 0,
-
-            get activeDot() {
-                return ((this.current % this.totalReal) + this.totalReal) % this.totalReal;
-            },
-
-            init() {
-                const track = this.$refs.track;
-                const wrapper = this.$refs.wrapper;
-                const realCards = [...track.querySelectorAll('.slider-card')];
-                this.totalReal = realCards.length;
-
-                // Responsive: adjust visible count
-                const updateVisible = () => {
-                    if (window.innerWidth < 640) this.visible = 2;
-                    else if (window.innerWidth < 1024) this.visible = 3;
-                    else this.visible = 5;
-                };
-                updateVisible();
-
-                const setup = () => {
-                    updateVisible();
-
-                    // Remove previously cloned nodes
-                    track.querySelectorAll('[data-clone]').forEach(el => el.remove());
-
-                    // Clone last N and first N real cards
-                    const clonesStart = realCards.slice(-this.visible).map(c => {
-                        const cl = c.cloneNode(true);
-                        cl.setAttribute('data-clone', 'start');
-                        cl.setAttribute('aria-hidden', 'true');
-                        return cl;
-                    });
-                    const clonesEnd = realCards.slice(0, this.visible).map(c => {
-                        const cl = c.cloneNode(true);
-                        cl.setAttribute('data-clone', 'end');
-                        cl.setAttribute('aria-hidden', 'true');
-                        return cl;
-                    });
-
-                    clonesStart.forEach(c => track.insertBefore(c, track.firstChild));
-                    clonesEnd.forEach(c => track.appendChild(c));
-
-                    // Read flex gap from CSS so spacing can be controlled by Tailwind classes
-                    const computedTrackStyle = window.getComputedStyle(track);
-                    this.gap = parseFloat(computedTrackStyle.columnGap || computedTrackStyle.gap) || 0;
-
-                    // Calculate card width from wrapper and current gap
-                    this.cardWidth = Math.floor((wrapper.offsetWidth - (this.gap * (this.visible - 1))) / this.visible);
-
-                    // Set width on all cards (real + clones)
-                    track.querySelectorAll('.slider-card, [data-clone]').forEach(card => {
-                        card.style.width = this.cardWidth + 'px';
-                    });
-
-                    // Reset position to start of real cards (after prepended clones)
-                    this.current = 0;
-                    this.animating = false;
-                    this.offset = this.visible * (this.cardWidth + this.gap);
-                };
-
-                this.$nextTick(() => {
-                    setup();
-
-                    window.addEventListener('resize', () => {
-                        setup();
-                    });
-                });
-
-                // Keyboard navigation
-                window.addEventListener('keydown', e => {
-                    if (e.key === 'ArrowLeft') this.prev();
-                    if (e.key === 'ArrowRight') this.next();
-                });
-
-                // Touch swipe
-                let startX = 0;
-                wrapper.addEventListener('touchstart', e => {
-                    startX = e.touches[0].clientX;
-                }, { passive: true });
-                wrapper.addEventListener('touchend', e => {
-                    const diff = startX - e.changedTouches[0].clientX;
-                    if (Math.abs(diff) > 40) {
-                        diff > 0 ? this.next() : this.prev();
-                    }
-                });
-            },
-
-            next() {
-                if (this.animating) return;
-                this.animating = true;
-                this.current++;
-                this.offset += (this.cardWidth + this.gap);
-            },
-
-            prev() {
-                if (this.animating) return;
-                this.animating = true;
-                this.current--;
-                this.offset -= (this.cardWidth + this.gap);
-            },
-
-            goTo(i) {
-                if (this.animating) return;
-                const diff = i - this.activeDot;
-                if (diff === 0) return;
-                this.animating = true;
-                this.current += diff;
-                this.offset += diff * (this.cardWidth + this.gap);
-            },
-
-            onTransitionEnd() {
-                this.animating = false;
-
-                // Silently snap back when entering clone zone
-                if (this.current >= this.totalReal) {
-                    this.current = this.current % this.totalReal;
-                    this.offset = (this.visible + this.current) * (this.cardWidth + this.gap);
-                } else if (this.current < 0) {
-                    this.current = ((this.current % this.totalReal) + this.totalReal) % this.totalReal;
-                    this.offset = (this.visible + this.current) * (this.cardWidth + this.gap);
-                }
-            }
-        }
-    }
-</script>
-
 
 {{-- ═══════════════════════════════════════════════════
      SECTION 2: Gempa Bumi Terkini + Informasi Petir
@@ -268,13 +132,12 @@
                         <div class="shrink-0 w-full sm:w-52">
                             @if($hasShakemap)
                                 <img src="{{ $earthquake->shakemap_image }}"
-                                     alt="ShakeMap Gempa {{ $earthquake->occurred_at->setTimezone('Asia/Jayapura')->format('d M Y H:i') }} WIB"
+                                     alt="ShakeMap Gempa {{ $earthquake->occurred_at->setTimezone('Asia/Jayapura')->format('d M Y H:i') }} WIT"
                                      class="w-full rounded-xl object-cover border border-gray-200"
                                      loading="lazy"/>
                             @elseif($hasGeoData)
                                 <div id="home-eq-map"
-                                     class="w-full h-55 rounded-xl border border-gray-200"
-                                     style="position:relative;z-index:0;"></div>
+                                     class="w-full h-55 rounded-xl border border-gray-200 relative z-0"></div>
                             @else
                                 <div class="w-full h-44 bg-gray-200 rounded-xl flex items-center justify-center text-gray-400 text-sm">
                                     <div class="text-center">
@@ -415,140 +278,6 @@
     </div>
 </section>
 
-@if($hasGeoData)
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style>
-    /* Animated Earthquake Marker Styles */
-    .quake-epicenter { position: relative; width: 70px; height: 70px; }
-    .eq-uncertainty {
-        position: absolute; top: 50%; left: 50%;
-        width: 56px; height: 56px; margin: -28px 0 0 -28px;
-        border-radius: 50%;
-        background: var(--eq-color-soft);
-        border: 1px dashed var(--eq-color);
-        opacity: 0.6;
-    }
-    .eq-ring {
-        position: absolute; top: 50%; left: 50%;
-        /* Adjusted width/height/margin to match the new central dot size */
-        width: 24px; height: 24px; margin: -12px 0 0 -12px;
-        border-radius: 50%;
-        border: 2px solid var(--eq-color);
-        opacity: 0.75;
-        animation: eq-pulse 2.4s ease-out infinite;
-        z-index: 1;
-    }
-    .eq-ring-2 { animation-delay: 0.8s; }
-    .eq-ring-3 { animation-delay: 1.6s; }
-    .eq-dot {
-        position: absolute; top: 50%; left: 50%;
-        /* Enlarged dot to fit the text */
-        width: 24px; height: 24px; margin: -12px 0 0 -12px;
-        border-radius: 50%;
-        background: var(--eq-color);
-        /* border: 1.5px solid #fff; */
-        /* box-shadow: 0 0 0 1px rgba(0,0,0,0.35); */
-        z-index: 2;
-        
-        /* Flexbox to center the text perfectly */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        /* Text styling */
-        color: #fff;
-        font-size: 10px;
-        font-weight: 700;
-        font-family: system-ui, sans-serif;
-    }
-    @keyframes eq-pulse {
-        0%   { transform: scale(1);   opacity: 0.9; }
-        /* Reduced max scale slightly so rings don't overflow the 70px container */
-        100% { transform: scale(2.8); opacity: 0; } 
-    }
-    @media (prefers-reduced-motion: reduce) {
-        .eq-ring { animation: none; opacity: 0.45; }
-    }
-</style>
-
-<script>
-    (function () {
-        const eq = {
-            lat: {{ (float) $earthquake->latitude }},
-            lng: {{ (float) $earthquake->longitude }},
-            mag: {{ (float) $earthquake->magnitude }},
-            loc: @json($earthquake->location_description),
-            depth: {{ (float) $earthquake->depth_km }},
-            time: @json($earthquake->occurred_at->setTimezone('Asia/Jayapura')->format('d M Y H:i')),
-            mmi: '{{ $earthquake->mmi ?? "" }}'
-        };
-
-        const map = L.map('home-eq-map', {
-            zoomControl: false,
-            attributionControl: false,
-            scrollWheelZoom: false,
-            dragging: false,
-            touchZoom: false,
-            doubleClickZoom: false,
-            boxZoom: false,
-            keyboard: false
-        });
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-        }).addTo(map);
-
-        function markerColor(mag) {
-            return mag >= 5 ? '#ef4444' : (mag >= 4 ? '#f97316' : '#22c55e');
-        }
-
-        const c = markerColor(eq.mag);
-        
-        // Added ${eq.mag} inside the .eq-dot div
-        const html = `
-            <div class="quake-epicenter" style="--eq-color: ${c}; --eq-color-soft: ${c}33;">
-                <div class="eq-uncertainty"></div>
-                <div class="eq-ring eq-ring-1"></div>
-                <div class="eq-ring eq-ring-2"></div>
-                <div class="eq-ring eq-ring-3"></div>
-                <div class="eq-dot">${eq.mag}</div>
-            </div>`;
-        
-        const icon = L.divIcon({ 
-            html, 
-            className: '', 
-            iconSize: [70, 70], 
-            iconAnchor: [35, 35], 
-            popupAnchor: [0, -25] 
-        });
-
-        L.marker([eq.lat, eq.lng], { icon }).addTo(map)
-            .bindPopup(`
-                <div style="min-width:200px;font-family:system-ui,sans-serif">
-                    <div style="font-weight:700;font-size:.85rem;margin-bottom:.3rem;line-height:1.35">${eq.loc}</div>
-                    <div style="font-size:.75rem;color:#6b7280;margin-bottom:.4rem">${eq.time} WIT</div>
-                    <div style="display:flex;gap:.4rem;flex-wrap:wrap;font-size:.75rem">
-                        <span style="background:#f3f4f6;padding:.15rem .5rem;border-radius:.35rem">M ${eq.mag} SR</span>
-                        <span style="background:#f3f4f6;padding:.15rem .5rem;border-radius:.35rem">⬇ ${eq.depth} km</span>
-                        ${eq.mmi ? `<span style="background:#f3f4f6;padding:.15rem .5rem;border-radius:.35rem">MMI ${eq.mmi}</span>` : ''}
-                    </div>
-                </div>
-            `, { maxWidth: 260 });
-
-        const center = L.latLng(eq.lat, eq.lng);
-        const bounds = center.toBounds(300000);
-
-        map.fitBounds(bounds);
-
-        setTimeout(() => {
-            map.invalidateSize();
-            map.fitBounds(bounds); 
-        }, 150);
-    })();
-</script>
-@endif
-
-
 {{-- ═══════════════════════════════════════════════════
      SECTION 3: Informasi Terkini (Publikasi)
      ═══════════════════════════════════════════════════ --}}
@@ -637,5 +366,221 @@
         </div>
     </div>
 </section>
+
+<script>
+    function sunriseSlider() {
+        return {
+            visible: 5,
+            cardWidth: 0,
+            gap: 16,
+            current: 0,
+            offset: 0,
+            animating: false,
+            totalReal: 0,
+
+            get activeDot() {
+                return ((this.current % this.totalReal) + this.totalReal) % this.totalReal;
+            },
+
+            init() {
+                const track = this.$refs.track;
+                const wrapper = this.$refs.wrapper;
+                const realCards = [...track.querySelectorAll('.slider-card')];
+                this.totalReal = realCards.length;
+
+                // Responsive: adjust visible count
+                const updateVisible = () => {
+                    if (window.innerWidth < 640) this.visible = 2;
+                    else if (window.innerWidth < 1024) this.visible = 3;
+                    else this.visible = 5;
+                };
+                updateVisible();
+
+                const setup = () => {
+                    updateVisible();
+
+                    // Remove previously cloned nodes
+                    track.querySelectorAll('[data-clone]').forEach(el => el.remove());
+
+                    // Clone last N and first N real cards
+                    const clonesStart = realCards.slice(-this.visible).map(c => {
+                        const cl = c.cloneNode(true);
+                        cl.setAttribute('data-clone', 'start');
+                        cl.setAttribute('aria-hidden', 'true');
+                        return cl;
+                    });
+                    const clonesEnd = realCards.slice(0, this.visible).map(c => {
+                        const cl = c.cloneNode(true);
+                        cl.setAttribute('data-clone', 'end');
+                        cl.setAttribute('aria-hidden', 'true');
+                        return cl;
+                    });
+
+                    clonesStart.forEach(c => track.insertBefore(c, track.firstChild));
+                    clonesEnd.forEach(c => track.appendChild(c));
+
+                    // Read flex gap from CSS so spacing can be controlled by Tailwind classes
+                    const computedTrackStyle = window.getComputedStyle(track);
+                    this.gap = parseFloat(computedTrackStyle.columnGap || computedTrackStyle.gap) || 0;
+
+                    // Calculate card width from wrapper and current gap
+                    this.cardWidth = Math.floor((wrapper.offsetWidth - (this.gap * (this.visible - 1))) / this.visible);
+
+                    // Set width on all cards (real + clones)
+                    track.querySelectorAll('.slider-card, [data-clone]').forEach(card => {
+                        card.style.width = this.cardWidth + 'px';
+                    });
+
+                    // Reset position to start of real cards (after prepended clones)
+                    this.current = 0;
+                    this.animating = false;
+                    this.offset = this.visible * (this.cardWidth + this.gap);
+                };
+
+                this.$nextTick(() => {
+                    setup();
+
+                    window.addEventListener('resize', () => {
+                        setup();
+                    });
+                });
+
+                // Keyboard navigation
+                window.addEventListener('keydown', e => {
+                    if (e.key === 'ArrowLeft') this.prev();
+                    if (e.key === 'ArrowRight') this.next();
+                });
+
+                // Touch swipe
+                let startX = 0;
+                wrapper.addEventListener('touchstart', e => {
+                    startX = e.touches[0].clientX;
+                }, { passive: true });
+                wrapper.addEventListener('touchend', e => {
+                    const diff = startX - e.changedTouches[0].clientX;
+                    if (Math.abs(diff) > 40) {
+                        diff > 0 ? this.next() : this.prev();
+                    }
+                });
+            },
+
+            next() {
+                if (this.animating) return;
+                this.animating = true;
+                this.current++;
+                this.offset += (this.cardWidth + this.gap);
+            },
+
+            prev() {
+                if (this.animating) return;
+                this.animating = true;
+                this.current--;
+                this.offset -= (this.cardWidth + this.gap);
+            },
+
+            goTo(i) {
+                if (this.animating) return;
+                const diff = i - this.activeDot;
+                if (diff === 0) return;
+                this.animating = true;
+                this.current += diff;
+                this.offset += diff * (this.cardWidth + this.gap);
+            },
+
+            onTransitionEnd() {
+                this.animating = false;
+
+                // Silently snap back when entering clone zone
+                if (this.current >= this.totalReal) {
+                    this.current = this.current % this.totalReal;
+                    this.offset = (this.visible + this.current) * (this.cardWidth + this.gap);
+                } else if (this.current < 0) {
+                    this.current = ((this.current % this.totalReal) + this.totalReal) % this.totalReal;
+                    this.offset = (this.visible + this.current) * (this.cardWidth + this.gap);
+                }
+            }
+        }
+    }
+</script>
+
+@if($hasGeoData)
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    (function () {
+        const eq = {
+            lat: {{ (float) $earthquake->latitude }},
+            lng: {{ (float) $earthquake->longitude }},
+            mag: {{ (float) $earthquake->magnitude }},
+            loc: @json($earthquake->location_description),
+            depth: {{ (float) $earthquake->depth_km }},
+            time: @json($earthquake->occurred_at->setTimezone('Asia/Jayapura')->format('d M Y H:i')),
+            mmi: '{{ $earthquake->mmi ?? "" }}'
+        };
+
+        const map = L.map('home-eq-map', {
+            zoomControl: false,
+            attributionControl: false,
+            scrollWheelZoom: false,
+            dragging: false,
+            touchZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+            keyboard: false
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        function markerColor(mag) {
+            return mag >= 5 ? '#ef4444' : (mag >= 4 ? '#f97316' : '#22c55e');
+        }
+
+        const c = markerColor(eq.mag);
+        
+        // Added ${eq.mag} inside the .eq-dot div
+        const html = `
+            <div class="quake-epicenter" style="--eq-color: ${c}; --eq-color-soft: ${c}33;">
+                <div class="eq-uncertainty"></div>
+                <div class="eq-ring eq-ring-1"></div>
+                <div class="eq-ring eq-ring-2"></div>
+                <div class="eq-ring eq-ring-3"></div>
+                <div class="eq-dot">${eq.mag}</div>
+            </div>`;
+        
+        const icon = L.divIcon({ 
+            html, 
+            className: '', 
+            iconSize: [70, 70], 
+            iconAnchor: [35, 35], 
+            popupAnchor: [0, -25] 
+        });
+
+        L.marker([eq.lat, eq.lng], { icon }).addTo(map)
+            .bindPopup(`
+                <div class="eq-popup">
+                    <div class="eq-popup-title">${eq.loc}</div>
+                    <div class="eq-popup-time">${eq.time} WIT</div>
+                    <div class="eq-popup-meta">
+                        <span class="eq-popup-pill">M ${eq.mag} SR</span>
+                        <span class="eq-popup-pill">⬇ ${eq.depth} km</span>
+                        ${eq.mmi ? `<span class="eq-popup-pill">MMI ${eq.mmi}</span>` : ''}
+                    </div>
+                </div>
+            `, { maxWidth: 260 });
+
+        const center = L.latLng(eq.lat, eq.lng);
+        const bounds = center.toBounds(300000);
+
+        map.fitBounds(bounds);
+
+        setTimeout(() => {
+            map.invalidateSize();
+            map.fitBounds(bounds); 
+        }, 150);
+    })();
+</script>
+@endif
 
 @endsection

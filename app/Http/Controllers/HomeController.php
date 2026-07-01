@@ -144,7 +144,7 @@ class HomeController extends Controller
                 'mag'   => (float) $eq->magnitude,
                 'loc'   => $eq->location_description,
                 'depth' => $eq->depth_km,
-                'time'  => $eq->occurred_at->format('d M Y H:i:s'),
+                'time'  => $eq->occurred_at->copy()->setTimezone('Asia/Jayapura')->format('d M Y H:i:s'),
                 'mmi'   => $eq->felt_intensity ?? null,
             ];
         })->toArray();

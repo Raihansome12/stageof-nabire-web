@@ -39,6 +39,91 @@
     .info-card:hover {
         box-shadow: 0 12px 32px rgba(0, 59, 111, 0.12);
     }
+
+    .filter-bar {
+        @apply bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 flex flex-wrap gap-4 items-end mb-5 shadow-sm;
+    }
+
+    .fg {
+        @apply flex flex-col gap-1 flex-1 min-w-[150px];
+    }
+
+    .fg label {
+        @apply text-[0.7rem] font-semibold uppercase tracking-[0.05em] text-gray-500;
+    }
+
+    .fg select,
+    .fg input[type="date"] {
+        @apply w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-gray-900 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-bmkg-blue/30 focus:border-bmkg-blue transition-colors duration-150 ease-in-out;
+    }
+
+    .fg select:focus,
+    .fg input[type="date"]:focus {
+        @apply bg-white;
+    }
+
+    .filter-actions {
+        @apply flex gap-2 items-end;
+    }
+
+    .btn-f {
+        @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition duration-150 ease-in-out whitespace-nowrap;
+    }
+
+    .btn-apply {
+        @apply bg-bmkg-blue text-white hover:opacity-90;
+    }
+
+    .btn-reset {
+        @apply bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200;
+    }
+
+    .result-chip {
+        @apply inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-[0.78rem] font-semibold px-3 py-1.5 rounded-full mb-4;
+    }
+
+    .eq-card {
+        @apply bg-white rounded-2xl p-5 shadow-sm border border-transparent transition-all duration-200 ease-in-out cursor-pointer;
+    }
+
+    .eq-card:hover {
+        @apply shadow-md;
+        transform: translateY(-2px);
+    }
+
+    .eq-card.highlighted {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.13);
+    }
+
+    .mag-high {
+        @apply bg-red-100 text-red-700;
+    }
+
+    .mag-mid {
+        @apply bg-orange-100 text-orange-700;
+    }
+
+    .mag-low {
+        @apply bg-emerald-100 text-emerald-700;
+    }
+
+    #eq-map {
+        @apply w-full h-[380px] rounded-[1rem] border border-gray-200 mb-5 shadow-sm relative z-0;
+    }
+
+    #eq-scroll-wrap {
+        @apply h-[680px] overflow-y-auto rounded-[1rem];
+        scroll-behavior: smooth;
+    }
+
+    #eq-list {
+        @apply flex flex-col gap-4 p-1;
+    }
+
+    #date-hint {
+        @apply hidden text-[0.7rem] text-red-500 mt-1;
+    }
 }
 
 @layer utilities {
@@ -48,6 +133,105 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+}
+
+#eq-scroll-wrap::-webkit-scrollbar {
+    width: 5px;
+}
+
+#eq-scroll-wrap::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#eq-scroll-wrap::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 999px;
+}
+
+.quake-epicenter {
+    position: relative;
+    width: 70px;
+    height: 70px;
+}
+
+.eq-uncertainty {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 56px;
+    height: 56px;
+    margin: -28px 0 0 -28px;
+    border-radius: 9999px;
+    background: var(--eq-color-soft);
+    border: 1px dashed var(--eq-color);
+    opacity: 0.6;
+}
+
+.eq-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border-radius: 9999px;
+    border: 2px solid var(--eq-color);
+    opacity: 0.75;
+    animation: eq-pulse 2.4s ease-out infinite;
+    z-index: 1;
+}
+
+.eq-ring-2 { animation-delay: 0.8s; }
+.eq-ring-3 { animation-delay: 1.6s; }
+
+.eq-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border-radius: 9999px;
+    background: var(--eq-color);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: system-ui, sans-serif;
+}
+
+.eq-popup {
+    min-width: 200px;
+    font-family: system-ui, sans-serif;
+}
+
+.eq-popup-title {
+    font-weight: 700;
+    font-size: .85rem;
+    margin-bottom: .3rem;
+    line-height: 1.35;
+}
+
+.eq-popup-time {
+    font-size: .75rem;
+    color: #6b7280;
+    margin-bottom: .4rem;
+}
+
+.eq-popup-meta {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+    font-size: .75rem;
+}
+
+.eq-popup-pill {
+    background: #f3f4f6;
+    padding: .15rem .5rem;
+    border-radius: .35rem;
 }
 
 /* Live clock tabular numbers */

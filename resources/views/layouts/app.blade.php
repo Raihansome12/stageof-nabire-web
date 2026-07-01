@@ -227,20 +227,22 @@
         const iconOpen  = document.getElementById('menu-icon-open');
         const iconClose = document.getElementById('menu-icon-close');
 
-        menuBtn.addEventListener('click', () => {
-            const isOpen = mobileMenu.classList.contains('open');
-            if (isOpen) {
-                mobileMenu.classList.remove('open');
-                mobileMenu.classList.add('hidden');
-                iconOpen.classList.remove('hidden');
-                iconClose.classList.add('hidden');
-            } else {
-                mobileMenu.classList.remove('hidden');
-                mobileMenu.classList.add('open');
-                iconOpen.classList.add('hidden');
-                iconClose.classList.remove('hidden');
-            }
-        });
+        if (menuBtn && mobileMenu && iconOpen && iconClose) {
+            menuBtn.addEventListener('click', () => {
+                const isOpen = mobileMenu.classList.contains('open');
+                if (isOpen) {
+                    mobileMenu.classList.remove('open');
+                    mobileMenu.classList.add('hidden');
+                    iconOpen.classList.remove('hidden');
+                    iconClose.classList.add('hidden');
+                } else {
+                    mobileMenu.classList.remove('hidden');
+                    mobileMenu.classList.add('open');
+                    iconOpen.classList.add('hidden');
+                    iconClose.classList.remove('hidden');
+                }
+            });
+        }
     </script>
 
     @stack('scripts')

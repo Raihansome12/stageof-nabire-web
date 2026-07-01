@@ -505,26 +505,38 @@ function handleLingkup(value) {
 
     let html = `
         <div>
-            <label class="block text-sm font-medium">Surat Pengantar</label>
-            <input type="file" class="w-full border rounded-lg px-3 py-2 mt-1">
+            <label class="block text-sm font-medium">Surat Pengantar
+                <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
+            </label>
+            <input type="file" name="file_surat_pengantar" accept=".pdf,.jpg,.jpeg,.png"
+                   class="w-full border rounded-lg px-3 py-2 mt-1">
         </div>
 
         <div>
-            <label class="block text-sm font-medium">Surat Permohonan Informasi</label>
-            <input type="file" class="w-full border rounded-lg px-3 py-2 mt-1">
+            <label class="block text-sm font-medium">Surat Permohonan Informasi
+                <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
+            </label>
+            <input type="file" name="file_surat_permohonan" accept=".pdf,.jpg,.jpeg,.png"
+                   class="w-full border rounded-lg px-3 py-2 mt-1">
         </div>
     `;
 
     if (value === 'pendidikan') {
         html += `
             <div>
-                <label class="block text-sm font-medium">Surat Pernyataan</label>
-                <input type="file" class="w-full border rounded-lg px-3 py-2 mt-1">
+                <label class="block text-sm font-medium">Surat Pernyataan
+                    <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
+                </label>
+                <input type="file" name="file_surat_pernyataan" accept=".pdf,.jpg,.jpeg,.png"
+                       class="w-full border rounded-lg px-3 py-2 mt-1">
             </div>
 
             <div>
-                <label class="block text-sm font-medium">Proposal Penelitian</label>
-                <input type="file" class="w-full border rounded-lg px-3 py-2 mt-1">
+                <label class="block text-sm font-medium">Proposal Penelitian
+                    <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
+                </label>
+                <input type="file" name="file_proposal" accept=".pdf,.jpg,.jpeg,.png"
+                       class="w-full border rounded-lg px-3 py-2 mt-1">
             </div>
         `;
     }

@@ -250,9 +250,9 @@
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
                     <div class="relative w-full h-56 pt-3 px-3">
                         <img src="{{ asset('img/ld.png') }}"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                             onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');"
                              class="w-full h-full rounded-lg shadow-sm object-cover" alt="Lightning Detector">
-                        <div class="w-full h-full items-center justify-center text-gray-400 text-sm bg-gray-100" style="display:none;">Foto Lightning Detector</div>
+                        <div class="hidden w-full h-full items-center justify-center text-gray-400 text-sm bg-gray-100">Foto Lightning Detector</div>
                     </div>
                     <div class="p-6 flex flex-col flex-1">
                         <div class="flex items-center gap-2.5 mb-1">
@@ -283,9 +283,9 @@
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
                     <div class="relative w-full h-56 pt-3 px-3">
                         <img src="{{ asset('img/wrs.png') }}"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                             onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');"
                              class="w-full h-full rounded-lg shadow-sm object-cover" alt="WRS-NG">
-                        <div class="w-full h-full items-center justify-center text-gray-400 text-sm bg-gray-100" style="display:none;">Foto WRS-NG</div>
+                        <div class="hidden w-full h-full items-center justify-center text-gray-400 text-sm bg-gray-100">Foto WRS-NG</div>
                     </div>
                     <div class="p-6 flex flex-col flex-1">
                         <div class="flex items-center gap-2.5 mb-1">

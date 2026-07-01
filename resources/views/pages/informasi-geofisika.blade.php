@@ -343,11 +343,11 @@
 
                     <div id="das-panel-sub" class="flex-1 px-3 py-4">
                         <div id="das-sub-nodata" class="hidden h-56 flex items-center justify-center text-xs text-gray-400">Tidak ada data kecamatan.</div>
-                        <canvas id="das-chart-sub" style="max-height:300px;"></canvas>
+                        <canvas id="das-chart-sub" class="max-h-[300px]"></canvas>
                     </div>
                     <div id="das-panel-daily" class="flex-1 px-3 py-4 hidden">
                         <div id="das-daily-nodata" class="hidden h-56 flex items-center justify-center text-xs text-gray-400">Tidak ada data harian.</div>
-                        <canvas id="das-chart-daily" style="max-height:300px;"></canvas>
+                        <canvas id="das-chart-daily" class="max-h-[300px]"></canvas>
                     </div>
 
                     <div class="px-5 pb-4 pt-2 flex items-center justify-between border-t border-gray-50">
@@ -482,13 +482,11 @@
 
                     <div id="bul-panel-sub" class="flex-1 px-3 py-4">
                         <div id="bul-sub-nodata" class="hidden h-56 flex items-center justify-center text-xs text-gray-400">Tidak ada data kecamatan.</div>
-                        <canvas id="bul-chart-sub" style="max-height:300px;"></canvas>
-                    </div>
-                    <div id="bul-panel-daily" class="flex-1 px-3 py-4 hidden">
-                        <div id="bul-daily-nodata" class="hidden h-56 flex items-center justify-center text-xs text-gray-400">Tidak ada data harian.</div>
-                        <canvas id="bul-chart-daily" style="max-height:300px;"></canvas>
-                    </div>
-
+                            <canvas id="bul-chart-sub" class="max-h-[300px]"></canvas>
+                        </div>
+                        <div id="bul-panel-daily" class="flex-1 px-3 py-4 hidden">
+                            <div id="bul-daily-nodata" class="hidden h-56 flex items-center justify-center text-xs text-gray-400">Tidak ada data harian.</div>
+                            <canvas id="bul-chart-daily" class="max-h-[300px]"></canvas>
                     <div class="px-5 pb-4 pt-2 flex items-center justify-between border-t border-gray-50">
                         <div class="flex items-center gap-1.5">
                             <div id="bul-dot-sub"   class="w-2 h-2 rounded-full bg-teal-500 transition-all"></div>

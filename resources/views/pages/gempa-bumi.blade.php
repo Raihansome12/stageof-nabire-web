@@ -3,165 +3,8 @@
 
 @section('content')
 
-{{-- Leaflet CSS: loaded inline here so it's never blocked by @push stack order --}}
+{{-- Leaflet CSS: loaded inline here --}}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
-<style>
-/* ── Variables ───────────────────────────────────────────────── */
-:root {
-    --eq-radius : 1rem;
-    --eq-border : #e5e7eb;
-    --eq-shadow : 0 1px 4px rgba(0,0,0,.07);
-    --eq-blue   : #1d4ed8;
-    --eq-blue-lt: #eff6ff;
-}
-
-/* ── Filter bar ──────────────────────────────────────────────── */
-.filter-bar {
-    background   : #fff;
-    border       : 1px solid var(--eq-border);
-    border-radius: var(--eq-radius);
-    padding      : 1rem 1.25rem;
-    display      : flex;
-    flex-wrap    : wrap;
-    gap          : .75rem;
-    align-items  : flex-end;
-    margin-bottom: 1.25rem;
-    box-shadow   : var(--eq-shadow);
-}
-.fg { display:flex; flex-direction:column; gap:.25rem; flex:1 1 150px; }
-.fg label {
-    font-size:     .7rem;
-    font-weight:   700;
-    color:         #9ca3af;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-}
-.fg select,
-.fg input[type="date"] {
-    border       : 1px solid var(--eq-border);
-    border-radius: .5rem;
-    padding      : .45rem .7rem;
-    font-size    : .875rem;
-    color        : #111827;
-    background   : #f9fafb;
-    outline      : none;
-    transition   : border-color .15s, background .15s;
-    width        : 100%;
-}
-.fg select:focus,
-.fg input[type="date"]:focus { border-color:var(--eq-blue); background:#fff; }
-
-.filter-actions { display:flex; gap:.5rem; align-self:flex-end; }
-.btn-f {
-    padding      : .48rem 1.1rem;
-    border-radius: .5rem;
-    font-size    : .875rem;
-    font-weight  : 600;
-    cursor       : pointer;
-    border       : none;
-    transition   : background .15s, transform .1s;
-    white-space  : nowrap;
-}
-.btn-f:active   { transform:scale(.97); }
-.btn-apply      { background:var(--eq-blue); color:#fff; }
-.btn-apply:hover{ background:#1e40af; }
-.btn-reset {
-    background : #f3f4f6;
-    color      : #374151;
-    border     : 1px solid var(--eq-border);
-    text-decoration: none;
-    display    : inline-flex;
-    align-items: center;
-}
-.btn-reset:hover { background:#e5e7eb; }
-
-#date-hint {
-    font-size : .7rem;
-    color     : #ef4444;
-    margin-top: .2rem;
-    display   : none;
-}
-
-/* ── Result chip ─────────────────────────────────────────────── */
-.result-chip {
-    display      : inline-flex;
-    align-items  : center;
-    gap          : .35rem;
-    background   : var(--eq-blue-lt);
-    color        : var(--eq-blue);
-    font-size    : .78rem;
-    font-weight  : 600;
-    padding      : .3rem .75rem;
-    border-radius: 999px;
-    margin-bottom: 1rem;
-}
-
-/* ── Map ─────────────────────────────────────────────────────── */
-#eq-map {
-    width        : 100%;      /* same as list below */
-    height       : 380px;
-    border-radius: var(--eq-radius);
-    border       : 1px solid var(--eq-border);
-    margin-bottom: 1.25rem;
-    box-shadow   : var(--eq-shadow);
-    position     : relative;  /* required by Leaflet */
-    z-index      : 0;
-}
-
-/* ── Earthquake cards ────────────────────────────────────────── */
-.mag-high { background:#fee2e2; color:#b91c1c; }
-.mag-mid  { background:#ffedd5; color:#c2410c; }
-.mag-low  { background:#dcfce7; color:#15803d; }
-
-.eq-card {
-    background   : #fff;
-    border-radius: var(--eq-radius);
-    box-shadow   : var(--eq-shadow);
-    padding      : 1.25rem 1.5rem;
-    cursor       : pointer;
-    transition   : box-shadow .2s, transform .2s;
-    border       : 1px solid transparent;
-}
-.eq-card:hover {
-    box-shadow: 0 4px 18px rgba(0,0,0,.10);
-    transform : translateY(-1px);
-}
-.eq-card.highlighted {
-    border-color: var(--eq-blue);
-    box-shadow  : 0 0 0 3px rgba(29,78,216,.13);
-}
-
-/* ── Scrollable list wrapper (~5 cards visible) ──────────────── */
-#eq-scroll-wrap {
-    height         : 680px;
-    overflow-y     : auto;
-    border-radius  : var(--eq-radius);
-    /* box-shadow     : inset 0 -28px 18px -18px rgba(0,0,0,.07),
-                     inset 0  12px 10px -10px rgba(0,0,0,.03); */
-    scroll-behavior: smooth;
-    scrollbar-width: thin;
-    scrollbar-color: #d1d5db transparent;
-}
-#eq-scroll-wrap::-webkit-scrollbar       { width:5px; }
-#eq-scroll-wrap::-webkit-scrollbar-track { background:transparent; }
-#eq-scroll-wrap::-webkit-scrollbar-thumb { background:#d1d5db; border-radius:99px; }
-
-/* ── List & sentinel ─────────────────────────────────────────── */
-#eq-list { display:flex; flex-direction:column; gap:1rem; padding:.25rem .15rem; }
-
-#eq-sentinel {
-    height         : 56px;
-    display        : flex;
-    align-items    : center;
-    justify-content: center;
-    margin-top     : .5rem;
-    color          : #9ca3af;
-    font-size      : .82rem;
-    gap            : .5rem;
-}
-
-</style>
 
 <section class="">
     <div class="border-b border-gray-200 bg-white sticky top-0 z-30 shadow-sm">
@@ -277,35 +120,34 @@
                          data-index="{{ $index }}"
                          data-lat="{{ $eq->latitude }}"
                          data-lng="{{ $eq->longitude }}">
-                        <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-start">
+                        <div class="flex flex-wrap gap-4 items-start">
 
                             {{-- Magnitude badge --}}
-                            <div class="shrink-0 {{ $eq->magnitude >= 5 ? 'mag-high' : ($eq->magnitude >= 4 ? 'mag-mid' : 'mag-low') }}"
-                                 style="width:5rem;height:5rem;border-radius:.75rem;display:flex;flex-direction:column;align-items:center;justify-content:center">
-                                <span style="font-size:1.5rem;font-weight:700;line-height:1">{{ $eq->magnitude }}</span>
-                                <span style="font-size:.7rem;font-weight:600;margin-top:.1rem">SR</span>
+                            <div class="shrink-0 w-20 h-20 rounded-[0.75rem] flex flex-col items-center justify-center {{ $eq->magnitude >= 5 ? 'mag-high' : ($eq->magnitude >= 4 ? 'mag-mid' : 'mag-low') }}">
+                                <span class="text-2xl font-bold leading-none">{{ $eq->magnitude }}</span>
+                                <span class="text-[0.7rem] font-semibold mt-1">SR</span>
                             </div>
 
                             {{-- Details --}}
-                            <div style="flex:1;min-width:0">
-                                <p style="font-size:.82rem;color:#9ca3af;margin-bottom:.25rem">
-                                    {{ $eq->occurred_at->format('d M Y') }} — {{ $eq->occurred_at->format('H:i:s') }} UTC
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[0.82rem] text-gray-400 mb-1">
+                                    {{ $eq->occurred_at->copy()->setTimezone('Asia/Jayapura')->format('d M Y') }} — {{ $eq->occurred_at->copy()->setTimezone('Asia/Jayapura')->format('H:i:s') }} WIT
                                 </p>
-                                <p style="font-weight:600;color:#1f2937;margin-bottom:.5rem">
+                                <p class="font-semibold text-gray-800 mb-2">
                                     {{ $eq->location_description }}
                                 </p>
-                                <div style="display:flex;flex-wrap:wrap;gap:.5rem;font-size:.82rem;color:#4b5563">
-                                    <span style="background:#f3f4f6;border-radius:.5rem;padding:.2rem .65rem">
+                                <div class="flex flex-wrap gap-2 text-[0.82rem] text-gray-600">
+                                    <span class="bg-gray-100 rounded-full px-3 py-1">
                                         📍 {{ number_format(abs($eq->latitude),3) }}° {{ $eq->latitude < 0 ? 'LS':'LU' }},
                                         {{ number_format(abs($eq->longitude),3) }}° BT
                                     </span>
-                                    <span style="background:#f3f4f6;border-radius:.5rem;padding:.2rem .65rem">
+                                    <span class="bg-gray-100 rounded-full px-3 py-1">
                                         ⬇ Kedalaman: {{ $eq->depth_km }} km
                                     </span>
                                 </div>
                                 @if($eq->felt_intensity)
-                                    <p style="font-size:.82rem;color:#6b7280;margin-top:.4rem">
-                                        <span style="font-weight:600">Dirasakan (MMI):</span>
+                                    <p class="text-[0.82rem] text-emerald-600 mt-1">
+                                        <span class="font-semibold">Dirasakan (MMI):</span>
                                         {{ $eq->felt_intensity }}
                                     </p>
                                 @endif
@@ -392,13 +234,13 @@ function addMarker(eq) {
     if (markerMap[eq.index]) return;
     const m = L.marker([eq.lat, eq.lng], { icon:makeIcon(eq.mag) })
         .bindPopup(`
-            <div style="min-width:210px;font-family:system-ui,sans-serif">
-                <div style="font-weight:700;font-size:.9rem;margin-bottom:.3rem;line-height:1.35">${eq.loc}</div>
-                <div style="font-size:.78rem;color:#6b7280;margin-bottom:.45rem">${eq.time} WIB</div>
-                <div style="display:flex;gap:.4rem;flex-wrap:wrap;font-size:.78rem">
-                    <span style="background:#f3f4f6;padding:.15rem .5rem;border-radius:.35rem">M ${eq.mag} SR</span>
-                    <span style="background:#f3f4f6;padding:.15rem .5rem;border-radius:.35rem">⬇ ${eq.depth} km</span>
-                    ${eq.mmi ? `<span style="background:#f3f4f6;padding:.15rem .5rem;border-radius:.35rem">MMI ${eq.mmi}</span>` : ''}
+            <div class="eq-popup">
+                <div class="eq-popup-title">${eq.loc}</div>
+                <div class="eq-popup-time">${eq.time} WIT</div>
+                <div class="eq-popup-meta">
+                    <span class="eq-popup-pill">M ${eq.mag} SR</span>
+                    <span class="eq-popup-pill">⬇ ${eq.depth} km</span>
+                    ${eq.mmi ? `<span class="eq-popup-pill">MMI ${eq.mmi}</span>` : ''}
                 </div>
             </div>`, { maxWidth:290 })
         .addTo(map);

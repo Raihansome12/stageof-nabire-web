@@ -21,7 +21,7 @@
 </div>
 
 {{-- PDF Embed --}}
-<div class="w-full bg-gray-800" style="height: calc(100vh - 113px);">
+<div class="w-full bg-gray-800 h-[calc(100vh-113px)]">
     {{-- Native PDF embed (works in most desktop browsers) --}}
     <iframe src="{{ $pdfUrl }}"
             class="w-full h-full border-0"
