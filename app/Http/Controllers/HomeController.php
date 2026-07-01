@@ -304,12 +304,12 @@ class HomeController extends Controller
 
         $phone = env('OFFICE_WA_NUMBER'); 
         
-        $message = "📋 *Permohonan Data Baru* (#{$permohonan->id})\n\n"
+        $message = "*Permohonan Data Baru* (#{$permohonan->id})\n\n"
             . "Halo Admin, saya telah mengirimkan permohonan data via website dengan detail:\n"
-            . "👤 *{$permohonan->nama_lengkap}*\n"
-            . "🏢 {$permohonan->instansi}\n"
-            . "📱 {$permohonan->no_hp}\n\n"
-            . "📂 *{$permohonan->labelJenisPermohonan()}*\n"
+            . "*{$permohonan->nama_lengkap}*\n"
+            . "*{$permohonan->instansi}*\n"
+            . "{$permohonan->no_hp}\n\n"
+            . "*{$permohonan->labelJenisPermohonan()}*\n"
             . "Jenis Data: {$permohonan->jenis_data}\n\n"
             . "Mohon info selanjutnya. Terima kasih.";
 

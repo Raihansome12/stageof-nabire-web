@@ -18,12 +18,19 @@
                     class="tab-btn flex-shrink-0 px-8 py-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-all duration-200 whitespace-nowrap">
                     Layanan Permintaan Data
                 </button>
+                <button
+                    onclick="switchTab('pengaduan')"
+                    id="tab-pengaduan"
+                    class="tab-btn flex-shrink-0 px-8 py-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-all duration-200 whitespace-nowrap">
+                    Layanan Pengaduan &amp; SKM
+                </button>
             </nav>
     </div>
 </div>
 
 
-<section class="py-10 lg:py-14 mb-80 bg-lightblue">
+{{-- ================= PANEL: LAYANAN PERMINTAAN DATA ================= --}}
+<section id="panel-data" class="panel-section py-10 lg:py-14 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {{-- Flash messages --}}
@@ -247,6 +254,8 @@
                                        name="no_hp"
                                        value="{{ old('no_hp') }}"
                                        placeholder="No. HP / WhatsApp *"
+                                       inputmode="numeric"
+                                       pattern="^0\d{9,12}$"
                                        class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('no_hp') border-red-400 @enderror">
                                 @error('no_hp')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
@@ -298,6 +307,7 @@
                             <div id="dynamic-form" class="text-sm text-gray-600"></div>
 
                             <button type="submit"
+                                    formtarget="_blank"
                                     class="w-full bg-bmkg-blue text-white py-2.5 rounded-lg hover:opacity-90 transition font-medium">
                                 Kirim Permohonan
                             </button>
@@ -312,6 +322,84 @@
         </div>
     </div>
 </section>
+
+
+{{-- ================= PANEL: LAYANAN PENGADUAN & SKM ================= --}}
+<section id="panel-pengaduan" class="panel-section hidden py-10 lg:py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center mb-10">
+            <h2 class="text-2xl lg:text-3xl font-bold text-bmkg-blue">Layanan Pengaduan &amp; SKM</h2>
+            <p class="text-sm text-gray-500 mt-2 max-w-xl mx-auto">
+                Sampaikan pengaduan Anda atau berikan penilaian terhadap kualitas pelayanan kami melalui kanal resmi berikut.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            {{-- Kontak Telepon --}}
+            <div class="bg-lightblue rounded-2xl p-6 flex flex-col items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 rounded-full bg-bmkg-blue/10 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-base text-gray-800 mb-1">Layanan Pengaduan (Telepon)</h3>
+                    <p class="text-sm text-gray-500 mb-3">Hubungi kami langsung untuk pengaduan yang bersifat mendesak.</p>
+                   <a href="https://wa.me/6282190796122"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 text-sm font-semibold text-bmkg-blue hover:underline">
+                        +62 821-9079-6122
+                    </a>    
+                </div>
+            </div>
+
+            {{-- Kontak Email --}}
+            <div class="bg-lightblue rounded-2xl p-6 flex flex-col items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 rounded-full bg-bmkg-blue/10 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-base text-gray-800 mb-1">Layanan Pengaduan (Email)</h3>
+                    <p class="text-sm text-gray-500 mb-3">Kirimkan pengaduan Anda secara tertulis melalui email resmi kami.</p>
+                    <a href="mailto:stageof.nabire@bmkg.go.id"
+                       class="inline-flex items-center gap-2 text-sm font-semibold text-bmkg-blue hover:underline break-all">
+                        stageof.nabire@bmkg.go.id
+                    </a>
+                </div>
+            </div>
+
+            {{-- Survei Kepuasan Masyarakat --}}
+            <div class="bg-bmkg-blue rounded-2xl p-6 flex flex-col items-start gap-4 shadow-sm hover:shadow-md transition-shadow text-white">
+                <div class="w-12 h-12 rounded-full bg-white/15 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-bold text-base mb-1">Survei Kepuasan Masyarakat</h3>
+                    <p class="text-sm text-white/80 mb-4">Bantu kami meningkatkan kualitas layanan dengan mengisi SKM periode berjalan.</p>
+                </div>
+                <a id="skm-survey-link"
+                   href="#"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="inline-flex items-center justify-center gap-2 bg-white text-bmkg-blue text-sm font-semibold px-5 py-2.5 rounded-lg hover:opacity-90 transition w-full">
+                    Isi Survei Sekarang
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
 
 <script>
     // ── Tab switching (prepare for future sections) ─────────────────────────
@@ -515,6 +603,24 @@ function handleLingkup(value) {
             closeTarifModal();
         }
     });
+</script>
+
+<script>
+    // ── SKM Survey dynamic link ─────────────────────────────────────────────
+    (function () {
+        const link = document.getElementById('skm-survey-link');
+        if (!link) return;
+
+        const now   = new Date();
+        const year  = now.getFullYear();
+        const month = now.getMonth() + 1; // 1-12
+
+        // 1 = Jan-Jul (1-7), 2 = Aug-Dec (8-12)
+        const periodFlag = (month >= 1 && month <= 7) ? 1 : 2;
+        const mm = String(month).padStart(2, '0');
+
+        link.href = `https://eskm.bmkg.go.id/survey/251070/0/${periodFlag}/${year}-${mm}/${year}/0`;
+    })();
 </script>
 
 @endsection

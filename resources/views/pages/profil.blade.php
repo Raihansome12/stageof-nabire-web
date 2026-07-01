@@ -65,13 +65,13 @@
 
     {{-- Struktur Organisasi --}}
     <div id="panel-struktur" class="panel-section hidden">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             @auth
                 @if(auth()->user()->is_admin)
                     <div class="mb-6 flex justify-end">
                         <a href="{{ route('admin.staff.index') }}"
-                           class="inline-flex items-center gap-2 text-xs bg-bmkg-blue text-white px-3 py-2 rounded-lg hover:opacity-90 transition-opacity shadow-sm">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                           class="inline-flex items-center gap-2 text-sm font-semibold bg-bmkg-blue text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                             Kelola Pegawai
                         </a>
                     </div>
@@ -79,75 +79,81 @@
             @endauth
 
             {{-- Kepala --}}
-            <div class="mb-10">
-                <div class="flex items-center gap-3 py-4 mb-6 border-b border-gray-300">
-                    <div class="w-1 h-7 bg-bmkg-blue rounded-full flex-shrink-0"></div>
-                    <h1 class="font-heading font-bold text-3xl text-bmkg-blue">Kepala Kantor</h1>
+            <div class="mb-12">
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl lg:text-3xl font-bold text-bmkg-blue">Kepala Kantor</h1>
                 </div>
                 @if($staffKepala->isNotEmpty())
                     @php $kepala = $staffKepala->first(); @endphp
-                    <div class="bg-white rounded-lg p-4 w-[220px] text-center shadow-sm">
-                        @if($kepala->photo)
-                            <img src="{{ asset('storage/'.$kepala->photo) }}" class="w-[150px] h-[200px] mx-auto rounded-lg object-cover mb-5" alt="{{ $kepala->name }}">
-                        @else
-                            <div class="w-24 h-24 mx-auto rounded-full bg-blue-200 flex items-center justify-center mb-3">
-                                <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <div class="flex justify-center">
+                        <div class="bg-white rounded-2xl p-6 w-full max-w-xs text-center flex flex-col items-center gap-4 shadow-sm hover:shadow-md transition-shadow border border-gray-50">
+                            @if($kepala->photo)
+                                <img src="{{ asset('storage/'.$kepala->photo) }}" class="w-32 h-32 rounded-full object-cover shadow-sm ring-4 ring-gray-50" alt="{{ $kepala->name }}">
+                            @else
+                                <div class="w-32 h-32 rounded-full bg-bmkg-blue/10 flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                </div>
+                            @endif
+                            <div>
+                                <h2 class="font-bold text-base text-gray-800">{{ $kepala->name }}</h2>
+                                <p class="text-sm text-gray-500 mt-1">NIP. {{ $kepala->nip ?? '-' }}</p>
                             </div>
-                        @endif
-                        <h2 class="font-semibold text-gray-800">{{ $kepala->name }}</h2>
-                        <p class="text-sm text-gray-500">NIP. {{ $kepala->nip ?? '-' }}</p>
+                        </div>
                     </div>
                 @else
-                    <p class="text-gray-400 text-sm">Belum ada data kepala.</p>
+                    <p class="text-gray-400 text-sm text-center">Belum ada data kepala.</p>
                 @endif
             </div>
 
             {{-- Pegawai Fungsional --}}
-            <div>
-                <div class="flex items-center gap-3 py-4 mb-6 border-b border-gray-300">
-                    <div class="w-1 h-7 bg-orange-500 rounded-full flex-shrink-0"></div>
-                    <h1 class="font-heading font-bold text-3xl text-bmkg-blue">Pegawai Fungsional</h1>
+            <div class="mb-12">
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl lg:text-3xl font-bold text-bmkg-blue">Pegawai Fungsional</h1>
                 </div>
                 @if($staffFungsional->isEmpty())
-                    <p class="text-gray-400 text-sm">Belum ada data pegawai fungsional.</p>
+                    <p class="text-gray-400 text-sm text-center">Belum ada data pegawai fungsional.</p>
                 @else
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         @foreach($staffFungsional as $s)
-                            <div class="bg-white rounded-lg p-4 w-[220px] text-center shadow">
+                            <div class="bg-white rounded-2xl p-6 text-center flex flex-col items-center gap-4 shadow-sm hover:shadow-md transition-shadow border border-gray-50">
                                 @if($s->photo)
-                                    <img src="{{ asset('storage/'.$s->photo) }}" class="w-[150px] h-[200px] mx-auto rounded-lg object-cover mb-5" alt="{{ $s->name }}">
+                                    <img src="{{ asset('storage/'.$s->photo) }}" class="w-24 h-24 rounded-full object-cover shadow-sm ring-4 ring-gray-50" alt="{{ $s->name }}">
                                 @else
-                                    <div class="w-24 h-24 mx-auto rounded-full bg-blue-200 flex items-center justify-center mb-3">
-                                        <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    <div class="w-24 h-24 rounded-full bg-orange-500/10 flex items-center justify-center">
+                                        <svg class="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     </div>
                                 @endif
-                                <h2 class="font-semibold text-gray-800">{{ $s->name }}</h2>
-                                <p class="text-sm text-gray-500">NIP. {{ $s->nip ?? '-' }}</p>
+                                <div>
+                                    <h2 class="font-bold text-base text-gray-800">{{ $s->name }}</h2>
+                                    <p class="text-sm text-gray-500 mt-1">NIP. {{ $s->nip ?? '-' }}</p>
+                                </div>
                             </div>
                         @endforeach
                     </div>
                 @endif
             </div>
+
             {{-- PPNPN --}}
-            <div class="mt-10">
-                <div class="flex items-center gap-3 py-4 mb-6 border-b border-gray-300">
-                    <div class="w-1 h-7 bg-teal-500 rounded-full flex-shrink-0"></div>
-                    <h1 class="font-heading font-bold text-3xl text-bmkg-blue">PPNPN</h1>
+            <div>
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl lg:text-3xl font-bold text-bmkg-blue">Pegawai Pemerintah Non Pegawai Negeri</h1>
                 </div>
                 @if($staffPpnpn->isEmpty())
-                    <p class="text-gray-400 text-sm">Belum ada data PPNPN.</p>
+                    <p class="text-gray-400 text-sm text-center">Belum ada data PPNPN.</p>
                 @else
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         @foreach($staffPpnpn as $s)
-                            <div class="bg-white rounded-lg p-4 w-[220px] text-center shadow">
+                            <div class="bg-white rounded-2xl p-6 text-center flex flex-col items-center gap-4 shadow-sm hover:shadow-md transition-shadow border border-gray-50">
                                 @if($s->photo)
-                                    <img src="{{ asset('storage/'.$s->photo) }}" class="w-[150px] h-[200px] mx-auto rounded-full object-cover mb-3" alt="{{ $s->name }}">
+                                    <img src="{{ asset('storage/'.$s->photo) }}" class="w-24 h-24 rounded-full object-cover shadow-sm ring-4 ring-gray-50" alt="{{ $s->name }}">
                                 @else
-                                    <div class="w-24 h-24 mx-auto rounded-full bg-blue-200 flex items-center justify-center mb-3">
-                                        <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    <div class="w-24 h-24 rounded-full bg-teal-500/10 flex items-center justify-center">
+                                        <svg class="w-10 h-10 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     </div>
                                 @endif
-                                <h2 class="font-semibold text-gray-800">{{ $s->name }}</h2>
+                                <div>
+                                    <h2 class="font-bold text-base text-gray-800">{{ $s->name }}</h2>
+                                </div>
                             </div>
                         @endforeach
                     </div>

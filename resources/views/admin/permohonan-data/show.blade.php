@@ -199,7 +199,7 @@
         <div class="bg-white rounded-2xl shadow-sm p-6">
             <h3 class="font-semibold text-gray-700 mb-3">Hubungi Pemohon</h3>
             <div class="space-y-2">
-                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $item->no_hp) }}"
+                <a href="https://wa.me/{{ preg_replace('/^0/', '+62', preg_replace('/[^0-9]/', '', $item->no_hp)) }}"
                    target="_blank"
                    class="flex items-center gap-2 w-full bg-green-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-green-600 transition">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
