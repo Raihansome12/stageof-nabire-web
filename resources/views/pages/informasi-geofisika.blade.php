@@ -43,7 +43,7 @@
             <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Terbit-Terbenam Matahari</h1>
             <p class="text-gray-500 text-sm max-w-xl mx-auto">
                 Informasi terbit-terbenam Matahari adalah data waktu matahari terbit, transit, dan terbenam
-                beserta azimut untuk setiap wilayah di Indonesia.
+                beserta azimut untuk setiap wilayah di Provinsi Papua Tengah.
             </p>
         </div>
     </div>

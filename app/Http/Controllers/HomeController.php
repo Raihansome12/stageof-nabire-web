@@ -302,19 +302,28 @@ class HomeController extends Controller
         // ── Send Email Notification ───────────────────────────────────────────
         $this->sendEmailNotification($permohonan);
 
-        // ── Send WhatsApp Notification (via Fonnte / wa.me link) ─────────────
-        // Configure OFFICE_WA_NUMBER and FONNTE_TOKEN in .env
-        $this->sendWhatsAppNotification($permohonan);
+        $phone = env('OFFICE_WA_NUMBER'); 
+        
+        $message = "📋 *Permohonan Data Baru* (#{$permohonan->id})\n\n"
+            . "Halo Admin, saya telah mengirimkan permohonan data via website dengan detail:\n"
+            . "👤 *{$permohonan->nama_lengkap}*\n"
+            . "🏢 {$permohonan->instansi}\n"
+            . "📱 {$permohonan->no_hp}\n\n"
+            . "📂 *{$permohonan->labelJenisPermohonan()}*\n"
+            . "Jenis Data: {$permohonan->jenis_data}\n\n"
+            . "Mohon info selanjutnya. Terima kasih.";
 
-        return redirect()->route('layanan-masyarakat')
-            ->with('success', 'Permohonan Anda berhasil dikirim! Kami akan menghubungi Anda segera.');
+        $url = "https://wa.me/" . $phone . "?text=" . urlencode($message);
+
+        // Redirect user directly to WhatsApp
+        return redirect()->away($url);
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
 
     private function sendEmailNotification(PermohonanData $p): void
     {
-        $officeEmail = config('mail.office_email', env('OFFICE_EMAIL', 'geofisika.nabire@bmkg.go.id'));
+        $officeEmail = config('mail.office_email', env('OFFICE_EMAIL', 'stageof.nabire@bmkg.go.id'));
 
         $subject = "[Permohonan Data] {$p->labelJenisPermohonan()} – {$p->nama_lengkap} ({$p->instansi})";
 
@@ -350,46 +359,6 @@ Kelola permohonan ini di panel admin.
             });
         } catch (\Exception $e) {
             Log::error('Gagal mengirim email notifikasi permohonan: ' . $e->getMessage());
-        }
-    }
-
-    private function sendWhatsAppNotification(PermohonanData $p): void
-    {
-        // Uses Fonnte API (https://fonnte.com) – set FONNTE_TOKEN and OFFICE_WA_NUMBER in .env
-        $token  = env('FONNTE_TOKEN');
-        $target = env('OFFICE_WA_NUMBER');    // e.g. 6281234567890
-
-        if (!$token || !$target) {
-            Log::info('WhatsApp notification skipped: FONNTE_TOKEN or OFFICE_WA_NUMBER not set.');
-            return;
-        }
-
-        $message = "📋 *Permohonan Data Baru* (#{$p->id})\n\n"
-            . "👤 *{$p->nama_lengkap}*\n"
-            . "🏢 {$p->instansi}\n"
-            . "📱 {$p->no_hp}\n\n"
-            . "📂 *{$p->labelJenisPermohonan()}*\n"
-            . "Jenis Data: {$p->jenis_data}\n\n"
-            . "Silakan cek panel admin untuk detail lengkap.";
-
-        try {
-            $ch = curl_init('https://api.fonnte.com/send');
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_POST           => true,
-                CURLOPT_POSTFIELDS     => ['target' => $target, 'message' => $message],
-                CURLOPT_HTTPHEADER     => ['Authorization: ' . $token],
-                CURLOPT_TIMEOUT        => 10,
-            ]);
-            $response = curl_exec($ch);
-            curl_close($ch);
-
-            $result = json_decode($response, true);
-            if (!($result['status'] ?? false)) {
-                Log::warning('WhatsApp notification mungkin gagal: ' . $response);
-            }
-        } catch (\Exception $e) {
-            Log::error('Gagal mengirim WhatsApp: ' . $e->getMessage());
         }
     }
 }

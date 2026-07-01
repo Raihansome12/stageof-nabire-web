@@ -189,7 +189,7 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
             <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Gempa Bumi Terkini</h1>
             <p class="text-gray-500 text-sm max-w-xl mx-auto">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia voluptatibus, explicabo vero quis inventore expedita, officiis aliquam sint iste aut doloremque? Voluptate exercitationem totam cumque officia quasi dignissimos distinctio eum?
+                Informasi gempa bumi terkini di Provinsi Papua Tengah
             </p>
         </div>
     </div>

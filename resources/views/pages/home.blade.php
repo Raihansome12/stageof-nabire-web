@@ -3,6 +3,19 @@
 
 @section('content')
 
+@php
+    $hasShakemap = $earthquake && !empty($earthquake->shakemap_image);
+    $hasGeoData  = $earthquake && !$hasShakemap
+        && $earthquake->latitude !== null
+        && $earthquake->longitude !== null
+        && $earthquake->magnitude !== null;
+@endphp
+
+@if($hasGeoData)
+    {{-- Leaflet CSS: only needed when we render the fallback earthquake map --}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+@endif
+
 {{-- ═══════════════════════════════════════════════════
      SECTION 1: Terbit Terbenam Matahari Hari Ini
      ═══════════════════════════════════════════════════ --}}
@@ -251,13 +264,17 @@
 
                     <div class="flex flex-col sm:flex-row gap-6">
 
-                        {{-- ShakeMap —— full URL from BMKG static CDN --}}
+                        {{-- ShakeMap —— full URL from BMKG static CDN, or a generated map fallback --}}
                         <div class="shrink-0 w-full sm:w-52">
-                            @if($earthquake->shakemap_image)
+                            @if($hasShakemap)
                                 <img src="{{ $earthquake->shakemap_image }}"
                                      alt="ShakeMap Gempa {{ $earthquake->occurred_at->setTimezone('Asia/Jayapura')->format('d M Y H:i') }} WIB"
                                      class="w-full rounded-xl object-cover border border-gray-200"
                                      loading="lazy"/>
+                            @elseif($hasGeoData)
+                                <div id="home-eq-map"
+                                     class="w-full h-55 rounded-xl border border-gray-200"
+                                     style="position:relative;z-index:0;"></div>
                             @else
                                 <div class="w-full h-44 bg-gray-200 rounded-xl flex items-center justify-center text-gray-400 text-sm">
                                     <div class="text-center">
@@ -273,8 +290,6 @@
                                 </p>
                             </div>
                         </div>
-
-                        
 
                         {{-- Detail info --}}
                         <div class="flex-1 space-y-4">
@@ -345,14 +360,19 @@
                             </div>
 
                             {{-- Dirasakan (MMI) --}}
-                            @if($earthquake->felt_intensity)
-                                <div>
-                                    <p class="text-sm font-semibold text-gray-700 mb-1">
-                                        Dirasakan (Skala MMI):
-                                    </p>
-                                    <p class="text-sm text-gray-600">{{ $earthquake->felt_intensity }}</p>
-                                </div>
-                            @endif
+                            <div>
+                                <p class="text-sm font-semibold text-gray-700 mb-1">
+                                    Dirasakan (Skala MMI):
+                                </p>
+                                @if($earthquake->felt_intensity)
+                                    <div>
+                                        <!-- <p class="text-sm font-semibold text-gray-700 mb-1">
+                                            Dirasakan (Skala MMI):
+                                        </p> -->
+                                        <p class="text-sm text-gray-600">{{ $earthquake->felt_intensity }}</p>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 @else
@@ -394,6 +414,139 @@
         </div>
     </div>
 </section>
+
+@if($hasGeoData)
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+    /* Animated Earthquake Marker Styles */
+    .quake-epicenter { position: relative; width: 70px; height: 70px; }
+    .eq-uncertainty {
+        position: absolute; top: 50%; left: 50%;
+        width: 56px; height: 56px; margin: -28px 0 0 -28px;
+        border-radius: 50%;
+        background: var(--eq-color-soft);
+        border: 1px dashed var(--eq-color);
+        opacity: 0.6;
+    }
+    .eq-ring {
+        position: absolute; top: 50%; left: 50%;
+        /* Adjusted width/height/margin to match the new central dot size */
+        width: 24px; height: 24px; margin: -12px 0 0 -12px;
+        border-radius: 50%;
+        border: 2px solid var(--eq-color);
+        opacity: 0.75;
+        animation: eq-pulse 2.4s ease-out infinite;
+        z-index: 1;
+    }
+    .eq-ring-2 { animation-delay: 0.8s; }
+    .eq-ring-3 { animation-delay: 1.6s; }
+    .eq-dot {
+        position: absolute; top: 50%; left: 50%;
+        /* Enlarged dot to fit the text */
+        width: 24px; height: 24px; margin: -12px 0 0 -12px;
+        border-radius: 50%;
+        background: var(--eq-color);
+        /* border: 1.5px solid #fff; */
+        /* box-shadow: 0 0 0 1px rgba(0,0,0,0.35); */
+        z-index: 2;
+        
+        /* Flexbox to center the text perfectly */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        /* Text styling */
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        font-family: system-ui, sans-serif;
+    }
+    @keyframes eq-pulse {
+        0%   { transform: scale(1);   opacity: 0.9; }
+        /* Reduced max scale slightly so rings don't overflow the 70px container */
+        100% { transform: scale(2.8); opacity: 0; } 
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .eq-ring { animation: none; opacity: 0.45; }
+    }
+</style>
+
+<script>
+    (function () {
+        const eq = {
+            lat: {{ (float) $earthquake->latitude }},
+            lng: {{ (float) $earthquake->longitude }},
+            mag: {{ (float) $earthquake->magnitude }},
+            loc: @json($earthquake->location_description),
+            depth: {{ (float) $earthquake->depth_km }},
+            time: @json($earthquake->occurred_at->setTimezone('Asia/Jayapura')->format('d M Y H:i')),
+            mmi: '{{ $earthquake->mmi ?? "" }}'
+        };
+
+        const map = L.map('home-eq-map', {
+            zoomControl: false,
+            attributionControl: false,
+            scrollWheelZoom: false,
+            dragging: false,
+            touchZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+            keyboard: false
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        function markerColor(mag) {
+            return mag >= 5 ? '#ef4444' : (mag >= 4 ? '#f97316' : '#22c55e');
+        }
+
+        const c = markerColor(eq.mag);
+        
+        // Added ${eq.mag} inside the .eq-dot div
+        const html = `
+            <div class="quake-epicenter" style="--eq-color: ${c}; --eq-color-soft: ${c}33;">
+                <div class="eq-uncertainty"></div>
+                <div class="eq-ring eq-ring-1"></div>
+                <div class="eq-ring eq-ring-2"></div>
+                <div class="eq-ring eq-ring-3"></div>
+                <div class="eq-dot">${eq.mag}</div>
+            </div>`;
+        
+        const icon = L.divIcon({ 
+            html, 
+            className: '', 
+            iconSize: [70, 70], 
+            iconAnchor: [35, 35], 
+            popupAnchor: [0, -25] 
+        });
+
+        L.marker([eq.lat, eq.lng], { icon }).addTo(map)
+            .bindPopup(`
+                <div style="min-width:200px;font-family:system-ui,sans-serif">
+                    <div style="font-weight:700;font-size:.85rem;margin-bottom:.3rem;line-height:1.35">${eq.loc}</div>
+                    <div style="font-size:.75rem;color:#6b7280;margin-bottom:.4rem">${eq.time} WIT</div>
+                    <div style="display:flex;gap:.4rem;flex-wrap:wrap;font-size:.75rem">
+                        <span style="background:#f3f4f6;padding:.15rem .5rem;border-radius:.35rem">M ${eq.mag} SR</span>
+                        <span style="background:#f3f4f6;padding:.15rem .5rem;border-radius:.35rem">⬇ ${eq.depth} km</span>
+                        ${eq.mmi ? `<span style="background:#f3f4f6;padding:.15rem .5rem;border-radius:.35rem">MMI ${eq.mmi}</span>` : ''}
+                    </div>
+                </div>
+            `, { maxWidth: 260 });
+
+        const center = L.latLng(eq.lat, eq.lng);
+        const bounds = center.toBounds(300000);
+
+        map.fitBounds(bounds);
+
+        setTimeout(() => {
+            map.invalidateSize();
+            map.fitBounds(bounds); 
+        }, 150);
+    })();
+</script>
+@endif
 
 
 {{-- ═══════════════════════════════════════════════════
