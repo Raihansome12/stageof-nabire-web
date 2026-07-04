@@ -101,6 +101,15 @@
                     </span>
                 @endif
             </a>
+
+            <a href="{{ route('admin.saran.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.saran.*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16h6m-7 4h8a2 2 0 002-2V6a2 2 0 00-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Kotak Saran
+            </a>
         </nav>
 
         <div class="px-4 py-4 border-t border-blue-700">

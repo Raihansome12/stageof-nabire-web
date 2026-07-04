@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\GeofisikaController;
 use App\Http\Controllers\Admin\EarthquakeController;
 use App\Http\Controllers\Admin\InformasiPublikController;
 use App\Http\Controllers\Admin\PermohonanDataController;
+use App\Http\Controllers\Admin\SuggestionController;
 
 // ── Public routes ─────────────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -19,6 +20,7 @@ Route::get('/informasi-publik', [HomeController::class, 'informasiPublik'])->nam
 // Layanan Masyarakat — GET (display) + POST (submit form)
 Route::get('/layanan-masyarakat', [HomeController::class, 'layananMasyarakat'])->name('layanan-masyarakat');
 Route::post('/layanan-masyarakat', [HomeController::class, 'layananMasyarakatStore'])->name('layanan-masyarakat.store');
+Route::post('/layanan-masyarakat/saran', [HomeController::class, 'storeSuggestion'])->name('layanan-masyarakat.saran.store');
 
 // Informasi Geofisika (TTM + Petir)
 Route::get('/informasi-geofisika', [HomeController::class, 'informasiGeofisika'])
@@ -148,6 +150,12 @@ Route::prefix('admin')
             Route::put('/{permohonanData}',        [PermohonanDataController::class, 'update'])      ->name('update');
             Route::delete('/{permohonanData}',     [PermohonanDataController::class, 'destroy'])     ->name('destroy');
             Route::delete('/',                     [PermohonanDataController::class, 'bulkDestroy']) ->name('bulk-destroy');
+        });
+
+        Route::prefix('saran')->name('saran.')->group(function () {
+            Route::get('/', [SuggestionController::class, 'index'])->name('index');
+            Route::delete('/{suggestion}', [SuggestionController::class, 'destroy'])->name('destroy');
+            Route::delete('/', [SuggestionController::class, 'bulkDestroy'])->name('bulk-destroy');
         });
     });
 // PDF viewer for buletin

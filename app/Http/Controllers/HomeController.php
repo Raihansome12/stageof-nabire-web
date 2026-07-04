@@ -262,6 +262,20 @@ class HomeController extends Controller
         return view('pages.layanan-masyarakat');
     }
 
+    public function storeSuggestion(Request $request)
+    {
+        $validated = $request->validate([
+            'comment' => 'required|string|max:1000',
+        ], [
+            'comment.required' => 'Komentar wajib diisi.',
+            'comment.max' => 'Komentar maksimal 1000 karakter.',
+        ]);
+
+        \App\Models\Suggestion::create($validated);
+
+        return redirect()->route('layanan-masyarakat')->with('suggestion_success', 'Terima kasih, saran Anda telah berhasil disimpan.');
+    }
+
     /**
      * Handle form submission for Permohonan Data.
      * Saves to DB, then sends email + WhatsApp notification.

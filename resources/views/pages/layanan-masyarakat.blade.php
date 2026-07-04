@@ -397,6 +397,35 @@
             </div>
 
         </div>
+
+        <div class="mt-10 rounded-3xl border border-gray-200 bg-gray-50 p-6 lg:p-8 shadow-sm">
+            <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                <div>
+                    <h3 class="text-xl font-bold text-bmkg-blue">Kotak Saran</h3>
+                    <p class="mt-2 text-sm text-gray-600">Berikan saran, rekomendasi, atau komentar Anda untuk membantu kami meningkatkan layanan.</p>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ route('layanan-masyarakat.saran.store') }}" class="mt-6 space-y-4">
+                @csrf
+                <textarea name="comment" rows="4" maxlength="1000" placeholder="Tulis saran atau komentar Anda di sini..." class="w-full rounded-2xl border border-gray-300 px-4 py-3 text-sm text-gray-700 focus:border-bmkg-blue focus:outline-none focus:ring-2 focus:ring-blue-100" required></textarea>
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-bmkg-blue px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90">
+                        Kirim Saran
+                    </button>
+                </div>
+                @if(session('suggestion_success'))
+                    <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                        {{ session('suggestion_success') }}
+                    </div>
+                @endif
+                @error('comment')
+                    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </form>
+        </div>
     </div>
 </section>
 
