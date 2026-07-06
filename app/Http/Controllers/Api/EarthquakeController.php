@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Earthquake;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class EarthquakeController extends Controller
 {
@@ -25,11 +25,11 @@ class EarthquakeController extends Controller
 
         // 2. Insert or Update Records safely
         foreach ($request->earthquakes as $eq) {
-            DB::table('earthquakes')->updateOrCreate(
+            Earthquake::updateOrCreate(
                 [
                     'latitude' => $eq['latitude'],
                     'longitude' => $eq['longitude'],
-                    'occurred_at' => $eq['occurred_at']
+                    'occurred_at' => $eq['occurred_at'],
                 ],
                 [
                     'magnitude' => $eq['magnitude'],
