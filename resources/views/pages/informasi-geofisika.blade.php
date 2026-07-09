@@ -37,9 +37,10 @@
      PANEL: Terbit-Terbenam Matahari (TTM)
      ============================================================ --}}
 <div id="panel-ttm" class="panel-section">
-
-    <div class="bg-white border-b border-gray-100">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
+    <div class="relative overflow-hidden"
+    style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
+        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
             <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Terbit-Terbenam Matahari</h1>
             <p class="text-gray-500 text-sm max-w-xl mx-auto">
                 Informasi terbit-terbenam Matahari adalah data waktu matahari terbit, transit, dan terbenam
@@ -47,10 +48,9 @@
             </p>
         </div>
     </div>
-
-    <section class="py-8 lg:py-10">
+    <section class="py-8 lg:py-10 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl shadow-sm overflow-hidden p-3">
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden p-3 border border-gray-100">
                 <div class="px-6 pt-5 pb-6">
                     <form method="GET" action="{{ route('informasi-geofisika') }}" id="ttm-form">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -186,9 +186,10 @@
      ============================================================ --}}
 <div id="panel-petir" class="panel-section hidden">
 
-    {{-- Hero Header --}}
-    <div class="bg-white border-b border-gray-100">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
+    <div class="relative overflow-hidden"
+    style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
+        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
             <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Peta Sambaran Petir</h1>
             <p class="text-gray-500 text-sm max-w-xl mx-auto">
                 Informasi distribusi dan kerapatan sambaran petir di wilayah Papua Tengah dan sekitarnya,
@@ -210,7 +211,7 @@
     {{-- ════════════════════════════════════════════════════════════
          SECTION A: DASARIAN
          ════════════════════════════════════════════════════════════ --}}
-    <section class="py-8 lg:py-10 border-b-4 border-gray-100">
+    <section class="py-8 lg:py-10 border-gray-100 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- Section heading --}}
@@ -234,7 +235,7 @@
             </div>
 
             {{-- Filter Card --}}
-            <div class="bg-white rounded-2xl shadow-sm px-6 py-5 mb-5">
+            <div class="bg-white rounded-2xl shadow-sm px-6 py-5 mb-5 border border-gray-100">
                 <div class="flex flex-wrap items-center gap-3">
                     <span class="text-sm font-medium text-gray-500 mr-1">Periode:</span>
 
@@ -293,7 +294,7 @@
             </div>
 
             {{-- Empty --}}
-            <div id="das-empty" class="hidden bg-white rounded-2xl shadow-sm p-14 text-center">
+            <div id="das-empty" class="hidden bg-white rounded-2xl shadow-sm p-14 text-center border border-gray-100">
                 <div class="text-4xl mb-3">⚡</div>
                 <p class="text-sm font-medium text-gray-500">Tidak ada data untuk periode dasarian yang dipilih.</p>
                 <p class="text-xs mt-1 text-gray-400">Coba ubah bulan, tahun, atau pilihan dasarian.</p>
@@ -303,7 +304,7 @@
             <div id="das-data" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
                 {{-- Map --}}
-                <div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col border border-gray-100">
                     <div class="px-6 pt-5 pb-3 border-b border-gray-50 flex items-center justify-between gap-3">
                         <div>
                             <h3 class="font-semibold text-gray-800 text-sm">Peta Kerapatan Petir</h3>
@@ -329,7 +330,7 @@
                 </div>
 
                 {{-- Charts --}}
-                <div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col border border-gray-100">
                     <div class="flex border-b border-gray-100">
                         <button id="das-tab-sub" onclick="switchDasChart('sub')"
                             class="das-chart-tab flex-1 px-4 py-3.5 text-sm font-semibold border-b-2 border-bmkg-blue text-bmkg-blue transition-all -mb-px whitespace-nowrap">
@@ -373,7 +374,7 @@
     {{-- ════════════════════════════════════════════════════════════
          SECTION B: BULANAN
          ════════════════════════════════════════════════════════════ --}}
-    <section class="py-8 lg:py-10">
+    <section class="py-8 lg:py-10 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- Section heading --}}
@@ -386,7 +387,7 @@
             </div>
 
             {{-- Filter Card --}}
-            <div class="bg-white rounded-2xl shadow-sm px-6 py-5 mb-5">
+            <div class="bg-white rounded-2xl shadow-sm px-6 py-5 mb-5 borer border-gray-100">
                 <div class="flex flex-wrap items-center gap-3">
                     <span class="text-sm font-medium text-gray-500 mr-1">Periode:</span>
 
@@ -432,7 +433,7 @@
             </div>
 
             {{-- Empty --}}
-            <div id="bul-empty" class="hidden bg-white rounded-2xl shadow-sm p-14 text-center">
+            <div id="bul-empty" class="hidden bg-white rounded-2xl shadow-sm p-14 text-center border border-gray-100">
                 <div class="text-4xl mb-3">⚡</div>
                 <p class="text-sm font-medium text-gray-500">Tidak ada data untuk periode bulanan yang dipilih.</p>
                 <p class="text-xs mt-1 text-gray-400">Coba ubah bulan atau tahun.</p>
@@ -442,7 +443,7 @@
             <div id="bul-data" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
                 {{-- Map --}}
-                <div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col border border-gray-100">
                     <div class="px-6 pt-5 pb-3 border-b border-gray-50 flex items-center justify-between gap-3">
                         <div>
                             <h3 class="font-semibold text-gray-800 text-sm">Peta Kerapatan Petir</h3>
@@ -468,7 +469,7 @@
                 </div>
 
                 {{-- Charts --}}
-                <div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col border border-gray-100">
                     <div class="flex border-b border-gray-100">
                         <button id="bul-tab-sub" onclick="switchBulChart('sub')"
                             class="bul-chart-tab flex-1 px-4 py-3.5 text-sm font-semibold border-b-2 border-teal-500 text-teal-600 transition-all -mb-px whitespace-nowrap">

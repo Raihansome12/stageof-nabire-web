@@ -2,6 +2,12 @@
 @section('title', 'Layanan Masyarakat - Stasiun Geofisika Kelas III Nabire')
 @section('content')
 
+<style>
+    input, select, textarea, button, .tab-btn, #dynamic-form, #dynamic-form * {
+        cursor: pointer;
+    }
+</style>
+
 {{-- Navbar --}}
 <div class="border-b border-gray-200 bg-white sticky top-0 z-30 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,7 +65,7 @@
             {{-- ================= LEFT SIDE ================= --}}
             <div class="space-y-4">
                 {{-- Accordion 1 --}}
-                <div class="bg-white rounded-2xl shadow-sm">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
                     <button onclick="toggleAccordion('nol')" class="w-full text-left p-6 flex justify-between items-center">
                         <h2 class="font-bold text-base text-bmkg-blue">
                             Syarat & Ketentuan Tarif Nol Rupiah
@@ -120,7 +126,7 @@
                 </div>
 
                 {{-- Accordion 2 --}}
-                <div class="bg-white rounded-2xl shadow-sm">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
                     <button onclick="toggleAccordion('tarif')" class="w-full text-left p-6 flex justify-between items-center">
                         <h2 class="font-bold text-base text-bmkg-blue">
                             Ketersediaan Data di Stageof Nabire
@@ -209,7 +215,7 @@
             </div>
 
             {{-- ================= RIGHT SIDE (FORM) ================= --}}
-            <div class="bg-white rounded-2xl shadow-sm p-6">
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
                 <h2 class="font-bold text-3xl text-bmkg-blue mb-6">Form Permohonan Data</h2>
 
                 <form method="POST"
@@ -227,7 +233,7 @@
                                        name="nama_lengkap"
                                        value="{{ old('nama_lengkap') }}"
                                        placeholder="Nama Lengkap *"
-                                       class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('nama_lengkap') border-red-400 @enderror">
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm @error('nama_lengkap') border-red-400 @enderror">
                                 @error('nama_lengkap')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
 
@@ -237,7 +243,7 @@
                                        value="{{ old('nik') }}"
                                        placeholder="NIK"
                                        maxlength="16"
-                                       class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm">
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm">
                             </div>
 
                             <div>
@@ -245,7 +251,7 @@
                                        name="email"
                                        value="{{ old('email') }}"
                                        placeholder="Email"
-                                       class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('email') border-red-400 @enderror">
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm @error('email') border-red-400 @enderror">
                                 @error('email')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
 
@@ -256,7 +262,7 @@
                                        placeholder="No. HP / WhatsApp *"
                                        inputmode="numeric"
                                        pattern="^0\d{9,12}$"
-                                       class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('no_hp') border-red-400 @enderror">
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm @error('no_hp') border-red-400 @enderror">
                                 @error('no_hp')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
 
@@ -265,7 +271,7 @@
                                        name="instansi"
                                        value="{{ old('instansi') }}"
                                        placeholder="Instansi / Sekolah / Perusahaan *"
-                                       class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('instansi') border-red-400 @enderror">
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm @error('instansi') border-red-400 @enderror">
                                 @error('instansi')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
 
@@ -273,7 +279,7 @@
                                 <textarea name="alamat"
                                           placeholder="Alamat"
                                           rows="3"
-                                          class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm">{{ old('alamat') }}</textarea>
+                                          class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm">{{ old('alamat') }}</textarea>
                             </div>
                         </div>
 
@@ -286,7 +292,7 @@
                                     name="jenis_data"
                                     value="{{ old('jenis_data') }}"
                                     placeholder="Masukkan Jenis Data yang Diminta *"
-                                    class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('jenis_data') border-red-400 @enderror">
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm @error('jenis_data') border-red-400 @enderror">
                                 @error('jenis_data')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
 
@@ -295,7 +301,7 @@
                                 <select name="jenis_permohonan"
                                         id="jenis_permohonan"
                                         onchange="handleJenis(this.value)"
-                                        class="w-full border border-gray-500 rounded-lg px-4 py-2 text-sm @error('jenis_permohonan') border-red-400 @enderror">
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm @error('jenis_permohonan') border-red-400 @enderror">
                                     <option value="">Pilih Jenis Permohonan *</option>
                                     <option value="pnbp" {{ old('jenis_permohonan') === 'pnbp' ? 'selected' : '' }}>PNBP</option>
                                     <option value="nol"  {{ old('jenis_permohonan') === 'nol'  ? 'selected' : '' }}>Tarif Nol Rupiah</option>
@@ -338,7 +344,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
             {{-- Kontak Telepon --}}
-            <div class="bg-lightblue rounded-2xl p-6 flex flex-col items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-lightblue rounded-2xl p-6 flex flex-col items-start gap-4 shadow-sm hover:shadow-md transition-shadow border border-gray-100">
                 <div class="w-12 h-12 rounded-full bg-bmkg-blue/10 flex items-center justify-center">
                     <svg class="w-6 h-6 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -357,7 +363,7 @@
             </div>
 
             {{-- Kontak Email --}}
-            <div class="bg-lightblue rounded-2xl p-6 flex flex-col items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-lightblue rounded-2xl p-6 flex flex-col items-start gap-4 shadow-sm hover:shadow-md transition-shadow border border-gray-100">
                 <div class="w-12 h-12 rounded-full bg-bmkg-blue/10 flex items-center justify-center">
                     <svg class="w-6 h-6 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -494,7 +500,7 @@ function handleJenis(value) {
                 </label>
                 <input type="file" name="file_surat_permohonan"
                        accept=".pdf,.jpg,.jpeg,.png"
-                       class="w-full border rounded-lg px-3 py-2 text-sm">
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
             </div>
         `;
     } else if (value === 'nol') {
@@ -538,7 +544,7 @@ function handleLingkup(value) {
                 <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
             </label>
             <input type="file" name="file_surat_pengantar" accept=".pdf,.jpg,.jpeg,.png"
-                   class="w-full border rounded-lg px-3 py-2 mt-1">
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1">
         </div>
 
         <div>
@@ -546,7 +552,7 @@ function handleLingkup(value) {
                 <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
             </label>
             <input type="file" name="file_surat_permohonan" accept=".pdf,.jpg,.jpeg,.png"
-                   class="w-full border rounded-lg px-3 py-2 mt-1">
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1">
         </div>
     `;
 
@@ -557,7 +563,7 @@ function handleLingkup(value) {
                     <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
                 </label>
                 <input type="file" name="file_surat_pernyataan" accept=".pdf,.jpg,.jpeg,.png"
-                       class="w-full border rounded-lg px-3 py-2 mt-1">
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1">
             </div>
 
             <div>
@@ -565,7 +571,7 @@ function handleLingkup(value) {
                     <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
                 </label>
                 <input type="file" name="file_proposal" accept=".pdf,.jpg,.jpeg,.png"
-                       class="w-full border rounded-lg px-3 py-2 mt-1">
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1">
             </div>
         `;
     }

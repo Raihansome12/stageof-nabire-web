@@ -14,10 +14,6 @@
                 class="tab-btn flex-shrink-0 px-8 py-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-all duration-200 whitespace-nowrap">
                 Profil Kantor
             </button>
-            <button onclick="switchTab('visi-misi')" id="tab-visi-misi"
-                class="tab-btn flex-shrink-0 px-8 py-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-all duration-200 whitespace-nowrap">
-                Visi dan Misi
-            </button>
             <button onclick="switchTab('struktur')" id="tab-struktur"
                 class="tab-btn flex-shrink-0 px-8 py-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-all duration-200 whitespace-nowrap">
                 Struktur Organisasi
@@ -30,41 +26,62 @@
     </div>
 </div>
 
-<section class="py-10 lg:py-14">
-    {{-- Profil Kantor --}}
-    <div id="panel-profil" class="panel-section">
+
+{{--Profil Kantor--}}
+<div id="panel-profil" class="panel-section">
+    <div class="relative overflow-hidden"
+         style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
+        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
+            <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Profil Kantor</h1>
+            <p class="text-gray-500 text-sm max-w-xl mx-auto">
+                Temukan perjalanan Sejarah, Visi, dan Misi Stasiun Geofisika Kelas III Nabire yang menjadi kompas utama dalam melangkah menuju masa depan.
+            </p>
+        </div>
+    </div>
+    <section class="py-10 lg:py-14 bg-white">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                {{-- Sejarah --}}
             <div class="flex items-center gap-3 py-3 mb-2 border-b border-gray-300">
                 <div class="w-1 h-7 bg-teal-500 rounded-full flex-shrink-0"></div>
                 <h1 class="font-heading font-bold text-3xl text-bmkg-blue">Sejarah</h1>
             </div>
-            <p class="text-gray-500">Stasiun Geofisika Kelas III Nabire merupakan unit pelaksana teknis (UPT) BMKG yang terletak di Jalan Matoa, Kelurahan Kalibobo, Kabupaten Nabire, Provinsi Papua Tengah (98818). Keberadaan Stasiun Geofisika Kelas III Nabire adalah hasil relokasi dari Stasiun Geofisika Tual dan telah resmi beroperasi di Kabupaten Nabire sejak tahun 2018. Dalam perkembangannya, stasiun ini tidak hanya berfungsi sebagai penyedia informasi meteorologi, klimatologi, dan geofisika setempat, tetapi juga mengemban peran strategis sebagai Koordinator BMKG untuk seluruh wilayah Provinsi Papua Tengah.</p>
-        </div>
-    </div>
+            <p class="text-gray-600 mb-15">Stasiun Geofisika Kelas III Nabire merupakan unit pelaksana teknis (UPT) BMKG yang terletak di Jalan Matoa, Kelurahan Kalibobo, Kabupaten Nabire, Provinsi Papua Tengah (98818). Keberadaan Stasiun Geofisika Kelas III Nabire adalah hasil relokasi dari Stasiun Geofisika Tual dan telah resmi beroperasi di Kabupaten Nabire sejak tahun 2018. Dalam perkembangannya, stasiun ini tidak hanya berfungsi sebagai penyedia informasi meteorologi, klimatologi, dan geofisika setempat, tetapi juga mengemban peran strategis sebagai Koordinator BMKG untuk seluruh wilayah Provinsi Papua Tengah.</p>
 
-    {{-- Visi dan Misi --}}
-    <div id="panel-visi-misi" class="panel-section hidden">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            {{-- Visi --}}
             <div class="flex items-center gap-3 py-3 mb-2 border-b border-gray-300">
                 <div class="w-1 h-7 bg-bmkg-blue rounded-full flex-shrink-0"></div>
                 <h1 class="font-heading font-bold text-3xl text-bmkg-blue">Visi</h1>
             </div>
-            <p class="text-gray-500 mb-10">Terwujudnya pelayanan Geofisika yang handal, tanggap dan terpercaya dalam rangka mendukung keselamatan masyarakat serta keberhasilan pembangunan di daerah / Provinsi Papua Tengah</p>
+            <p class="text-gray-600 mb-15">Terwujudnya pelayanan Geofisika yang handal, tanggap dan terpercaya dalam rangka mendukung keselamatan masyarakat serta keberhasilan pembangunan di daerah / Provinsi Papua Tengah</p>
+                
+            {{-- Misi --}}
             <div class="flex items-center gap-3 py-3 mb-2 border-b border-gray-300">
                 <div class="w-1 h-7 bg-orange-500 rounded-full flex-shrink-0"></div>
                 <h1 class="font-heading font-bold text-3xl text-bmkg-blue">Misi</h1>
             </div>
-            <ul class="list-disc pl-6 space-y-2 text-gray-500">
+            <ul class="list-disc pl-6 space-y-2 text-gray-600 mb-10">
                 <li>Mengamati dan memahami fenomena gempabumi dan tsunami di Daerah / Provinsi Papua Tengah</li>
                 <li>Menyediakan data dan pelayanan informasi dan jasa gempabumi dan tsunami yang handal dan terpercaya di Daerah / Provinsi Papua Tengah</li>
                 <li>Mengkoordinasi dan memfasilitasi kegiatan dibidang gempabumi dan tsunami di Daerah / Provinsi Papua Tengah</li>
             </ul>
+        </div>
+    </section>
+</div>
 
+{{-- Struktur Organisasi --}}
+<div id="panel-struktur" class="panel-section hidden">
+    <div class="relative overflow-hidden"
+         style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
+        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
+            <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Struktur Organisasi</h1>
+            <p class="text-gray-500 text-sm max-w-xl mx-auto">
+                Mengenal lebih dekat jajaran tim profesional yang saling bersinergi di balik setiap langkah dan pencapaian Stasiun Geofisika Kelas III Nabire.
+            </p>
         </div>
     </div>
-
-    {{-- Struktur Organisasi --}}
-    <div id="panel-struktur" class="panel-section hidden">
+    <section class="py-10 lg:py-14 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             @auth
                 @if(auth()->user()->is_admin)
@@ -86,11 +103,11 @@
                 @if($staffKepala->isNotEmpty())
                     @php $kepala = $staffKepala->first(); @endphp
                     <div class="flex justify-center">
-                        <div class="bg-white rounded-2xl p-6 w-full max-w-xs text-center flex flex-col items-center gap-4 shadow-sm hover:shadow-md transition-shadow border border-gray-50">
+                        <div class="bg-bmkg-lightblue rounded-2xl p-6 w-full max-w-xs text-center flex flex-col items-center gap-4 shadow-sm hover:shadow-md transition-shadow border border-gray-50">
                             @if($kepala->photo)
                                 <img src="{{ asset('storage/'.$kepala->photo) }}" class="w-32 h-32 rounded-full object-cover shadow-sm ring-4 ring-gray-50" alt="{{ $kepala->name }}">
                             @else
-                                <div class="w-32 h-32 rounded-full bg-bmkg-blue/10 flex items-center justify-center">
+                                <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
                                     <svg class="w-12 h-12 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                 </div>
                             @endif
@@ -115,11 +132,11 @@
                 @else
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         @foreach($staffFungsional as $s)
-                            <div class="bg-white rounded-2xl p-6 text-center flex flex-col items-center gap-4 shadow-sm hover:shadow-md transition-shadow border border-gray-50">
+                            <div class="bg-bmkg-lightblue rounded-2xl p-6 text-center flex flex-col items-center gap-4 shadow-sm hover:shadow-md transition-shadow border border-gray-50">
                                 @if($s->photo)
                                     <img src="{{ asset('storage/'.$s->photo) }}" class="w-24 h-24 rounded-full object-cover shadow-sm ring-4 ring-gray-50" alt="{{ $s->name }}">
                                 @else
-                                    <div class="w-24 h-24 rounded-full bg-orange-500/10 flex items-center justify-center">
+                                    <div class="w-24 h-24 rounded-full bg-white flex items-center justify-center">
                                         <svg class="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     </div>
                                 @endif
@@ -160,23 +177,27 @@
                 @endif
             </div> -->
         </div>
-    </div>
+    </section>
 
-    {{-- Aloptama Geofisika --}}
-    <div id="panel-aloptama" class="panel-section hidden">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center gap-3 py-3 mb-4 border-b border-gray-300">
-                <div class="w-1 h-7 bg-bmkg-blue rounded-full flex-shrink-0"></div>
-                <h1 class="font-heading font-bold text-3xl text-bmkg-blue">Alat Operasional Utama Geofisika</h1>
-            </div>
-            <p class="text-gray-500 w-full mb-10">
+</div>
+
+{{-- Aloptama Geofisika --}}
+<div id="panel-aloptama" class="panel-section">
+    <div class="relative overflow-hidden"
+         style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
+        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
+            <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Alat Operasional Utama Geofisika</h1>
+            <p class="text-gray-500 text-sm max-w-3xl mx-auto">
                 Alat Operasional Utama (Aloptama) bidang geofisika merupakan peralatan inti yang dioperasikan dan/atau menjadi tanggung jawab
                 Stasiun Geofisika Kelas III Nabire dalam mendukung pengamatan, pengolahan, serta diseminasi informasi gempabumi, tsunami,
                 dan kebumian lainnya secara cepat dan akurat kepada masyarakat di wilayah Provinsi Papua Tengah.
             </p>
-
+        </div>
+    </div>
+    <section class="py-10 lg:py-14 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
                 {{-- Seismometer --}}
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
                     <div class="relative w-full h-56 pt-3 px-3">
@@ -192,7 +213,7 @@
                             <h2 class="font-heading font-semibold text-xl text-gray-800">Seismometer</h2>
                         </div>
                         <p class="text-sm font-medium text-blue-600 mb-3">Mendeteksi &amp; merekam getaran gempabumi secara real-time</p>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-5">
+                        <p class="text-gray-600 text-sm leading-relaxed mb-5">
                             Seismometer adalah alat utama yang digunakan untuk mendeteksi dan merekam getaran gempabumi secara terus-menerus
                             (continuous) dan real-time. Sebagai bagian dari jaringan Indonesia Tsunami Early Warning System (InaTEWS), sensor
                             ini berperan penting dalam mendukung pemantauan, analisis parameter gempabumi (lokasi, kedalaman, dan magnitudo),
@@ -231,7 +252,7 @@
                             <h2 class="font-heading font-semibold text-xl text-gray-800">Accelerograph</h2>
                         </div>
                         <p class="text-sm font-medium text-orange-600 mb-3">Merekam percepatan tanah (ground acceleration)</p>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-5">
+                        <p class="text-gray-600 text-sm leading-relaxed mb-5">
                             Accelerograph merupakan instrumen yang berfungsi merekam percepatan tanah akibat getaran gempabumi, khususnya pada
                             wilayah dengan tingkat kegempaan tinggi. Data yang dihasilkan digunakan untuk mengkaji potensi tingkat kerusakan
                             akibat gempabumi serta menjadi salah satu parameter penting dalam analisis mikrozonasi dan mitigasi bencana di
@@ -262,7 +283,7 @@
                             <h2 class="font-heading font-semibold text-xl text-gray-800">Lightning Detector</h2>
                         </div>
                         <p class="text-sm font-medium text-amber-600 mb-3">Mendeteksi lokasi &amp; intensitas sambaran petir</p>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-5">
+                        <p class="text-gray-600 text-sm leading-relaxed mb-5">
                             Lightning Detector merupakan peralatan yang digunakan untuk mendeteksi dan memantau aktivitas sambaran petir di
                             suatu wilayah. Alat ini mampu mendeteksi sambaran petir dengan akurasi tinggi, termasuk lokasi, intensitas, jenis,
                             dan arah sambaran petir. Informasi yang dihasilkan dimanfaatkan untuk mendukung penyediaan data serta peringatan
@@ -295,7 +316,7 @@
                             <h2 class="font-heading font-semibold text-xl text-gray-800">WRS-NG</h2>
                         </div>
                         <p class="text-sm font-medium text-teal-600 mb-3">Menerima &amp; menyalurkan peringatan dini tsunami</p>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-5">
+                        <p class="text-gray-600 text-sm leading-relaxed mb-5">
                             WRS-NG atau Warning Receiver System - New Generation merupakan sistem penerima peringatan yang digunakan untuk
                             menerima dan menampilkan informasi gempabumi serta peringatan dini tsunami secara otomatis dan real-time. Alat
                             ini menjadi salah satu sarana utama dalam diseminasi informasi yang mendukung kecepatan dan keakuratan
@@ -314,10 +335,8 @@
 
             </div>
         </div>
-    </div>
-
-
-</section>
+    </section>
+</div>
 
 <script>
     function switchTab(name) {

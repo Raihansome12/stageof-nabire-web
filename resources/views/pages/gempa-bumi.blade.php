@@ -6,7 +6,7 @@
 {{-- Leaflet CSS: loaded inline here --}}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-<section class="">
+<section class="bg-white">
     <div class="border-b border-gray-200 bg-white sticky top-0 z-30 shadow-sm">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <nav class="flex gap-1 overflow-x-auto" id="geo-tabs">
@@ -28,12 +28,16 @@
         </div>
     </div>
 
-    <div id="panel-gempa" class="panel-section bg-white border-b border-gray-100">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
-            <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Gempa Bumi Terkini</h1>
-            <p class="text-gray-500 text-sm max-w-xl mx-auto">
-                Informasi gempa bumi terkini di Provinsi Papua Tengah
-            </p>
+    <div id="panel-gempa" class="panel-section">
+        <div class="relative overflow-hidden"
+         style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
+            <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
+            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
+                <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Gempa Bumi Terkini</h1>
+                <p class="text-gray-500 text-sm max-w-xl mx-auto">
+                    Gempa bumi terkini adalah data waktu kejadian, magnitudo, kedalaman, beserta sebaran lokasi aktivitas seismik di wilayah Provinsi Papua Tengah.
+                </p>
+            </div>
         </div>
     </div>
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-15">
@@ -116,7 +120,7 @@
             <div id="eq-scroll-wrap">
             <div id="eq-list">
                 @foreach($earthquakes as $index => $eq)
-                    <div class="eq-card"
+                    <div class="eq-card bg-bmkg-lightblue"
                          data-index="{{ $index }}"
                          data-lat="{{ $eq->latitude }}"
                          data-lng="{{ $eq->longitude }}">
@@ -130,18 +134,18 @@
 
                             {{-- Details --}}
                             <div class="flex-1 min-w-0">
-                                <p class="text-[0.82rem] text-gray-400 mb-1">
+                                <p class="text-[0.82rem] text-gray-600 mb-1">
                                     {{ $eq->occurred_at->copy()->setTimezone('Asia/Jayapura')->format('d M Y') }} — {{ $eq->occurred_at->copy()->setTimezone('Asia/Jayapura')->format('H:i:s') }} WIT
                                 </p>
                                 <p class="font-semibold text-gray-800 mb-2">
                                     {{ $eq->location_description }}
                                 </p>
                                 <div class="flex flex-wrap gap-2 text-[0.82rem] text-gray-600">
-                                    <span class="bg-gray-100 rounded-full px-3 py-1">
+                                    <span class="bg-white rounded-full px-3 py-1">
                                         📍 {{ number_format(abs($eq->latitude),3) }}° {{ $eq->latitude < 0 ? 'LS':'LU' }},
                                         {{ number_format(abs($eq->longitude),3) }}° BT
                                     </span>
-                                    <span class="bg-gray-100 rounded-full px-3 py-1">
+                                    <span class="bg-white rounded-full px-3 py-1">
                                         ⬇ Kedalaman: {{ $eq->depth_km }} km
                                     </span>
                                 </div>

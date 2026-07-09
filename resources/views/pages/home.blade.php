@@ -20,7 +20,7 @@
      SECTION 1: Terbit Terbenam Matahari Hari Ini
      ═══════════════════════════════════════════════════ --}}
 <section class="relative py-10 lg:py-14 bg-cover bg-center" style="background-image: url('{{ asset('img/bgweb.png') }}');">
-    <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.95);"></div>
+    <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
     <div class="relative z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -111,12 +111,12 @@
 {{-- ═══════════════════════════════════════════════════
      SECTION 2: Gempa Bumi Terkini + Informasi Petir
      ═══════════════════════════════════════════════════ --}}
-<section class="py-10 lg:py-14 bg-bmkg-lightblue">
+<section class="py-10 lg:py-14 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {{-- Gempa Bumi Terkini --}}
-            <div class="info-card bg-white rounded-2xl p-6 lg:p-8">
+            <div class="info-card bg-white rounded-2xl p-6 lg:p-8 border border-gray-200 shadow-sm">
                 <h2 class="font-heading font-bold text-2xl lg:text-3xl text-bmkg-black mb-1">
                     Gempa Bumi Terkini
                 </h2>
@@ -247,7 +247,7 @@
             </div>
 
             {{-- Informasi Kejadian Petir --}}
-            <div class="info-card bg-white rounded-2xl p-6 lg:p-8">
+            <div class="info-card bg-white rounded-2xl p-6 lg:p-8 border border-gray-200 shadow-sm">
                 <h2 class="font-heading font-bold text-2xl lg:text-3xl text-bmkg-black mb-1">
                     Informasi Kejadian Petir
                 </h2>
@@ -285,7 +285,7 @@
      SECTION 3: Informasi Terkini (Publikasi)
      ═══════════════════════════════════════════════════ --}}
 <section class="relative py-10 lg:py-14 bg-cover bg-center" style="background-image: url('{{ asset('img/bgweb.png') }}');">
-    <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.95);"></div>
+    <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
     <div class="relative z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
