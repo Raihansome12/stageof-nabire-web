@@ -36,7 +36,7 @@ class HomeController extends Controller
 
         // Publications
         $buletin   = Publication::active()->buletin()->latest('published_at')->first();
-        $beritas   = Publication::active()->berita()->latest('published_at')->take(2)->get();
+        $beritas   = InformasiPublik::active()->berita()->latest('published_at')->take(2)->get();
 
         return view('pages.home', compact(
             'sunrises', 'earthquake', 'lightningMap', 'lightningInfo', 'buletin', 'beritas', 'today'
@@ -254,6 +254,41 @@ class HomeController extends Controller
         $beritas     = InformasiPublik::active()->berita()->latest('published_at')->paginate(9);
         $pengumumans = InformasiPublik::active()->pengumuman()->latest('published_at')->paginate(9);
         return view('pages.informasi-publik', compact('beritas', 'pengumumans'));
+    }
+
+    /**
+     * Detail page for a single Artikel — lets visitors read the full content.
+     */
+    public function artikelShow(Artikel $artikel)
+    {
+        $isAdmin = auth()->check() && auth()->user()->is_admin;
+        abort_unless($artikel->is_active || $isAdmin, 404);
+
+        $related = Artikel::active()
+            ->where('id', '!=', $artikel->id)
+            ->latest('published_at')
+            ->take(3)
+            ->get();
+
+        return view('pages.artikel-show', compact('artikel', 'related'));
+    }
+
+    /**
+     * Detail page for a single Berita/Pengumuman — lets visitors read the full content.
+     */
+    public function informasiPublikShow(InformasiPublik $informasiPublik)
+    {
+        $isAdmin = auth()->check() && auth()->user()->is_admin;
+        abort_unless($informasiPublik->is_active || $isAdmin, 404);
+
+        $related = InformasiPublik::active()
+            ->where('type', $informasiPublik->type)
+            ->where('id', '!=', $informasiPublik->id)
+            ->latest('published_at')
+            ->take(3)
+            ->get();
+
+        return view('pages.informasi-publik-show', compact('informasiPublik', 'related'));
     }
 
     // ── Layanan Masyarakat ────────────────────────────────────────────────────

@@ -16,6 +16,8 @@ Route::get('/profil', [HomeController::class, 'profil'])->name('profil');
 Route::get('/publikasi', [HomeController::class, 'publikasi'])->name('publikasi');
 Route::get('/gempa-bumi', [HomeController::class, 'gempaBumi'])->name('gempa-bumi');
 Route::get('/informasi-publik', [HomeController::class, 'informasiPublik'])->name('informasi-publik');
+Route::get('/artikel/{artikel}', [HomeController::class, 'artikelShow'])->name('artikel.show');
+Route::get('/informasi-publik/{informasiPublik}', [HomeController::class, 'informasiPublikShow'])->name('informasi-publik.show');
 
 // Layanan Masyarakat — GET (display) + POST (submit form)
 Route::get('/layanan-masyarakat', [HomeController::class, 'layananMasyarakat'])->name('layanan-masyarakat');
@@ -147,6 +149,8 @@ Route::prefix('admin')
         Route::prefix('permohonan-data')->name('permohonan-data.')->group(function () {
             Route::get('/',                        [PermohonanDataController::class, 'index'])       ->name('index');
             Route::get('/{permohonanData}',        [PermohonanDataController::class, 'show'])        ->name('show');
+            Route::get('/{permohonanData}/pdf',            [PermohonanDataController::class, 'pdfDetail'])  ->name('pdf-detail');
+            Route::get('/{permohonanData}/pdf-selesai',     [PermohonanDataController::class, 'pdfSelesai']) ->name('pdf-selesai');
             Route::put('/{permohonanData}',        [PermohonanDataController::class, 'update'])      ->name('update');
             Route::delete('/{permohonanData}',     [PermohonanDataController::class, 'destroy'])     ->name('destroy');
             Route::delete('/',                     [PermohonanDataController::class, 'bulkDestroy']) ->name('bulk-destroy');
@@ -158,12 +162,3 @@ Route::prefix('admin')
             Route::delete('/', [SuggestionController::class, 'bulkDestroy'])->name('bulk-destroy');
         });
     });
-// PDF viewer for buletin
-Route::get('/publikasi/buletin/{buletin}/pdf', function (\App\Models\Publication $buletin) {
-    abort_unless($buletin->type === 'buletin' && $buletin->is_active, 404);
-    $pdfUrl = $buletin->file_path
-        ? asset('storage/'.$buletin->file_path)
-        : $buletin->external_url;
-    abort_unless($pdfUrl, 404);
-    return view('pages.pdf-viewer', compact('buletin', 'pdfUrl'));
-})->name('publikasi.pdf-viewer');

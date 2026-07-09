@@ -39,6 +39,10 @@
             <tbody class="divide-y divide-gray-100">
                 @foreach($artikels as $artikel)
                     <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-5 py-3 text-center">
+                            <input type="checkbox" class="row-cb rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"
+                                   value="{{ $artikel->id }}"/>
+                        </td>
                         <td class="px-5 py-3">
                             @if($artikel->photo)
                                 <img src="{{ asset('storage/'.$artikel->photo) }}" alt="{{ $artikel->title }}"

@@ -44,7 +44,7 @@
         @if($buletins->isEmpty())
             <p class="text-gray-400">Belum ada buletin tersedia.</p>
         @else
-            {{-- Cover-only grid — click to open PDF viewer --}}
+            {{-- Cover-only grid — click to open PDF modal --}}
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
                 @foreach($buletins as $bul)
                     @php
@@ -55,8 +55,9 @@
                     <div class="group relative">
                         {{-- Clickable cover --}}
                         @if($pdfUrl)
-                            <a href="{{ route('publikasi.pdf-viewer', $bul) }}"
-                               class="block rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
+                            {{-- Changed from <a> to <button> to trigger modal --}}
+                            <button type="button" onclick="openPdfModal('{{ addslashes($bul->title) }}', '{{ $pdfUrl }}')"
+                               class="w-full text-left block rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
                         @else
                             <div class="block rounded-2xl overflow-hidden shadow-sm cursor-default">
                         @endif
@@ -86,7 +87,7 @@
                             </div>
 
                         @if($pdfUrl)
-                            </a>
+                            </button>
                         @else
                             </div>
                         @endif
@@ -127,7 +128,8 @@
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($artikels as $art)
-                    <div class="info-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col">
+                    <a href="{{ route('artikel.show', $art) }}"
+                       class="info-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col hover:shadow-lg transition-shadow">
                         <div class="w-full h-44 bg-gradient-to-br from-bmkg-lightblue to-blue-100 flex items-center justify-center overflow-hidden">
                             @if($art->photo)
                                 <img src="{{ asset('storage/'.$art->photo) }}" alt="{{ $art->title }}"
@@ -143,7 +145,7 @@
                                 <p class="text-xs text-gray-500 mt-2 line-clamp-3">{{ $art->description }}</p>
                             @endif
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
             <div class="mt-8">{{ $artikels->links() }}</div>
@@ -152,7 +154,45 @@
 
 </section>
 
+{{-- ================= PDF MODAL VIEWER ================= --}}
+<div id="documentModal" class="fixed inset-0 z-50 hidden bg-black/70 flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="modalContent">
+        
+        <div class="flex justify-between items-center px-4 py-3 border-b border-gray-200 bg-gray-50">
+            <h3 class="font-semibold text-gray-800 line-clamp-1" id="modalTitle">Dokumen Buletin</h3>
+            <div class="flex items-center gap-4">
+                <a href="#" id="modalDownloadBtn" target="_blank" class="text-sm font-medium text-bmkg-blue hover:underline">Buka di Tab Baru</a>
+                <button onclick="closePdfModal()" class="text-gray-500 hover:text-red-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 w-full bg-gray-200 relative">
+            {{-- Loading spinner while iframe loads --}}
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none" id="iframeLoader">
+                <svg class="w-8 h-8 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+            
+            <iframe 
+                id="modalIframe"
+                src="" 
+                class="w-full h-full border-0 relative z-10"
+                allow="autoplay"
+                onload="document.getElementById('iframeLoader').style.display='none';">
+            </iframe>
+        </div>
+    </div>
+</div>
+
+{{-- Scripts --}}
 <script>
+    // ── Tab switching ──────────────────────────────────────────────────────────
     function switchTab(name) {
         document.querySelectorAll('.panel-section').forEach(el => el.classList.add('hidden'));
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -174,6 +214,60 @@
         const params = new URLSearchParams(window.location.search);
         switchTab(params.get('tab') || 'buletin');
     })();
+
+    // ── PDF Modal Functionality ───────────────────────────────────────────────
+    const modal = document.getElementById('documentModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalIframe = document.getElementById('modalIframe');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+    const iframeLoader = document.getElementById('iframeLoader');
+
+    function openPdfModal(title, url) {
+        // Set Title and Download Link
+        modalTitle.textContent = title;
+        modalDownloadBtn.href = url;
+        
+        // Show loader
+        iframeLoader.style.display = 'flex';
+
+        // Format Google Drive Links to ensure they use /preview for iframes
+        let iframeUrl = url;
+        if (url.includes('drive.google.com')) {
+            iframeUrl = url.replace(/\/view(\?usp=sharing)?$/, '/preview');
+        }
+
+        // Set iframe source
+        modalIframe.src = iframeUrl;
+
+        // Show the modal container
+        modal.classList.remove('hidden');
+        
+        // Slight delay to allow display:block to apply before animating opacity/scale
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closePdfModal() {
+        // Start exit animation
+        modal.classList.add('opacity-0');
+        modalContent.classList.add('scale-95');
+        
+        // Wait for animation to finish before hiding completely
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modalIframe.src = ''; // Clear iframe to stop loading/audio
+        }, 300); 
+    }
+
+    // Close modal if user clicks outside the white box (on the dark background)
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            closePdfModal();
+        }
+    });
 </script>
 
 @endsection

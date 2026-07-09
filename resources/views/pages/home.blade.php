@@ -19,8 +19,10 @@
 {{-- ═══════════════════════════════════════════════════
      SECTION 1: Terbit Terbenam Matahari Hari Ini
      ═══════════════════════════════════════════════════ --}}
-<section class="py-10 lg:py-14 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="relative py-10 lg:py-14 bg-cover bg-center" style="background-image: url('{{ asset('img/bgweb.png') }}');">
+    <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.95);"></div>
+    <div class="relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <h2 class="font-heading font-bold text-2xl lg:text-3xl text-bmkg-black mb-8">
             Terbit Terbenam Matahari Hari Ini
@@ -102,6 +104,7 @@
 
             </div>
         @endif
+    </div>
     </div>
 </section>
 
@@ -244,7 +247,7 @@
             </div>
 
             {{-- Informasi Kejadian Petir --}}
-            <div class="info-card bg-white rounded-2xl p-6 lg:p-8 ">
+            <div class="info-card bg-white rounded-2xl p-6 lg:p-8">
                 <h2 class="font-heading font-bold text-2xl lg:text-3xl text-bmkg-black mb-1">
                     Informasi Kejadian Petir
                 </h2>
@@ -281,8 +284,10 @@
 {{-- ═══════════════════════════════════════════════════
      SECTION 3: Informasi Terkini (Publikasi)
      ═══════════════════════════════════════════════════ --}}
-<section class="py-10 lg:py-14 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="relative py-10 lg:py-14 bg-cover bg-center" style="background-image: url('{{ asset('img/bgweb.png') }}');">
+    <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.95);"></div>
+    <div class="relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <h2 class="font-heading font-bold text-2xl lg:text-3xl text-bmkg-black text-center mb-8">
             Informasi Terkini
@@ -291,17 +296,18 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {{-- Buletin Bulanan --}}
-            <div class="info-card bg-white rounded-2xl overflow-hidden shadow-sm min-h-56 flex flex-col">
+            <div class="info-card bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm h-full flex flex-col">
                 @if($buletin && $buletin->thumbnail)
                     <img src="{{ asset('storage/' . $buletin->thumbnail) }}"
-                         alt="{{ $buletin->title }}"
-                         class="w-full h-40 object-cover"/>
+                        alt="{{ $buletin->title }}"
+                        class="w-full h-90 object-cover"/>
                 @else
-                    <div class="w-full h-40 bg-gradient-to-br from-bmkg-lightblue to-blue-100 flex items-center justify-center">
+                    <div class="w-full h-72 bg-gradient-to-br from-bmkg-lightblue to-blue-100 flex items-center justify-center">
                         <div class="text-4xl">📋</div>
                     </div>
                 @endif
-                <div class="p-6 flex flex-col flex-1 justify-between">
+                
+                <div class="p-6 flex flex-col flex-1 justify-between bg-white">
                     <div>
                         <span class="text-xs uppercase tracking-wider text-bmkg-teal font-semibold">Buletin Bulanan</span>
                         <h3 class="font-heading font-semibold text-gray-800 text-lg mt-1 mb-2">
@@ -317,9 +323,10 @@
                                 {{ $buletin->published_at->format('d M Y') }}
                             </span>
                             @if($buletin->file_path || $buletin->external_url)
-                                <a href="{{ route('publikasi.pdf-viewer', $buletin) }}"
-                                   target="_blank"
-                                   class="text-xs font-semibold text-bmkg-blue hover:underline">
+                                <a href="{{ $buletin->file_path ? asset('storage/' . $buletin->file_path) : $buletin->external_url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-xs font-semibold text-bmkg-blue hover:underline">
                                     Unduh →
                                 </a>
                             @endif
@@ -331,9 +338,10 @@
             {{-- Berita (2 cards stacked) --}}
             <div class="space-y-4 flex flex-col">
                 @forelse($beritas as $berita)
-                    <div class="info-card bg-white rounded-2xl overflow-hidden shadow-sm flex-1 flex flex-col">
-                        @if($berita->thumbnail)
-                            <img src="{{ asset('storage/' . $berita->thumbnail) }}"
+                    <a href="{{ route('informasi-publik.show', $berita) }}"
+                       class="info-card bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm flex-1 flex flex-col hover:shadow-lg transition-shadow">
+                        @if($berita->photo)
+                            <img src="{{ asset('storage/' . $berita->photo) }}"
                                  alt="{{ $berita->title }}"
                                  class="w-full h-28 object-cover"/>
                         @else
@@ -353,10 +361,10 @@
                             </div>
                             <p class="text-xs text-gray-400 mt-2">{{ $berita->published_at->format('d M Y') }}</p>
                         </div>
-                    </div>
+                    </a>
                 @empty
                     @for($i = 0; $i < 2; $i++)
-                        <div class="info-card bg-white rounded-2xl shadow-sm flex-1 flex items-center justify-center min-h-32">
+                        <div class="info-card bg-white rounded-2xl border border-gray-200 shadow-sm flex-1 flex items-center justify-center min-h-32">
                             <span class="text-gray-400 font-heading font-semibold text-lg">Berita</span>
                         </div>
                     @endfor
@@ -364,6 +372,7 @@
             </div>
 
         </div>
+    </div>
     </div>
 </section>
 

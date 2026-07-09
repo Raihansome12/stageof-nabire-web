@@ -34,6 +34,10 @@ return new class extends Migration
             $table->enum('status', ['baru', 'diproses', 'selesai', 'ditolak'])->default('baru');
             $table->text('catatan_admin')->nullable();
 
+            // Laporan penyelesaian (diisi admin saat status diubah ke "selesai")
+            $table->json('dokumen_terkirim')->nullable();
+            $table->timestamp('selesai_at')->nullable();
+
             $table->timestamps();
         });
     }

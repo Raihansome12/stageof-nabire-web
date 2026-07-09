@@ -23,6 +23,13 @@ class PermohonanData extends Model
         'file_proposal',
         'status',
         'catatan_admin',
+        'dokumen_terkirim',
+        'selesai_at',
+    ];
+
+    protected $casts = [
+        'dokumen_terkirim' => 'array',
+        'selesai_at'       => 'datetime',
     ];
 
     // ── Scopes ────────────────────────────────────────────────────────────────
@@ -45,6 +52,16 @@ class PermohonanData extends Model
     public function labelJenisPermohonan(): string
     {
         return $this->jenis_permohonan === 'pnbp' ? 'PNBP' : 'Tarif Nol Rupiah';
+    }
+
+    public function labelLingkupKegiatan(): string
+    {
+        return match ($this->lingkup_kegiatan) {
+            'pendidikan' => 'Pendidikan',
+            'penelitian' => 'Penelitian',
+            'sosial'     => 'Sosial/Kemanusiaan',
+            default      => $this->lingkup_kegiatan ? ucfirst($this->lingkup_kegiatan) : '-',
+        };
     }
 
     public function badgeStatus(): array

@@ -46,7 +46,8 @@
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($beritas as $item)
-                    <div class="info-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col">
+                    <a href="{{ route('informasi-publik.show', $item) }}"
+                       class="info-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col hover:shadow-lg transition-shadow">
                         <div class="w-full h-44 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center overflow-hidden">
                             @if($item->photo)
                                 <img src="{{ asset('storage/'.$item->photo) }}" alt="{{ $item->title }}" class="w-full h-full object-cover"/>
@@ -61,7 +62,7 @@
                                 <p class="text-xs text-gray-500 mt-2 line-clamp-3">{{ $item->description }}</p>
                             @endif
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
             <div class="mt-6">{{ $beritas->links() }}</div>
@@ -91,7 +92,8 @@
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($pengumumans as $item)
-                    <div class="info-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col">
+                    <a href="{{ route('informasi-publik.show', $item) }}"
+                       class="info-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col hover:shadow-lg transition-shadow">
                         <div class="w-full h-44 bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center overflow-hidden">
                             @if($item->photo)
                                 <img src="{{ asset('storage/'.$item->photo) }}" alt="{{ $item->title }}" class="w-full h-full object-cover"/>
@@ -106,7 +108,7 @@
                                 <p class="text-xs text-gray-500 mt-2 line-clamp-3">{{ $item->description }}</p>
                             @endif
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
             <div class="mt-6">{{ $pengumumans->links() }}</div>

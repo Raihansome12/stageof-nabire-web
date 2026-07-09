@@ -54,6 +54,10 @@
                     <tbody class="divide-y divide-gray-100">
                         @foreach($items as $item)
                             <tr class="hover:bg-gray-50">
+                                <td class="px-5 py-3 text-center">
+                                    <input type="checkbox" class="row-cb row-cb-{{ $typeKey }} rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"
+                                           value="{{ $item->id }}"/>
+                                </td>
                                 <td class="px-5 py-3">
                                     @if($item->photo)
                                         <img src="{{ asset('storage/'.$item->photo) }}" class="w-12 h-12 object-cover rounded-lg border border-gray-200"/>

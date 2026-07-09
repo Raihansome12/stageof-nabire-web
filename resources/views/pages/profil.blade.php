@@ -134,7 +134,7 @@
             </div>
 
             {{-- PPNPN --}}
-            <div>
+            <!-- <div>
                 <div class="text-center mb-8">
                     <h1 class="text-2xl lg:text-3xl font-bold text-bmkg-blue">Pegawai Pemerintah Non Pegawai Negeri</h1>
                 </div>
@@ -158,7 +158,7 @@
                         @endforeach
                     </div>
                 @endif
-            </div>
+            </div> -->
         </div>
     </div>
 
