@@ -68,7 +68,7 @@
                         <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"
                                class="rounded border-gray-300 text-bmkg-blue focus:ring-bmkg-blue cursor-pointer"/>
                     </th>
-                    <th class="text-left px-4 py-3 font-semibold text-gray-600">Waktu (UTC)</th>
+                    <th class="text-left px-4 py-3 font-semibold text-gray-600">Waktu (WIT)</th>
                     <th class="text-left px-4 py-3 font-semibold text-gray-600">Lokasi</th>
                     <th class="text-left px-4 py-3 font-semibold text-gray-600">Mag.</th>
                     <th class="text-left px-4 py-3 font-semibold text-gray-600 hidden sm:table-cell">Kedalaman</th>
@@ -85,8 +85,8 @@
                                    value="{{ $eq->id }}"/>
                         </td>
                         <td class="px-4 py-3 text-gray-600 whitespace-nowrap">
-                            {{ $eq->occurred_at->format('d M Y') }}<br>
-                            <span class="text-xs text-gray-400">{{ $eq->occurred_at->format('H:i:s') }}</span>
+                            {{ $eq->occurred_at->setTimezone('Asia/Jayapura')->format('d M Y') }}<br>
+                            <span class="text-xs text-gray-400">{{ $eq->occurred_at->setTimezone('Asia/Jayapura')->format('H:i:s') }}</span>
                         </td>
                         <td class="px-4 py-3 font-medium text-gray-800 max-w-xs">
                             <div class="line-clamp-2">{{ $eq->location_description }}</div>

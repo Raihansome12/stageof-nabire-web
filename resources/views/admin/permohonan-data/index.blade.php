@@ -113,8 +113,8 @@
                             </span>
                         </td>
                         <td class="px-5 py-3 text-gray-500 hidden lg:table-cell whitespace-nowrap text-xs">
-                            {{ $item->created_at->format('d M Y') }}<br>
-                            {{ $item->created_at->format('H:i') }} WIT
+                            {{ $item->created_at->setTimezone('Asia/Jayapura')->format('d M Y') }}<br>
+                            {{ $item->created_at->setTimezone('Asia/Jayapura')->format('H:i') }} WIT
                         </td>
                         <td class="px-5 py-3">
                             <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium {{ $badge['class'] }}">

@@ -19,14 +19,14 @@
         <div class="footer-title">Laporan Penyelesaian Permohonan Data</div>
         <div>
             Waktu pengajuan permohonan data
-            {{ $item->created_at->translatedFormat('d F Y') }} pukul {{ $item->created_at->format('H:i') }} WIT
+            {{ $item->created_at->setTimezone('Asia/Jayapura')->translatedFormat('d F Y') }} pukul {{ $item->created_at->setTimezone('Asia/Jayapura')->format('H:i') }} WIT
             &nbsp;·&nbsp;
             Waktu penyelesaian permohonan data
-            {{ $item->selesai_at?->translatedFormat('d F Y') ?? '-' }}
-            @if($item->selesai_at) pukul {{ $item->selesai_at->format('H:i') }} WIT @endif
+            {{ $item->selesai_at?->setTimezone('Asia/Jayapura')->translatedFormat('d F Y') ?? '-' }}
+            @if($item->selesai_at) pukul {{ $item->selesai_at->setTimezone('Asia/Jayapura')->format('H:i') }} WIT @endif
             &nbsp;·&nbsp;
             <br>
-            Laporan dibuat pada {{ $printedAt->translatedFormat('d F Y') }} pukul {{ $printedAt->format('H:i') }} WIT
+            Laporan dibuat pada {{ $printedAt->setTimezone('Asia/Jayapura')->translatedFormat('d F Y') }} pukul {{ $printedAt->setTimezone('Asia/Jayapura')->format('H:i') }} WIT
         </div>
     </footer>
 

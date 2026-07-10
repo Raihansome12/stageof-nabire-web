@@ -13,9 +13,9 @@
         <div class="footer-title">Laporan PDF Pemohon Meminta Permohonan Data</div>
         <div>
             Pemohon mengajukan permohonan pada
-            {{ $item->created_at->translatedFormat('d F Y') }} pukul {{ $item->created_at->format('H:i') }} WIT
+            {{ $item->created_at->setTimezone('Asia/Jayapura')->translatedFormat('d F Y') }} pukul {{ $item->created_at->setTimezone('Asia/Jayapura')->format('H:i') }} WIT
             &nbsp;·&nbsp;
-            Dokumen dicetak pada {{ $printedAt->translatedFormat('d F Y') }} pukul {{ $printedAt->format('H:i') }} WIT
+            Dokumen dicetak pada {{ $printedAt->setTimezone('Asia/Jayapura')->translatedFormat('d F Y') }} pukul {{ $printedAt->setTimezone('Asia/Jayapura')->format('H:i') }} WIT
         </div>
     </footer>
 

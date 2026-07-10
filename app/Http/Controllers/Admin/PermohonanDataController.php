@@ -71,7 +71,7 @@ class PermohonanDataController extends Controller
         if ($data['status'] === 'selesai') {
             // Catat waktu penyelesaian hanya pada saat pertama kali menjadi "selesai"
             // agar footer laporan PDF konsisten meski disimpan ulang.
-            $data['selesai_at'] = $permohonanData->selesai_at ?? Carbon::now();
+            $data['selesai_at'] = $permohonanData->selesai_at ?? Carbon::now('Asia/Jayapura');
         } else {
             $data['dokumen_terkirim'] = null;
             $data['selesai_at'] = null;
@@ -94,7 +94,7 @@ class PermohonanDataController extends Controller
 
         $pdf = Pdf::loadView('admin.permohonan-data.pdf.detail', [
             'item'      => $permohonanData,
-            'printedAt' => Carbon::now(),
+            'printedAt' => Carbon::now('Asia/Jayapura'),
         ])->setPaper('a4', 'portrait');
 
         return $pdf->stream("detail-permohonan-{$permohonanData->id}.pdf");
@@ -109,7 +109,7 @@ class PermohonanDataController extends Controller
 
         $pdf = Pdf::loadView('admin.permohonan-data.pdf.selesai', [
             'item'      => $permohonanData,
-            'printedAt' => Carbon::now(),
+            'printedAt' => Carbon::now('Asia/Jayapura'),
         ])->setPaper('a4', 'portrait');
 
         return $pdf->stream("surat-pengantar-{$permohonanData->id}.pdf");

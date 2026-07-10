@@ -70,7 +70,7 @@
                 </div>
             </div>
             <p class="text-xs text-gray-400 mt-3">
-                Dikirim: {{ $item->created_at->format('d M Y, H:i') }} WIT &nbsp;·&nbsp; ID #{{ $item->id }}
+                Dikirim: {{ $item->created_at->setTimezone('Asia/Jayapura')->format('d M Y, H:i') }} WIT &nbsp;·&nbsp; ID #{{ $item->id }}
             </p>
         </div>
 

@@ -14,10 +14,10 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                        Waktu Kejadian (UTC) <span class="text-red-500">*</span>
+                        Waktu Kejadian (WIT) <span class="text-red-500">*</span>
                     </label>
                     <input type="datetime-local" name="occurred_at" required
-                           value="{{ old('occurred_at', $earthquake?->occurred_at?->format('Y-m-d\TH:i')) }}"
+                           value="{{ old('occurred_at', $earthquake?->occurred_at?->setTimezone('Asia/Jayapura')->format('Y-m-d\TH:i')) }}"
                            class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue"/>
                     @error('occurred_at')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
