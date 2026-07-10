@@ -3,14 +3,6 @@
 
 @section('content')
 
-@php
-    $hasShakemap = $earthquake && !empty($earthquake->shakemap_image);
-    $hasGeoData  = $earthquake && !$hasShakemap
-        && $earthquake->latitude !== null
-        && $earthquake->longitude !== null
-        && $earthquake->magnitude !== null;
-@endphp
-
 @if($hasGeoData)
     {{-- Leaflet CSS: only needed when we render the fallback earthquake map --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />

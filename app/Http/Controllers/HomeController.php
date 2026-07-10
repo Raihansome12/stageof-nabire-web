@@ -21,14 +21,33 @@ class HomeController extends Controller
     public function index()
     {
         $today = Carbon::today();
+        // Terbit Terbenam
+        $sunrises = Sunrise::whereDate('date', $today)->take(8)->get();
 
-        // Terbit Terbenam - today's entries (show up to 8)
-        $sunrises = Sunrise::whereDate('date', $today)
-            ->take(8)
-            ->get();
+        // --- EARTHQUAKE LOGIC ---
+        $twentyFourHoursAgo = Carbon::now()->subHours(24);
+        
+        // Step 1: Look for an earthquake WITH a ShakeMap that occurred in the last 24 hours
+        $earthquake = Earthquake::where('occurred_at', '>=', $twentyFourHoursAgo)
+            ->whereNotNull('shakemap_image')
+            ->where('shakemap_image', '!=', '')
+            ->latest('occurred_at')
+            ->first();
 
-        // Latest earthquake
-        $earthquake = Earthquake::latest('occurred_at')->first();
+        // Step 2: If no ShakeMap earthquake exists in the last 24 hours, 
+        // just get the absolute latest earthquake (even if it has no ShakeMap)
+        if (!$earthquake) {
+            $earthquake = Earthquake::latest('occurred_at')->first();
+        }
+
+        // Step 3: Set variables for your Blade template so it knows how to display it
+        $hasShakemap = $earthquake && !empty($earthquake->shakemap_image);
+        // Only true if there is NO Shakemap, AND we have the required map coordinates/data
+        $hasGeoData = $earthquake 
+            && !$hasShakemap
+            && $earthquake->latitude !== null 
+            && $earthquake->longitude !== null 
+            && $earthquake->magnitude !== null;
 
         // Latest lightning info
         $lightningMap = LightningMap::latest()->first();
@@ -39,7 +58,15 @@ class HomeController extends Controller
         $beritas   = InformasiPublik::active()->berita()->latest('published_at')->take(2)->get();
 
         return view('pages.home', compact(
-            'sunrises', 'earthquake', 'lightningMap', 'lightningInfo', 'buletin', 'beritas', 'today'
+            'sunrises', 
+            'earthquake', 
+            'hasShakemap', 
+            'hasGeoData',  
+            'lightningMap', 
+            'lightningInfo', 
+            'buletin', 
+            'beritas', 
+            'today'
         ));
     }
 
@@ -288,7 +315,12 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        return view('pages.informasi-publik-show', compact('informasiPublik', 'related'));
+        $isBerita = $informasiPublik->type === 'berita';
+        $label    = $isBerita ? 'Berita' : 'Pengumuman';
+        $accent   = $isBerita ? 'bmkg-teal' : 'amber-600';
+        $icon     = $isBerita ? '📰' : '📢';
+
+        return view('pages.informasi-publik-show', compact('informasiPublik', 'related', 'isBerita', 'label', 'accent', 'icon'));
     }
 
     // ── Layanan Masyarakat ────────────────────────────────────────────────────

@@ -10,4 +10,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 
-Schedule::job(new FetchLatestEarthquake)->everyMinute();
+Schedule::job(new FetchLatestEarthquake)->everySixHours();

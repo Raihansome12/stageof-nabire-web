@@ -46,24 +46,33 @@ class FetchLatestEarthquake implements ShouldQueue
             $gempa = $xml->gempa;
 
             // Parse occurred_at from BMKG's DateTime field (ISO 8601)
-            // e.g. "2024-03-22T07:47:06+07:00"
             $occurredAt = Carbon::parse((string) $gempa->DateTime)->utc();
 
-            // Parse coordinates: BMKG gives "longitude,latitude" in point/coordinates
-            // Also available separately as Lintang (lat) and Bujur (lon)
+            // Parse coordinates
             $latitude  = $this->parseCoordinate((string) $gempa->Lintang);
             $longitude = $this->parseCoordinate((string) $gempa->Bujur);
 
-            // Parse depth: "10 km" → 10
+            // --- LOCATION FILTER START ---
+            // Target: minlatitude=-6, maxlatitude=0, minlongitude=132, maxlongitude=138
+            if (! ($latitude >= -6 && $latitude <= 0 && $longitude >= 132 && $longitude <= 138)) {
+                Log::info('FetchLatestEarthquake: Ignored. Outside target region.', [
+                    'latitude'  => $latitude,
+                    'longitude' => $longitude,
+                    'location'  => (string) $gempa->Wilayah
+                ]);
+                return; // Stop here, do not save to database
+            }
+            // --- LOCATION FILTER END ---
+
+            // Parse depth
             $depthKm = (int) filter_var((string) $gempa->Kedalaman, FILTER_SANITIZE_NUMBER_INT);
 
-            // Shakemap path from BMKG, e.g. "20240322074706.mmi.jpg"
-            // BMKG serves it at https://static.bmkg.go.id/{Shakemap}
+            // Shakemap path
             $shakemapUrl = trim((string) $gempa->Shakemap) !== ''
                 ? 'https://static.bmkg.go.id/' . trim((string) $gempa->Shakemap)
                 : null;
 
-            // Use updateOrCreate keyed on occurred_at so re-runs are idempotent
+            // Save to database
             Earthquake::updateOrCreate(
                 ['occurred_at' => $occurredAt],
                 [
@@ -93,14 +102,12 @@ class FetchLatestEarthquake implements ShouldQueue
 
     /**
      * Convert BMKG coordinate strings to signed float.
-     * Examples: "2.50 LS" → -2.50 | "140.25 BT" → 140.25
      */
     private function parseCoordinate(string $value): float
     {
         $value   = trim($value);
         $numeric = (float) filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
-        // Southern latitude (LS) and western longitude (BB) are negative
         if (str_contains(strtoupper($value), 'LS') || str_contains(strtoupper($value), 'BB')) {
             $numeric = -abs($numeric);
         }

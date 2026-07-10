@@ -2,13 +2,6 @@
 @section('title', $informasiPublik->title . ' - Stasiun Geofisika Kelas III Nabire')
 @section('content')
 
-@php
-    $isBerita = $informasiPublik->type === 'berita';
-    $label    = $isBerita ? 'Berita' : 'Pengumuman';
-    $accent   = $isBerita ? 'bmkg-teal' : 'amber-600';
-    $icon     = $isBerita ? '📰' : '📢';
-@endphp
-
 <div class="border-b border-gray-200 bg-white shadow-sm">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <a href="{{ route('informasi-publik', ['tab' => $informasiPublik->type]) }}"
