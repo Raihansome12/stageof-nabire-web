@@ -4,6 +4,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Login Admin — Stasiun Geofisika Nabire</title>
+    <link rel="icon" href="{{ asset('img/bmkg-logo.png') }}" type="image/png" />
+    <link rel="shortcut icon" href="{{ asset('img/bmkg-logo.png') }}" type="image/png" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-bmkg-lightblue min-h-screen flex items-center justify-center px-4">

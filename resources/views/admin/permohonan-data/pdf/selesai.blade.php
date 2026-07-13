@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Surat Pengantar Permohonan Data #{{ $item->id }}</title>
+    <link rel="icon" href="{{ asset('img/bmkg-logo.png') }}" type="image/png" />
+    <link rel="shortcut icon" href="{{ asset('img/bmkg-logo.png') }}" type="image/png" />
     @include('admin.permohonan-data.pdf._styles')
     <style>
         .yth-table { width: 100%; margin-bottom: 14px; }
