@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\EarthquakeController;
 use App\Http\Controllers\Admin\InformasiPublikController;
 use App\Http\Controllers\Admin\PermohonanDataController;
 use App\Http\Controllers\Admin\SuggestionController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ApiTokenController;
 
 // ── Public routes ─────────────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -160,5 +162,14 @@ Route::prefix('admin')
             Route::get('/', [SuggestionController::class, 'index'])->name('index');
             Route::delete('/{suggestion}', [SuggestionController::class, 'destroy'])->name('destroy');
             Route::delete('/', [SuggestionController::class, 'bulkDestroy'])->name('bulk-destroy');
+        });
+
+        // ── Pengaturan: Akun Admin & Token API ─────────────────────────────
+        Route::resource('users', UserController::class)->except(['show']);
+
+        Route::prefix('tokens')->name('tokens.')->group(function () {
+            Route::get('/', [ApiTokenController::class, 'index'])->name('index');
+            Route::post('/', [ApiTokenController::class, 'store'])->name('store');
+            Route::delete('/{token}', [ApiTokenController::class, 'destroy'])->name('destroy');
         });
     });
