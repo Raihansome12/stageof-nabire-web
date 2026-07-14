@@ -11,12 +11,15 @@ use App\Http\Controllers\Admin\PermohonanDataController;
 use App\Http\Controllers\Admin\SuggestionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ApiTokenController;
+use App\Http\Controllers\Admin\HilalController;
 
 // ── Public routes ─────────────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/profil', [HomeController::class, 'profil'])->name('profil');
 Route::get('/publikasi', [HomeController::class, 'publikasi'])->name('publikasi');
-Route::get('/gempa-bumi', [HomeController::class, 'gempaBumi'])->name('gempa-bumi');
+Route::get('/gempa-bumi', function () {
+    return redirect()->route('informasi-geofisika', ['tab' => 'gempa']);
+})->name('gempa-bumi');
 Route::get('/informasi-publik', [HomeController::class, 'informasiPublik'])->name('informasi-publik');
 Route::get('/artikel/{artikel}', [HomeController::class, 'artikelShow'])->name('artikel.show');
 Route::get('/informasi-publik/{informasiPublik}', [HomeController::class, 'informasiPublikShow'])->name('informasi-publik.show');
@@ -128,6 +131,17 @@ Route::prefix('admin')
             Route::delete('/',               [GeofisikaController::class, 'lightningBulkDestroy'])->name('bulk-destroy');
             Route::put('/{lightning}/stats',     [GeofisikaController::class, 'syncStats'])    ->name('stats.sync');
             Route::put('/{lightning}/densities', [GeofisikaController::class, 'syncDensities'])->name('densities.sync');
+        });
+
+        // Geofisika — Informasi Hilal
+        Route::prefix('hilal')->name('hilal.')->group(function () {
+            Route::get('/',              [HilalController::class, 'index'])   ->name('index');
+            Route::get('/create',        [HilalController::class, 'create'])  ->name('create');
+            Route::post('/',             [HilalController::class, 'store'])   ->name('store');
+            Route::get('/{hilal}/edit',  [HilalController::class, 'edit'])    ->name('edit');
+            Route::put('/{hilal}',       [HilalController::class, 'update'])  ->name('update');
+            Route::delete('/{hilal}',    [HilalController::class, 'destroy']) ->name('destroy');
+            Route::delete('/',           [HilalController::class, 'bulkDestroy'])->name('bulk-destroy');
         });
 
         // Informasi Publik

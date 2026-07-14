@@ -15,10 +15,10 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-bmkg-lightblue min-h-screen flex flex-col">
+<body class="bg-white min-h-screen flex flex-col">
 
     {{-- Top Bar --}}
-    <div class="bg-white border-b border-gray-100 text-sm text-gray-500 px-4 py-1.5 text-right">
+    <div class="bg-white border-b border-gray-100 text-base text-gray-500 px-4 py-1.5 text-right">
         <span id="live-date"></span>
         &ndash;
         <span id="live-clock" class="font-bold text-green-600"></span> WIT
@@ -46,7 +46,6 @@
                         $navItems = [
                             ['route' => 'profil',               'label' => 'Profil'],
                             ['route' => 'publikasi',            'label' => 'Publikasi'],
-                            ['route' => 'gempa-bumi',           'label' => 'Gempa Bumi'],
                             ['route' => 'informasi-geofisika',  'label' => 'Informasi Geofisika'],
                             ['route' => 'informasi-publik',     'label' => 'Informasi Publik'],
                             ['route' => 'layanan-masyarakat',   'label' => 'Layanan Masyarakat'],

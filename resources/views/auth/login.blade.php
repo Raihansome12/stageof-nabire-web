@@ -46,15 +46,6 @@
                         class="w-full bg-bmkg-blue text-white font-semibold py-2.5 rounded-lg text-sm hover:opacity-90 transition-opacity">
                     Masuk
                 </button>
-
-                <div class="flex items-center justify-between pt-1 text-sm">
-                    <a href="{{ route('admin.users.index') }}" class="text-gray-500 hover:text-bmkg-blue transition-colors">
-                        Lupa password?
-                    </a>
-                    <a href="{{ route('admin.users.create') }}" class="text-gray-500 hover:text-bmkg-blue transition-colors">
-                        Buat akun
-                    </a>
-                </div>
             </form>
         </div>
 

@@ -1,34 +1,9 @@
-@extends('layouts.app')
-@section('title', 'Gempa Bumi - Stasiun Geofisika Kelas III Nabire')
-
-@section('content')
-
-{{-- Leaflet CSS: loaded inline here --}}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
-<section class="bg-white">
-    <div class="border-b border-gray-200 bg-white sticky top-0 z-30 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <nav class="flex gap-1 overflow-x-auto" id="geo-tabs">
-                <a
-                    href="{{ route('home') }}"
-                    id="tab-beranda"
-                    class="flex-shrink-0 px-8 py-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-all duration-200 whitespace-nowrap"
-                >
-                    Beranda
-                </a>
-                <button
-                    onclick="switchTab('gempa')"
-                    id="tab-gempa"
-                    class="tab-btn flex-shrink-0 px-8 py-4 text-sm font-semibold border-b-2 border-bmkg-blue text-bmkg-blue transition-all duration-200 whitespace-nowrap"
-                    >
-                    Gempa Bumi Terkini
-                </button>
-            </nav>
-        </div>
-    </div>
-
-    <div id="panel-gempa" class="panel-section">
+{{-- ============================================================
+     PANEL: Gempa Bumi Terkini
+     Data: $earthquakes, $eqMapData (from HomeController::informasiGeofisika)
+     Leaflet CSS is loaded once in the parent informasi-geofisika.blade.php <head>.
+     ============================================================ --}}
+<div id="panel-gempa" class="panel-section hidden bg-white">
         <div class="relative overflow-hidden"
          style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
             <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
@@ -39,7 +14,6 @@
                 </p>
             </div>
         </div>
-    </div>
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-15">
     {{-- Admin quick-edit bar --}}
     <div class="flex justify-end pb-5">
@@ -55,8 +29,19 @@
     </div>
     
 
+
+    {{-- Info box: link to national earthquake archive --}}
+    <div class="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3.5 mb-5 text-sm text-blue-800">
+        <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <p>
+            Untuk mengetahui pusat arsip data kegempaan dapat mengunjungi laman
+            <a href="https://repogempa.bmkg.go.id/" target="_blank" rel="noopener" class="font-semibold underline hover:text-blue-900">repogempa.bmkg.go.id</a>.
+        </p>
+    </div>
+
     {{-- ── Filter bar ──────────────────────────────────── --}}
-            <form method="GET" action="{{ route('gempa-bumi') }}" id="filter-form">
+            <form method="GET" action="{{ route('informasi-geofisika') }}" id="filter-form">
+                <input type="hidden" name="tab" value="gempa">
                 <div class="filter-bar">
 
                     <div class="fg">
@@ -85,7 +70,7 @@
 
                     <div class="filter-actions">
                         <button type="submit" class="btn-f btn-apply">Terapkan</button>
-                        <a href="{{ route('gempa-bumi') }}" class="btn-f btn-reset">Reset</a>
+                        <a href="{{ route('informasi-geofisika', ['tab' => 'gempa']) }}" class="btn-f btn-reset">Reset</a>
                     </div>
                 </div>
             </form>
@@ -165,40 +150,9 @@
 
         @endif
     </div>
-</section>
+</div>{{-- end #panel-gempa --}}
 
-<script>
-    // ── Tab switching (prepare for future sections) ─────────────────────────
-    function switchTab(name) {
-        document.querySelectorAll('.panel-section').forEach(el => el.classList.add('hidden'));
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('border-bmkg-blue', 'text-bmkg-blue');
-            btn.classList.add('border-transparent', 'text-gray-500');
-        });
-
-        const panel = document.getElementById('panel-' + name);
-        if (panel) panel.classList.remove('hidden');
-
-        const activeTab = document.getElementById('tab-' + name);
-        if (activeTab) {
-            activeTab.classList.add('border-bmkg-blue', 'text-bmkg-blue');
-            activeTab.classList.remove('border-transparent', 'text-gray-500');
-        }
-
-        // Keep the URL param in sync (optional; helps bookmarking future tabs)
-        const url = new URL(window.location.href);
-        url.searchParams.set('tab', name);
-        window.history.replaceState({}, '', url.toString());
-    }
-
-    // Default active tab for this page: gempa
-    (function () {
-        const params = new URLSearchParams(window.location.search);
-        const tab = params.get('tab') || 'gempa';
-        switchTab(tab);
-    })();
-</script>
-
+@push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════
@@ -333,4 +287,4 @@ fromInput.addEventListener('change', () => {
 toInput.addEventListener('change', validateDates);
 filterForm.addEventListener('submit', e => { if (!validateDates()) e.preventDefault(); });
 </script>
-@endsection
+@endpush

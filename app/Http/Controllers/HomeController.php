@@ -11,6 +11,7 @@ use App\Models\Earthquake;
 use App\Models\LightningMap;
 use App\Models\LightningPeriod;
 use App\Models\Publication;
+use App\Models\HilalBulletin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -108,38 +109,26 @@ class HomeController extends Controller
             ->orderBy('date')
             ->get();
 
+        // ── Gempa Bumi Terkini (merged in as its own tab) ──────────────────
+        [$earthquakes, $eqMapData] = $this->buildEarthquakeData($request);
+
+        // ── Informasi Hilal (merged in as its own tab) ─────────────────────
+        $hilals = HilalBulletin::active()->latest('published_at')->paginate(10, ['*'], 'hilal_page');
+
         return view('pages.informasi-geofisika', compact(
-            'sunrisesTable', 'month', 'year', 'location', 'ttmRegions'
+            'sunrisesTable', 'month', 'year', 'location', 'ttmRegions',
+            'earthquakes', 'eqMapData', 'hilals'
         ));
     }
 
     /**
-     * API endpoint: return distinct locations matching a search string.
-     * Route: GET /api/ttm/locations?q={query}
+     * Build the filtered earthquake list + map payload shared by the
+     * "Gempa Bumi Terkini" tab on the Informasi Geofisika page.
      */
-    public function ttmLocations(Request $request)
-    {
-        $q = $request->input('q', '');
-
-        if (strlen($q) < 2) {
-            return response()->json([]);
-        }
-
-        $locations = Sunrise::select('location')
-            ->where('location', 'like', '%' . $q . '%')
-            ->distinct()
-            ->orderBy('location')
-            ->limit(10)
-            ->pluck('location');
-
-        return response()->json($locations);
-    }
-
-    public function gempaBumi(Request $request)
+    private function buildEarthquakeData(Request $request): array
     {
         $query = Earthquake::latest('occurred_at');
 
-        // Filter: magnitude
         if ($request->filled('mag')) {
             if ($request->mag === 'gte5') {
                 $query->where('magnitude', '>=', 5);
@@ -148,7 +137,6 @@ class HomeController extends Controller
             }
         }
 
-        // Filter: date range (max 30 days, enforced server-side)
         if ($request->filled('date_from') && $request->filled('date_to')) {
             $from = Carbon::parse($request->date_from)->startOfDay();
             $to   = Carbon::parse($request->date_to)->endOfDay();
@@ -176,7 +164,29 @@ class HomeController extends Controller
             ];
         })->toArray();
 
-        return view('pages.gempa-bumi', compact('earthquakes', 'eqMapData'));
+        return [$earthquakes, $eqMapData];
+    }
+
+    /**
+     * API endpoint: return distinct locations matching a search string.
+     * Route: GET /api/ttm/locations?q={query}
+     */
+    public function ttmLocations(Request $request)
+    {
+        $q = $request->input('q', '');
+
+        if (strlen($q) < 2) {
+            return response()->json([]);
+        }
+
+        $locations = Sunrise::select('location')
+            ->where('location', 'like', '%' . $q . '%')
+            ->distinct()
+            ->orderBy('location')
+            ->limit(10)
+            ->pluck('location');
+
+        return response()->json($locations);
     }
 
     public function petirData(Request $request)
