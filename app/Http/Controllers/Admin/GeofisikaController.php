@@ -367,7 +367,7 @@ class GeofisikaController extends Controller
         $data = $request->validate([
             'year'       => 'required|integer|min:2000|max:2100',
             'month'      => 'required|integer|min:1|max:12',
-            'type'       => 'required|in:dasarian,bulanan,weekly',
+            'type'       => 'required|in:dasarian,bulanan,mingguan',
             'label'      => 'required|string|max:100',
             'start_date' => 'required|date',
             'end_date'   => 'required|date|after_or_equal:start_date',
@@ -400,7 +400,7 @@ class GeofisikaController extends Controller
         $data = $request->validate([
             'year'       => 'required|integer|min:2000|max:2100',
             'month'      => 'required|integer|min:1|max:12',
-            'type'       => 'required|in:dasarian,bulanan,weekly',
+            'type'       => 'required|in:dasarian,bulanan,mingguan',
             'label'      => 'required|string|max:100',
             'start_date' => 'required|date',
             'end_date'   => 'required|date|after_or_equal:start_date',

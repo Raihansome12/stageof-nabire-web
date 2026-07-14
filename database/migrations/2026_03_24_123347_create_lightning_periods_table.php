@@ -12,7 +12,7 @@ return new class extends Migration {
 
             $table->integer('year');
             $table->integer('month'); // 1–12
-            $table->enum('type', ['weekly', 'monthly', 'dasarian']);
+            $table->enum('type', ['mingguan', 'bulanan', 'dasarian']);
             $table->string('label'); // "Week 1", "Dasarian I"
 
             $table->date('start_date');
