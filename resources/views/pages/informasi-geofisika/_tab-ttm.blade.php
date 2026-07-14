@@ -3,10 +3,8 @@
      Data: $sunrisesTable, $month, $year, $location, $ttmRegions (from HomeController::informasiGeofisika)
      ============================================================ --}}
 <div id="panel-ttm" class="panel-section">
-    <div class="relative overflow-hidden"
-    style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
-        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
-        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
+    <div class="bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center border-b border-gray-200">
             <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Terbit-Terbenam Matahari</h1>
             <p class="text-gray-500 text-sm max-w-xl mx-auto">
                 Informasi terbit-terbenam Matahari adalah data waktu matahari terbit, transit, dan terbenam

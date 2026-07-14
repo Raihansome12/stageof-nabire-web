@@ -11,9 +11,8 @@
 {{-- ═══════════════════════════════════════════════════
      SECTION 1: Terbit Terbenam Matahari Hari Ini
      ═══════════════════════════════════════════════════ --}}
-<section class="relative py-10 lg:py-14 bg-cover bg-center" style="background-image: url('{{ asset('img/bgweb.png') }}');">
-    <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
-    <div class="relative z-10">
+<section class="py-10 lg:py-14 bg-white">
+    <div class="">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <h2 class="font-heading font-bold text-2xl lg:text-3xl text-bmkg-black mb-8">
@@ -103,12 +102,12 @@
 {{-- ═══════════════════════════════════════════════════
      SECTION 2: Gempa Bumi Terkini + Informasi Petir
      ═══════════════════════════════════════════════════ --}}
-<section class="py-10 lg:py-14 bg-white">
+<section class="py-10 lg:py-14 bg-bmkg-lightblue">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {{-- Gempa Bumi Terkini --}}
-            <div class="info-card bg-white rounded-2xl p-6 lg:p-8 border border-gray-200 shadow-sm">
+            <div class="info-card bg-white rounded-2xl p-6 lg:p-8 ">
                 <h2 class="font-heading font-bold text-2xl lg:text-3xl text-bmkg-black mb-1">
                     Gempa Bumi Terkini
                 </h2>
@@ -239,7 +238,7 @@
             </div>
 
             {{-- Informasi Kejadian Petir --}}
-            <div class="info-card bg-white rounded-2xl p-6 lg:p-8 border border-gray-200 shadow-sm">
+            <div class="info-card bg-white rounded-2xl p-6 lg:p-8">
                 <h2 class="font-heading font-bold text-2xl lg:text-3xl text-bmkg-black mb-1">
                     Informasi Kejadian Petir
                 </h2>
@@ -276,9 +275,8 @@
 {{-- ═══════════════════════════════════════════════════
      SECTION 3: Informasi Terkini (Publikasi)
      ═══════════════════════════════════════════════════ --}}
-<section class="relative py-10 lg:py-14 bg-cover bg-center" style="background-image: url('{{ asset('img/bgweb.png') }}');">
-    <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
-    <div class="relative z-10">
+<section class="py-10 lg:py-14 bg-white">
+    <div class="">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <h2 class="font-heading font-bold text-2xl lg:text-3xl text-bmkg-black text-center mb-8">
@@ -288,7 +286,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {{-- Buletin Bulanan --}}
-            <div class="info-card bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm h-full flex flex-col">
+            <div class="info-card bg-white rounded-2xl overflow-hidden border border-gray-200 h-full flex flex-col">
                 @if($buletin && $buletin->thumbnail)
                     <img src="{{ asset('storage/' . $buletin->thumbnail) }}"
                         alt="{{ $buletin->title }}"
@@ -331,7 +329,7 @@
             <div class="space-y-4 flex flex-col">
                 @forelse($beritas as $berita)
                     <a href="{{ route('informasi-publik.show', $berita) }}"
-                       class="info-card bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm flex-1 flex flex-col hover:shadow-lg transition-shadow">
+                       class="info-card bg-white rounded-2xl overflow-hidden border border-gray-200 flex-1 flex flex-col hover:shadow-lg transition-shadow">
                         @if($berita->photo)
                             <img src="{{ asset('storage/' . $berita->photo) }}"
                                  alt="{{ $berita->title }}"
@@ -356,7 +354,7 @@
                     </a>
                 @empty
                     @for($i = 0; $i < 2; $i++)
-                        <div class="info-card bg-white rounded-2xl border border-gray-200 shadow-sm flex-1 flex items-center justify-center min-h-32">
+                        <div class="info-card bg-white rounded-2xl border border-gray-200 flex-1 flex items-center justify-center min-h-32">
                             <span class="text-gray-400 font-heading font-semibold text-lg">Berita</span>
                         </div>
                     @endfor

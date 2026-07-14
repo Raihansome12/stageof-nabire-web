@@ -8,8 +8,8 @@
 
 {{-- Tab Navigation --}}
 <div class="border-b border-gray-200 bg-white sticky top-0 z-30 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav class="flex gap-1 overflow-x-auto" id="geo-tabs">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-5">
+        <nav class="flex gap-0.5 overflow-x-auto" id="geo-tabs">
             <a
                 href="{{ route('home') }}"
                 id="tab-beranda"
@@ -45,6 +45,13 @@
             >
                 Informasi Hilal
             </button>
+            <button
+                onclick="switchTab('jam')"
+                id="tab-jam"
+                class="tab-btn flex-shrink-0 px-8 py-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-all duration-200 whitespace-nowrap"
+            >
+                Jam BMKG
+            </button>
         </nav>
     </div>
 </div>
@@ -55,6 +62,7 @@
 @include('pages.informasi-geofisika._tab-petir')
 @include('pages.informasi-geofisika._tab-gempa')
 @include('pages.informasi-geofisika._tab-hilal')
+@include('pages.informasi-geofisika._tab-jam')
 
 @endsection
 

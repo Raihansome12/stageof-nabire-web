@@ -4,10 +4,8 @@
      Design mirrors the Buletin grid on pages/publikasi.blade.php
      ============================================================ --}}
 <div id="panel-hilal" class="panel-section hidden">
-    <div class="relative overflow-hidden"
-         style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
-        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
-        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
+    <div class="bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center border-b border-gray-200">
             <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Informasi Hilal</h1>
             <p class="text-gray-500 text-sm max-w-xl mx-auto">
                 Rujukan resmi dan terkini untuk data astronomi posisi bulan,

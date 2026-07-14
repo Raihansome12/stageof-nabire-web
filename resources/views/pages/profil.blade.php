@@ -3,7 +3,7 @@
 
 @section('content')
 {{-- Navbar --}}
-<div class="border-b border-gray-200 bg-white sticky top-0 z-30 shadow-sm">
+<div class="border-b border-blue-200 bg-white sticky top-0 z-30 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav class="flex gap-1 overflow-x-auto" id="geo-tabs">
             <a href="{{ route('home') }}" id="tab-beranda"
@@ -29,16 +29,6 @@
 
 {{--Profil Kantor--}}
 <div id="panel-profil" class="panel-section">
-    <div class="relative overflow-hidden"
-         style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
-        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
-        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
-            <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Profil Kantor</h1>
-            <p class="text-gray-500 text-sm max-w-xl mx-auto">
-                Temukan perjalanan Sejarah, Visi, dan Misi Stasiun Geofisika Kelas III Nabire yang menjadi kompas utama dalam melangkah menuju masa depan.
-            </p>
-        </div>
-    </div>
     <section class="py-10 lg:py-14 bg-white">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 {{-- Sejarah --}}
@@ -71,13 +61,11 @@
 
 {{-- Struktur Organisasi --}}
 <div id="panel-struktur" class="panel-section hidden">
-    <div class="relative overflow-hidden"
-         style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
-        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
-        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
+    <div class="bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center border-b border-gray-200">
             <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Struktur Organisasi</h1>
             <p class="text-gray-500 text-sm max-w-xl mx-auto">
-                Mengenal lebih dekat jajaran tim profesional yang saling bersinergi di balik setiap langkah dan pencapaian Stasiun Geofisika Kelas III Nabire.
+                Jajaran pegawai pemerintahan di Stasiun Geofisika Kelas III Nabire yang terdiri dari kepala dan tim pegawai fungsional
             </p>
         </div>
     </div>
@@ -183,10 +171,8 @@
 
 {{-- Aloptama Geofisika --}}
 <div id="panel-aloptama" class="panel-section">
-    <div class="relative overflow-hidden"
-         style="background-image: url('{{ asset('img/bgweb.png') }}'); background-size: cover; background-position: center;">
-        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
-        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
+    <div class="bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center border-b border-gray-200">
             <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Alat Operasional Utama Geofisika</h1>
             <p class="text-gray-500 text-sm max-w-3xl mx-auto">
                 Alat Operasional Utama (Aloptama) bidang geofisika merupakan peralatan inti yang dioperasikan dan/atau menjadi tanggung jawab
@@ -199,13 +185,13 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {{-- Seismometer --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col transition-all duration-250 ease-in-out hover:-translate-y-2 hover:shadow-xl">
                     <div class="relative w-full h-56 pt-3 px-3">
                         <img src="{{ asset('img/seismometer.png') }}"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                              class="w-full h-full rounded-lg shadow-sm object-cover" alt="Seismometer Site InaTEWS">
                     </div>
-                    <div class="p-6 flex flex-col flex-1">
+                    <div class="p-6 flex flex-col flex-1 ">
                         <div class="flex items-center gap-2.5 mb-1">
                             <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12h3l2-7 3 14 3-11 2 4h3l2-3h4"/></svg>
@@ -238,7 +224,7 @@
                 </div>
 
                 {{-- Accelerograph --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col transition-all duration-250 ease-in-out hover:-translate-y-2 hover:shadow-xl">
                     <div class="relative w-full h-56 pt-3 px-3">
                         <img src="{{ asset('img/accelerograph.png') }}"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
@@ -268,7 +254,7 @@
                 </div>
 
                 {{-- Lightning Detector --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col transition-all duration-250 ease-in-out hover:-translate-y-2 hover:shadow-xl">
                     <div class="relative w-full h-56 pt-3 px-3">
                         <img src="{{ asset('img/ld.png') }}"
                              onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');"
@@ -301,7 +287,7 @@
                 </div>
 
                 {{-- WRS-NG --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col transition-all duration-250 ease-in-out hover:-translate-y-2 hover:shadow-xl">
                     <div class="relative w-full h-56 pt-3 px-3">
                         <img src="{{ asset('img/wrs.png') }}"
                              onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');"

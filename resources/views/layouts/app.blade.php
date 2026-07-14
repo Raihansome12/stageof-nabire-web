@@ -25,67 +25,70 @@
     </div>
 
     {{-- Navbar --}}
-    <header class="bg-white border-b-2 border-blue-200 shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16 lg:h-20">
+    <header class="sticky top-0 z-50 border-b-2 border-blue-200 shadow-sm bg-cover bg-center" style="background-image: url('{{ asset('img/bgweb.png') }}');">
+        <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.90);"></div>
+        <div class="relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16 lg:h-20">
 
-                {{-- Logo --}}
-                <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
-                    <img src="{{ asset('img/bmkg-logo.png') }}" alt="BMKG" class="h-12 w-12 object-contain" />
-                    <div>
-                        <div class="font-heading text-bmkg-black font-bold text-sm leading-tight uppercase tracking-wide">
-                            Stasiun Geofisika Kelas III Nabire
+                    {{-- Logo --}}
+                    <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
+                        <img src="{{ asset('img/bmkg-logo.png') }}" alt="BMKG" class="h-12 w-12 object-contain" />
+                        <div>
+                            <div class="font-heading text-bmkg-black font-bold text-sm leading-tight uppercase tracking-wide">
+                                Stasiun Geofisika Kelas III Nabire
+                            </div>
+                            <div class="text-xs text-gray-400 mt-0.5">CERMAT</div>
                         </div>
-                        <div class="text-xs text-gray-400 mt-0.5">CERMAT</div>
-                    </div>
-                </a>
+                    </a>
 
-                {{-- Desktop Nav --}}
-                <nav class="hidden lg:flex items-center gap-1">
-                    @php
-                        $navItems = [
-                            ['route' => 'profil',               'label' => 'Profil'],
-                            ['route' => 'publikasi',            'label' => 'Publikasi'],
-                            ['route' => 'informasi-geofisika',  'label' => 'Informasi Geofisika'],
-                            ['route' => 'informasi-publik',     'label' => 'Informasi Publik'],
-                            ['route' => 'layanan-masyarakat',   'label' => 'Layanan Masyarakat'],
-                        ];
-                    @endphp
+                    {{-- Desktop Nav --}}
+                    <nav class="hidden lg:flex items-center gap-1">
+                        @php
+                            $navItems = [
+                                ['route' => 'profil',               'label' => 'Profil'],
+                                ['route' => 'publikasi',            'label' => 'Publikasi'],
+                                ['route' => 'informasi-geofisika',  'label' => 'Informasi Geofisika'],
+                                ['route' => 'informasi-publik',     'label' => 'Informasi Publik'],
+                                ['route' => 'layanan-masyarakat',   'label' => 'Layanan Masyarakat'],
+                            ];
+                        @endphp
 
+                        @foreach($navItems as $item)
+                            <a href="{{ route($item['route']) }}"
+                            class="px-3 py-2 text-sm font-medium rounded-md transition-colors
+                                    {{ request()->routeIs($item['route'])
+                                        ? 'text-gray-600 bg-white font-semibold border border-gray-300'
+                                        : 'text-gray-600 hover:text-gray-600 hover:bg-white' }}">
+                                {{ $item['label'] }}
+                            </a>
+                        @endforeach
+                    </nav>
+
+                    {{-- Mobile Hamburger --}}
+                    <button id="menu-btn" class="lg:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100"
+                            aria-label="Toggle menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path id="menu-icon-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"/>
+                            <path id="menu-icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                {{-- Mobile Menu --}}
+                <div id="mobile-menu" class="hidden lg:hidden pb-3">
                     @foreach($navItems as $item)
                         <a href="{{ route($item['route']) }}"
-                           class="px-3 py-2 text-sm font-medium rounded-md transition-colors
-                                  {{ request()->routeIs($item['route'])
-                                       ? 'text-bmkg-blue bg-bmkg-lightblue font-semibold'
-                                       : 'text-gray-600 hover:text-bmkg-blue hover:bg-bmkg-lightblue' }}">
+                        class="block px-4 py-2.5 text-sm font-medium rounded-md mb-1 transition-colors
+                                {{ request()->routeIs($item['route'])
+                                    ? 'text-bmkg-blue bg-bmkg-lightblue font-semibold'
+                                    : 'text-gray-600 hover:text-bmkg-blue hover:bg-bmkg-lightblue' }}">
                             {{ $item['label'] }}
                         </a>
                     @endforeach
-                </nav>
-
-                {{-- Mobile Hamburger --}}
-                <button id="menu-btn" class="lg:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100"
-                        aria-label="Toggle menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path id="menu-icon-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 6h16M4 12h16M4 18h16"/>
-                        <path id="menu-icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-
-            {{-- Mobile Menu --}}
-            <div id="mobile-menu" class="hidden lg:hidden pb-3">
-                @foreach($navItems as $item)
-                    <a href="{{ route($item['route']) }}"
-                       class="block px-4 py-2.5 text-sm font-medium rounded-md mb-1 transition-colors
-                              {{ request()->routeIs($item['route'])
-                                   ? 'text-bmkg-blue bg-bmkg-lightblue font-semibold'
-                                   : 'text-gray-600 hover:text-bmkg-blue hover:bg-bmkg-lightblue' }}">
-                        {{ $item['label'] }}
-                    </a>
-                @endforeach
+                </div>
             </div>
         </div>
     </header>
