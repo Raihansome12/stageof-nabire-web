@@ -13,7 +13,7 @@ class UserDataSeeder extends Seeder
             ['email' => 'stageof.nabire@bmkg.go.id'],
             [
                 'name' => 'Admin',
-                'password' => json_encode('Geofnabire25!'),
+                'password' => bcrypt('Geofnabire25!'),
                 'is_admin' => 1,
             ]
         );
