@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Earthquake;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class EarthquakeController extends Controller
@@ -15,12 +16,27 @@ class EarthquakeController extends Controller
         // if ($request->filled('search')) {
         //     $query->where('location_description', 'like', '%' . $request->search . '%');
         // }
-        if (request('start_date')) {
-            $query->whereDate('occurred_at', '>=', request('start_date'));
+        $from = null;
+        $to   = null;
+
+        if ($request->filled('start_date')) {
+            $from = Carbon::parse($request->start_date, 'Asia/Jayapura')
+                ->startOfDay()
+                ->setTimezone('UTC');
         }
-        
-        if (request('end_date')) {
-            $query->whereDate('occurred_at', '<=', request('end_date'));
+
+        if ($request->filled('end_date')) {
+            $to = Carbon::parse($request->end_date, 'Asia/Jayapura')
+                ->endOfDay()
+                ->setTimezone('UTC');
+        }
+
+        if ($from && $to) {
+            $query->whereBetween('occurred_at', [$from, $to]);
+        } elseif ($from) {
+            $query->where('occurred_at', '>=', $from);
+        } elseif ($to) {
+            $query->where('occurred_at', '<=', $to);
         }
         
         if ($request->filled('mag')) {

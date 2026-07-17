@@ -83,6 +83,10 @@ function switchTab(name) {
     activeTab.classList.add('border-bmkg-blue', 'text-bmkg-blue');
     activeTab.classList.remove('border-transparent', 'text-gray-500');
 
+    if (name === 'gempa' && typeof refreshEqMap === 'function') {
+        refreshEqMap();
+    }
+
     // Keep the URL param in sync (optional; helps bookmarking future tabs)
     const url = new URL(window.location.href);
         url.searchParams.set('tab', name);

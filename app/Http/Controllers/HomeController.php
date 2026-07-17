@@ -137,16 +137,29 @@ class HomeController extends Controller
             }
         }
 
-        if ($request->filled('date_from') && $request->filled('date_to')) {
-            $from = Carbon::parse($request->date_from)->startOfDay();
-            $to   = Carbon::parse($request->date_to)->endOfDay();
+        $from = null;
+        $to   = null;
+
+        if ($request->filled('date_from')) {
+            $from = Carbon::parse($request->date_from, 'Asia/Jayapura')
+                ->startOfDay()
+                ->setTimezone('UTC');
+        }
+
+        if ($request->filled('date_to')) {
+            $to = Carbon::parse($request->date_to, 'Asia/Jayapura')
+                ->endOfDay()
+                ->setTimezone('UTC');
+        }
+
+        if ($from && $to) {
             if ($from->diffInDays($to) <= 30 && $to->gte($from)) {
                 $query->whereBetween('occurred_at', [$from, $to]);
             }
-        } elseif ($request->filled('date_from')) {
-            $query->where('occurred_at', '>=', Carbon::parse($request->date_from)->startOfDay());
-        } elseif ($request->filled('date_to')) {
-            $query->where('occurred_at', '<=', Carbon::parse($request->date_to)->endOfDay());
+        } elseif ($from) {
+            $query->where('occurred_at', '>=', $from);
+        } elseif ($to) {
+            $query->where('occurred_at', '<=', $to);
         }
 
         $earthquakes = $query->get();

@@ -156,20 +156,14 @@
 /* ═══════════════════════════════════════════════════════════════
    State
 ═══════════════════════════════════════════════════════════════ */
-let allEqData   = @json($eqMapData);
-
-/* ═══════════════════════════════════════════════════════════════
-   Map
-═══════════════════════════════════════════════════════════════ */
-const map = L.map('eq-map', { zoomControl:true });
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom:18,
-}).addTo(map);
-
+let allEqData = @json($eqMapData);
+let map = null;
+let mapInitialized = false;
 const markerMap = {};
 
+/* ═══════════════════════════════════════════════════════════════
+   Map Initialization & Helpers
+═══════════════════════════════════════════════════════════════ */
 function markerColor(mag) {
     return mag >= 5 ? '#ef4444' : (mag >= 4 ? '#f97316' : '#22c55e');
 }
@@ -187,7 +181,7 @@ function makeIcon(mag) {
 }
 
 function addMarker(eq) {
-    if (markerMap[eq.index]) return;
+    if (markerMap[eq.index] || !map) return;
     const m = L.marker([eq.lat, eq.lng], { icon:makeIcon(eq.mag) })
         .bindPopup(`
             <div class="eq-popup">
@@ -205,13 +199,44 @@ function addMarker(eq) {
 }
 
 function fitMap() {
+    if (!map) return;
     const all = Object.values(markerMap);
     if (!all.length) { map.setView([-3.37, 135.5], 7); return; }
     map.fitBounds(L.featureGroup(all).getBounds().pad(0.25));
 }
 
-allEqData.forEach(addMarker);
-fitMap();
+// NEW: Lazy-load function prevents 0x0 container dimension errors
+function initEqMap() {
+    if (mapInitialized) return;
+
+    map = L.map('eq-map', { zoomControl:true });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom:18,
+    }).addTo(map);
+
+    allEqData.forEach(addMarker);
+    fitMap();
+    
+    mapInitialized = true;
+}
+
+function refreshEqMap() {
+    if (!mapInitialized) {
+        initEqMap(); // Initialize on first tab click
+    } else {
+        // Re-calculate size for subsequent clicks with a slightly longer delay
+        setTimeout(() => {
+            if (map) {
+                map.invalidateSize();
+                fitMap();
+            }
+        }, 200);
+    }
+}
+
+// Note: Removed global initialization calls here so it waits for refreshEqMap()
 
 /* ═══════════════════════════════════════════════════════════════
    Card ↔ Map
@@ -221,7 +246,6 @@ function highlightCard(idx) {
     const card = document.querySelector(`.eq-card[data-index="${idx}"]`);
     if (card) {
         card.classList.add('highlighted');
-        // scroll within the list container, not the page
         const wrap = document.getElementById('eq-scroll-wrap');
         const cardTop  = card.offsetTop - wrap.offsetTop;
         const cardBot  = cardTop + card.offsetHeight;
@@ -237,19 +261,18 @@ function bindCard(card) {
     card.addEventListener('click', () => {
         const idx = parseInt(card.dataset.index);
         const m   = markerMap[idx];
-        if (!m) return;
-        // scroll the PAGE to the map
+        if (!m || !map) return;
+        
         document.getElementById('eq-map').scrollIntoView({ behavior:'smooth', block:'center' });
         map.flyTo(m.getLatLng(), 9, { animate:true, duration:.8 });
         setTimeout(() => m.openPopup(), 850);
+        
         document.querySelectorAll('.eq-card').forEach(c => c.classList.remove('highlighted'));
         card.classList.add('highlighted');
     });
 }
 
 document.querySelectorAll('.eq-card').forEach(bindCard);
-
-
 
 /* ═══════════════════════════════════════════════════════════════
    Date range validation
@@ -283,6 +306,8 @@ fromInput.addEventListener('change', () => {
     validateDates();
 });
 toInput.addEventListener('change', validateDates);
-filterForm.addEventListener('submit', e => { if (!validateDates()) e.preventDefault(); });
+if(filterForm) {
+    filterForm.addEventListener('submit', e => { if (!validateDates()) e.preventDefault(); });
+}
 </script>
 @endpush
