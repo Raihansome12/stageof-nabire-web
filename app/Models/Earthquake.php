@@ -15,7 +15,8 @@ class Earthquake extends Model
         'felt_intensity',
         'potensi',
         'occurred_at',
-        'shakemap_image'
+        'shakemap_image',
+        'description',
     ];
 
     protected $casts = ['occurred_at' => 'datetime'];

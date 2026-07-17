@@ -20,6 +20,7 @@ Route::get('/publikasi', [HomeController::class, 'publikasi'])->name('publikasi'
 Route::get('/gempa-bumi', function () {
     return redirect()->route('informasi-geofisika', ['tab' => 'gempa']);
 })->name('gempa-bumi');
+Route::get('/gempa-bumi/{earthquake}', [HomeController::class, 'earthquakeShow'])->name('earthquake.show');
 Route::get('/informasi-publik', [HomeController::class, 'informasiPublik'])->name('informasi-publik');
 Route::get('/artikel/{artikel}', [HomeController::class, 'artikelShow'])->name('artikel.show');
 Route::get('/informasi-publik/{informasiPublik}', [HomeController::class, 'informasiPublikShow'])->name('informasi-publik.show');

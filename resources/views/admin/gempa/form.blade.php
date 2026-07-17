@@ -106,6 +106,17 @@
                 @error('shakemap_image')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
 
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                    Siaran Pers (Deskripsi Detail)
+                </label>
+                <textarea name="description" rows="8"
+                          class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue"
+                          placeholder="Tuliskan narasi siaran pers lengkap, misal: parameter update gempa, wilayah terdampak, dan skala intensitas MMI per lokasi. Teks ini akan tampil di halaman detail gempa.">{{ old('description', $earthquake?->description) }}</textarea>
+                <p class="text-xs text-gray-400 mt-1">Tampil di halaman detail gempa (tombol "Lihat Detail →").</p>
+                @error('description')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+
             {{-- Live map preview --}}
             <div class="border-t border-gray-100 pt-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Pratinjau Koordinat</label>

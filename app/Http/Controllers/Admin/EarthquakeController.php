@@ -119,6 +119,7 @@ class EarthquakeController extends Controller
             'potensi'              => 'nullable|string|max:500',
             'occurred_at'          => 'required|date',
             'shakemap_image'       => 'nullable|url|max:1000',
+            'description'          => 'nullable|string|max:20000',
         ]);
     }
 }

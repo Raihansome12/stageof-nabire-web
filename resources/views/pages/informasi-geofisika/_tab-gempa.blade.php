@@ -138,6 +138,17 @@
                                         {{ $eq->felt_intensity }}
                                     </p>
                                 @endif
+
+                                <div class="mt-2 text-right">
+                                    <a href="{{ route('earthquake.show', $eq) }}"
+                                       onclick="event.stopPropagation()"
+                                       class="inline-flex items-center gap-1 text-[0.82rem] font-semibold text-bmkg-blue hover:underline">
+                                        Lihat Detail
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

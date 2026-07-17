@@ -95,7 +95,7 @@ function switchTab(name) {
 
 (function () {
     const params = new URLSearchParams(window.location.search);
-    switchTab(params.get('tab') || 'ttm');
+    switchTab(params.get('tab') || 'gempa');
 })();
 
 // ── TTM month selector ────────────────────────────────────────────────────

@@ -131,7 +131,7 @@
                                      loading="lazy"/>
                             @elseif($hasGeoData)
                                 <div id="home-eq-map"
-                                     class="w-full h-55 rounded-xl border border-gray-200 relative z-0"></div>
+                                     class="w-full h-62 rounded-xl border border-gray-200 relative z-0"></div>
                             @else
                                 <div class="w-full h-44 bg-gray-200 rounded-xl flex items-center justify-center text-gray-400 text-sm">
                                     <div class="text-center">
@@ -141,7 +141,7 @@
                                 </div>
                             @endif
                             {{-- Wilayah --}}
-                            <div class="px-2 pt-2 pb-4  border-b border-gray-300">
+                            <div class="px-2 pt-2 pb-4">
                                 <p class="text-sm font-medium text-gray-700 text-justify">
                                     {{ $earthquake->location_description }}
                                 </p>
@@ -232,6 +232,17 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Lihat detail --}}
+                    <div class="mt-5 pt-4 border-t border-gray-100 text-right">
+                        <a href="{{ route('earthquake.show', $earthquake) }}"
+                           class="inline-flex items-center gap-1 text-sm font-semibold text-bmkg-blue hover:underline">
+                            Lihat detail
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
                 @else
                     <p class="text-gray-400 text-sm mt-4">Data gempa belum tersedia.</p>
                 @endif
@@ -266,6 +277,17 @@
                 @else
                     <p class="text-gray-400 text-sm mt-4">Data petir belum tersedia.</p>
                 @endif
+
+                {{-- Lihat detail --}}
+                <div class="mt-5 pt-4 border-t border-gray-100 text-right">
+                    <a href="{{ route('informasi-geofisika', ['tab' => 'petir']) }}"
+                       class="inline-flex items-center gap-1 text-sm font-semibold text-bmkg-blue hover:underline">
+                        Lihat detail
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
 
         </div>
@@ -565,6 +587,11 @@
                         <span class="eq-popup-pill">M ${eq.mag} SR</span>
                         <span class="eq-popup-pill">⬇ ${eq.depth} km</span>
                         ${eq.mmi ? `<span class="eq-popup-pill">MMI ${eq.mmi}</span>` : ''}
+                    </div>
+                    <div class="eq-popup-link">
+                        <a href="{{ route('earthquake.show', $earthquake) }}" style="display:inline-flex;align-items:center;gap:4px;font-weight:600;color:#1a6fad;text-decoration:none;">
+                            Lihat Detail →
+                        </a>
                     </div>
                 </div>
             `, { maxWidth: 260 });

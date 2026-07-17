@@ -71,6 +71,24 @@ class HomeController extends Controller
         ));
     }
 
+    /**
+     * Detail page for a single earthquake — shown when the user clicks
+     * "Lihat Detail →" from the home page card, the Gempa Bumi Terkini
+     * list, or a map marker popup.
+     */
+    public function earthquakeShow(Earthquake $earthquake)
+    {
+        $hasShakemap = !empty($earthquake->shakemap_image);
+
+        // A handful of the most recent other earthquakes, for context/back-navigation.
+        $recentEarthquakes = Earthquake::where('id', '!=', $earthquake->id)
+            ->latest('occurred_at')
+            ->take(5)
+            ->get();
+
+        return view('pages.earthquake-show', compact('earthquake', 'hasShakemap', 'recentEarthquakes'));
+    }
+
     public function informasiGeofisika(Request $request)
     {
         $defaultRegion = 'Nabire';
@@ -166,6 +184,7 @@ class HomeController extends Controller
 
         $eqMapData = $earthquakes->values()->map(function ($eq, $i) {
             return [
+                'id'    => $eq->id,
                 'index' => $i,
                 'lat'   => (float) $eq->latitude,
                 'lng'   => (float) $eq->longitude,

@@ -234,6 +234,12 @@
     border-radius: .35rem;
 }
 
+.eq-popup-link {
+    margin-top: .5rem;
+    padding-top: .4rem;
+    border-top: 1px solid #f3f4f6;
+}
+
 /* Live clock tabular numbers */
 #live-clock {
     font-variant-numeric: tabular-nums;
