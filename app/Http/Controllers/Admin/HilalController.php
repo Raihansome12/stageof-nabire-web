@@ -28,14 +28,18 @@ class HilalController extends Controller
             'published_at' => 'required|date',
             'is_active'    => 'boolean',
             'thumbnail'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_2'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_3'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'pdf_file'     => 'nullable|file|mimes:pdf|max:20480',
             'external_url' => 'nullable|url|max:500',
         ]);
 
         $data['is_active'] = $request->boolean('is_active', true);
 
-        if ($request->hasFile('thumbnail')) {
-            $data['thumbnail'] = $request->file('thumbnail')->store('hilal/thumbnails', 'public');
+        foreach (['thumbnail' => 'thumbnail', 'image_2' => 'image_2', 'image_3' => 'image_3'] as $field => $column) {
+            if ($request->hasFile($field)) {
+                $data[$column] = $request->file($field)->store('hilal/images', 'public');
+            }
         }
         if ($request->hasFile('pdf_file')) {
             $data['file_path'] = $request->file('pdf_file')->store('hilal/pdfs', 'public');
@@ -60,15 +64,19 @@ class HilalController extends Controller
             'published_at' => 'required|date',
             'is_active'    => 'boolean',
             'thumbnail'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_2'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_3'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'pdf_file'     => 'nullable|file|mimes:pdf|max:20480',
             'external_url' => 'nullable|url|max:500',
         ]);
 
         $data['is_active'] = $request->boolean('is_active', true);
 
-        if ($request->hasFile('thumbnail')) {
-            if ($hilal->thumbnail) Storage::disk('public')->delete($hilal->thumbnail);
-            $data['thumbnail'] = $request->file('thumbnail')->store('hilal/thumbnails', 'public');
+        foreach (['thumbnail' => 'thumbnail', 'image_2' => 'image_2', 'image_3' => 'image_3'] as $field => $column) {
+            if ($request->hasFile($field)) {
+                if ($hilal->{$column}) Storage::disk('public')->delete($hilal->{$column});
+                $data[$column] = $request->file($field)->store('hilal/images', 'public');
+            }
         }
         if ($request->hasFile('pdf_file')) {
             if ($hilal->file_path) Storage::disk('public')->delete($hilal->file_path);
@@ -84,6 +92,8 @@ class HilalController extends Controller
     public function destroy(HilalBulletin $hilal)
     {
         if ($hilal->thumbnail) Storage::disk('public')->delete($hilal->thumbnail);
+        if ($hilal->image_2)   Storage::disk('public')->delete($hilal->image_2);
+        if ($hilal->image_3)   Storage::disk('public')->delete($hilal->image_3);
         if ($hilal->file_path) Storage::disk('public')->delete($hilal->file_path);
         $hilal->delete();
 
@@ -97,6 +107,8 @@ class HilalController extends Controller
         $items = HilalBulletin::whereIn('id', $request->ids)->get();
         foreach ($items as $item) {
             if ($item->thumbnail) Storage::disk('public')->delete($item->thumbnail);
+            if ($item->image_2)   Storage::disk('public')->delete($item->image_2);
+            if ($item->image_3)   Storage::disk('public')->delete($item->image_3);
             if ($item->file_path)  Storage::disk('public')->delete($item->file_path);
             $item->delete();
         }

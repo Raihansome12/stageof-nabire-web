@@ -21,8 +21,13 @@
             5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
             9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
         ];
-        $currentMonthNum = (int) date('n');
-        $currentYearNum  = (int) date('Y');
+        // Defaults come from HomeController::buildPetirDefaults() — the latest
+        // period that actually has data, rather than always "today".
+        $dasDefaultMonth = $petirDasMonth ?? (int) date('n');
+        $dasDefaultYear  = $petirDasYear  ?? (int) date('Y');
+        $dasDefaultNum   = $petirDasNum   ?? 1;
+        $bulDefaultMonth = $petirBulMonth ?? (int) date('n');
+        $bulDefaultYear  = $petirBulYear  ?? (int) date('Y');
     @endphp
 
     {{-- ════════════════════════════════════════════════════════════
@@ -60,7 +65,7 @@
                         <select id="das-month" onchange="loadDasarianData()"
                             class="bg-gray-100 rounded-lg px-4 py-2 pr-8 text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-bmkg-blue/30 border border-gray-200 hover:bg-gray-50 transition cursor-pointer appearance-none">
                             @foreach($monthNamesFull as $num => $name)
-                                <option value="{{ $num }}" @selected($num == $currentMonthNum)>{{ $name }}</option>
+                                <option value="{{ $num }}" @selected($num == $dasDefaultMonth)>{{ $name }}</option>
                             @endforeach
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center">
@@ -72,7 +77,7 @@
                         <select id="das-year" onchange="loadDasarianData()"
                             class="bg-gray-100 rounded-lg px-4 py-2 pr-8 text-sm text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-bmkg-blue/30 border border-gray-200 hover:bg-gray-50 transition cursor-pointer appearance-none">
                             @for($y = date('Y'); $y >= date('Y') - 5; $y--)
-                                <option value="{{ $y }}" @selected($y == $currentYearNum)>{{ $y }}</option>
+                                <option value="{{ $y }}" @selected($y == $dasDefaultYear)>{{ $y }}</option>
                             @endfor
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center">
@@ -87,14 +92,14 @@
                         @foreach([1 => 'Dasarian I', 2 => 'Dasarian II', 3 => 'Dasarian III'] as $d => $dlabel)
                             <button id="das-btn-{{ $d }}" onclick="setDas({{ $d }})"
                                 class="das-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150
-                                    {{ $d === 1 ? 'bg-bmkg-blue text-white shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                    {{ $d === $dasDefaultNum ? 'bg-bmkg-blue text-white shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                                 {{ $dlabel }}
                             </button>
                         @endforeach
                     </div>
 
                     <span id="das-period-badge" class="ml-auto text-xs font-semibold text-bmkg-blue bg-blue-50 border border-blue-100 rounded-full px-3 py-1 whitespace-nowrap">
-                        {{ $monthNamesFull[$currentMonthNum] }} {{ $currentYearNum }} – Dasarian I
+                        {{ $monthNamesFull[$dasDefaultMonth] }} {{ $dasDefaultYear }} – {{ ['Dasarian I','Dasarian II','Dasarian III'][$dasDefaultNum - 1] }}
                     </span>
                 </div>
             </div>
@@ -212,7 +217,7 @@
                         <select id="bul-month" onchange="loadBulananData()"
                             class="bg-gray-100 rounded-lg px-4 py-2 pr-8 text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/30 border border-gray-200 hover:bg-gray-50 transition cursor-pointer appearance-none">
                             @foreach($monthNamesFull as $num => $name)
-                                <option value="{{ $num }}" @selected($num == $currentMonthNum)>{{ $name }}</option>
+                                <option value="{{ $num }}" @selected($num == $bulDefaultMonth)>{{ $name }}</option>
                             @endforeach
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center">
@@ -224,7 +229,7 @@
                         <select id="bul-year" onchange="loadBulananData()"
                             class="bg-gray-100 rounded-lg px-4 py-2 pr-8 text-sm text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500/30 border border-gray-200 hover:bg-gray-50 transition cursor-pointer appearance-none">
                             @for($y = date('Y'); $y >= date('Y') - 5; $y--)
-                                <option value="{{ $y }}" @selected($y == $currentYearNum)>{{ $y }}</option>
+                                <option value="{{ $y }}" @selected($y == $bulDefaultYear)>{{ $y }}</option>
                             @endfor
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center">
@@ -233,7 +238,7 @@
                     </div>
 
                     <span id="bul-period-badge" class="ml-auto text-xs font-semibold text-teal-700 bg-teal-50 border border-teal-100 rounded-full px-3 py-1 whitespace-nowrap">
-                        {{ $monthNamesFull[$currentMonthNum] }} {{ $currentYearNum }} – Bulanan
+                        {{ $monthNamesFull[$bulDefaultMonth] }} {{ $bulDefaultYear }} – Bulanan
                     </span>
                 </div>
             </div>

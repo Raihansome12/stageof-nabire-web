@@ -18,7 +18,7 @@
 <body class="bg-white min-h-screen flex flex-col">
 
     {{-- Top Bar --}}
-    <div class="bg-white border-b border-gray-100 text-base text-gray-500 px-4 py-1.5 text-right">
+    <div class="bg-white border-b border-gray-100 text-sm text-gray-500 px-4 py-1.5 text-right">
         <span id="live-date"></span>
         &ndash;
         <span id="live-clock" class="font-bold text-green-600"></span> WIT
@@ -33,7 +33,7 @@
 
                     {{-- Logo --}}
                     <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
-                        <img src="{{ asset('img/bmkg-logo.png') }}" alt="BMKG" class="h-12 w-12 object-contain" />
+                        <img src="{{ asset('img/bmkg-logo.png') }}" alt="BMKG" class="h-15 w-15 object-contain" />
                         <div>
                             <div class="font-heading text-bmkg-black font-bold text-sm leading-tight uppercase tracking-wide">
                                 Stasiun Geofisika Kelas III Nabire

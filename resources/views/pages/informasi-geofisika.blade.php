@@ -25,6 +25,13 @@
                 Gempa Bumi Terkini
             </button>
             <button
+                onclick="switchTab('gempa-dirasakan')"
+                id="tab-gempa-dirasakan"
+                class="tab-btn flex-shrink-0 px-8 py-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-all duration-200 whitespace-nowrap"
+            >
+                Gempa Bumi Dirasakan
+            </button>
+            <button
                 onclick="switchTab('petir')"
                 id="tab-petir"
                 class="tab-btn flex-shrink-0 px-8 py-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-all duration-200 whitespace-nowrap"
@@ -61,6 +68,7 @@
 @include('pages.informasi-geofisika._tab-ttm')
 @include('pages.informasi-geofisika._tab-petir')
 @include('pages.informasi-geofisika._tab-gempa')
+@include('pages.informasi-geofisika._tab-gempa-dirasakan')
 @include('pages.informasi-geofisika._tab-hilal')
 @include('pages.informasi-geofisika._tab-jam')
 
@@ -85,6 +93,10 @@ function switchTab(name) {
 
     if (name === 'gempa' && typeof refreshEqMap === 'function') {
         refreshEqMap();
+    }
+
+    if (name === 'gempa-dirasakan' && typeof refreshFeltMap === 'function') {
+        refreshFeltMap();
     }
 
     // Keep the URL param in sync (optional; helps bookmarking future tabs)
@@ -167,7 +179,7 @@ function setMapState(imgId, noImgId, updatedId, data) {
 // SECTION A — DASARIAN (independent)
 // ══════════════════════════════════════════════════════════════════════════════
 const DAS_BLUE = '#1a6fad';
-let dasActiveDas   = 1;
+let dasActiveDas   = {{ $petirDasNum ?? 1 }};
 let dasChartSub    = null;
 let dasChartDaily  = null;
 let dasChartPanels = ['sub', 'daily'];

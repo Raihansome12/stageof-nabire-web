@@ -13,6 +13,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('thumbnail')->nullable();
+            $table->string('image_2')->nullable();
+            $table->string('image_3')->nullable();
             $table->string('file_path')->nullable();
             $table->string('external_url')->nullable();
             $table->date('published_at');

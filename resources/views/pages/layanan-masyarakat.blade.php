@@ -326,8 +326,66 @@
                 </form>
             </div>  
         </div>
-        <img src="{{ asset('img/layanan.png') }}" alt="Panduan Layanan" class="mt-10 w-full h-auto rounded-2xl shadow-sm">
-    </div>
+
+        {{-- Infografis Layanan --}}
+        <div class="mt-12 border-t border-gray-100 pt-10">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                {{-- Box 1: Alur Pengajuan --}}
+                <button type="button" onclick="openImageModal('{{ asset('img/layanan.png') }}')" 
+                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-4 sm:p-5 gap-3 sm:gap-4 group">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <span class="font-semibold text-xs sm:text-sm text-gray-700 text-center leading-snug">Alur Pengajuan<br>Permohonan Data</span>
+                </button>
+                {{-- Box 2: Ketersediaan Data --}}
+                <button type="button" onclick="openImageModal('{{ asset('img/ketersediaan-data.png') }}')" 
+                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-4 sm:p-5 gap-3 sm:gap-4 group">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                        </svg>
+                    </div>
+                    <span class="font-semibold text-xs sm:text-sm text-gray-700 text-center leading-snug">Ketersediaan Data<br>Stageof Nabire</span>
+                </button>
+                {{-- Box 3: Syarat Nol Rupiah --}}
+                <button type="button" onclick="openImageModal('{{ asset('img/syarat-nol.png') }}')" 
+                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-4 sm:p-5 gap-3 sm:gap-4 group">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <span class="font-semibold text-xs sm:text-sm text-gray-700 text-center leading-snug">Syarat & Ketentuan<br>Tarif Rp. 0</span>
+                </button>
+                {{-- Box 4: Tarif Lainnya --}}
+                <button type="button" onclick="openImageModal('{{ asset('img/tarif-lainnya.png') }}')" 
+                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-4 sm:p-5 gap-3 sm:gap-4 group">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <span class="font-semibold text-xs sm:text-sm text-gray-700 text-center leading-snug">Tarif Layanan<br>MKG Lainnya</span>
+                </button>
+            </div>
+        </div>
+        </div>
+       {{-- Modal Image (Pop-up) --}}
+        <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black/85 flex items-center justify-center p-4 sm:p-8 opacity-0 transition-opacity duration-300">
+            <div id="imageModalContent" class="relative w-full max-w-5xl h-full flex items-center justify-center transform scale-95 transition-transform duration-300">
+                <div class="relative inline-block max-w-full max-h-full">
+                    <button onclick="closeImageModal()" class="absolute top-2 right-2 sm:top-3 sm:right-3 bg-black/60 hover:bg-red-600 rounded-full text-white/90 hover:text-white transition-colors z-[60] p-1.5 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <img id="imageModalSrc" src="" alt="Infografis Detail" class="block max-w-full max-h-[85vh] object-contain drop-shadow-2xl rounded-lg " onclick="closeImageModal()">
+                </div>
+            </div>
+        </div>
 </section>
 
 
@@ -588,68 +646,54 @@ function handleLingkup(value) {
 </script>
 
 <script>
-    const modal = document.getElementById('documentModal');
-    const modalContent = document.getElementById('modalContent');
-
-    function openPdfModal() {
-        // Show the modal container
-        modal.classList.remove('hidden');
+    // 1. FUNGSI UTAMA (GENERIC) PEMBUKA & PENUTUP
+    function openModal(modalId, contentId) {
+        const modal = document.getElementById(modalId);
+        const content = document.getElementById(contentId);
         
-        // Slight delay to allow display:block to apply before animating opacity/scale
+        modal.classList.remove('hidden');
         setTimeout(() => {
             modal.classList.remove('opacity-0');
-            modalContent.classList.remove('scale-95');
+            content.classList.remove('scale-95');
         }, 10);
     }
 
-    function closePdfModal() {
-        // Start exit animation
-        modal.classList.add('opacity-0');
-        modalContent.classList.add('scale-95');
+    function closeModal(modalId, contentId) {
+        const modal = document.getElementById(modalId);
+        const content = document.getElementById(contentId);
         
-        // Wait for animation to finish before hiding completely
+        modal.classList.add('opacity-0');
+        content.classList.add('scale-95');
+        
         setTimeout(() => {
             modal.classList.add('hidden');
-        }, 300); // 300ms matches the Tailwind duration-300 class
-    }
-
-    // Optional: Close modal if user clicks outside the white box (on the dark background)
-    modal.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            closePdfModal();
-        }
-    });
-</script>
-
-<script>
-    // --- Script untuk Modal Tarif PTSP BMKG ---
-    const tModal = document.getElementById('tarifModal');
-    const tModalContent = document.getElementById('tarifModalContent');
-
-    function openTarifModal() {
-        tModal.classList.remove('hidden');
-        
-        // Delay sedikit agar animasi transisi bekerja
-        setTimeout(() => {
-            tModal.classList.remove('opacity-0');
-            tModalContent.classList.remove('scale-95');
-        }, 10);
-    }
-
-    function closeTarifModal() {
-        tModal.classList.add('opacity-0');
-        tModalContent.classList.add('scale-95');
-        
-        setTimeout(() => {
-            tModal.classList.add('hidden');
         }, 300); 
     }
 
-    // Menutup modal jika area gelap di luar box diklik
-    tModal.addEventListener('click', function(event) {
-        if (event.target === tModal) {
-            closeTarifModal();
-        }
+    // 2. SAMBUNGAN KE TOMBOL HTML (WRAPPER)
+    // Untuk Modal PDF (Perka BMKG)
+    function openPdfModal() { openModal('documentModal', 'modalContent'); }
+    function closePdfModal() { closeModal('documentModal', 'modalContent'); }
+
+    // Untuk Modal Tarif
+    function openTarifModal() { openModal('tarifModal', 'tarifModalContent'); }
+    function closeTarifModal() { closeModal('tarifModal', 'tarifModalContent'); }
+
+    // Untuk Modal Image (Infografis 4 Kolom)
+    function openImageModal(src) {
+        document.getElementById('imageModalSrc').src = src;
+        openModal('imageModal', 'imageModalContent');
+    }
+    function closeImageModal() { 
+        closeModal('imageModal', 'imageModalContent');
+        setTimeout(() => { document.getElementById('imageModalSrc').src = ''; }, 300);
+    }
+
+    // 3. FITUR TUTUP SAAT KLIK AREA GELAP LINGKUNGAN LUAR
+    document.addEventListener('click', function(event) {
+        if (event.target.id === 'documentModal') closePdfModal();
+        if (event.target.id === 'tarifModal') closeTarifModal();
+        if (event.target.id === 'imageModal') closeImageModal();
     });
 </script>
 

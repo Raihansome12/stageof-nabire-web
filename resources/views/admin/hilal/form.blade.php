@@ -34,26 +34,48 @@
                 @error('published_at')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
 
-            {{-- Cover image --}}
+            {{-- Cover PDF (thumbnail) — this is what shows on the clickable card in Box 2 --}}
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1.5">Cover (Gambar)</label>
-                @if($hilal && $hilal->thumbnail)
-                    <div class="mb-2">
-                        <img src="{{ asset('storage/'.$hilal->thumbnail) }}" class="h-32 rounded-lg object-cover border border-gray-200" alt="Cover saat ini"/>
-                        <p class="text-xs text-gray-400 mt-1">Cover saat ini. Upload baru untuk mengganti.</p>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Cover PDF (Gambar)</label>
+                <p class="text-xs text-gray-400 mb-3">Gambar ini yang tampil sebagai <em>cover</em> di kotak "Dokumen PDF" pada halaman publik. Diklik pengguna untuk membuka PDF di jendela pop-up. Berbeda dari galeri di bawah.</p>
+                <div class="w-40">
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-bmkg-blue transition-colors cursor-pointer aspect-[3/4] flex flex-col items-center justify-center overflow-hidden relative"
+                         onclick="document.getElementById('thumbnail').click()">
+                        <div id="preview-area-thumbnail" class="{{ $hilal?->thumbnail ? 'hidden' : '' }}">
+                            <svg class="w-6 h-6 text-gray-400 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <p class="text-xs text-gray-500">Cover PDF</p>
+                        </div>
+                        <img id="preview-img-thumbnail" src="{{ $hilal?->thumbnail ? asset('storage/'.$hilal->thumbnail) : '' }}"
+                             class="{{ $hilal?->thumbnail ? '' : 'hidden' }} w-full h-full object-cover absolute inset-0"/>
                     </div>
-                @endif
-                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-bmkg-blue transition-colors cursor-pointer" onclick="document.getElementById('thumbnail').click()">
-                    <div id="coverPreviewArea">
-                        <svg class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <p class="text-xs text-gray-500">Klik untuk pilih gambar cover</p>
-                        <p class="text-xs text-gray-400 mt-0.5">JPG, PNG, WebP — maks. 2MB</p>
-                    </div>
-                    <img id="coverPreviewImg" src="" class="hidden max-h-40 mx-auto rounded-lg mt-2"/>
+                    <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="hidden"
+                           onchange="previewFile(this,'preview-img-thumbnail','preview-area-thumbnail')"/>
+                    @error('thumbnail')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
-                <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="hidden"
-                       onchange="previewFile(this,'coverPreviewImg','coverPreviewArea')"/>
-                @error('thumbnail')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            {{-- Gallery images (up to 2) — separate from the PDF cover above --}}
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Gambar Galeri (maks. 2, opsional)</label>
+                <p class="text-xs text-gray-400 mb-3">Ditampilkan sebagai galeri (dengan tombol navigasi) di kotak "Peta / Gambar Hilal" pada halaman publik. Tidak dipakai sebagai cover PDF.</p>
+                <div class="grid grid-cols-2 gap-3 max-w-xs">
+                    @foreach([1 => ['image_2', $hilal?->image_2], 2 => ['image_3', $hilal?->image_3]] as $num => [$field, $current])
+                        <div>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-bmkg-blue transition-colors cursor-pointer aspect-[3/4] flex flex-col items-center justify-center overflow-hidden relative"
+                                 onclick="document.getElementById('{{ $field }}').click()">
+                                <div id="preview-area-{{ $field }}" class="{{ $current ? 'hidden' : '' }}">
+                                    <svg class="w-6 h-6 text-gray-400 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <p class="text-xs text-gray-500">Galeri {{ $num }} (opsional)</p>
+                                </div>
+                                <img id="preview-img-{{ $field }}" src="{{ $current ? asset('storage/'.$current) : '' }}"
+                                     class="{{ $current ? '' : 'hidden' }} w-full h-full object-cover absolute inset-0"/>
+                            </div>
+                            <input type="file" id="{{ $field }}" name="{{ $field }}" accept="image/*" class="hidden"
+                                   onchange="previewFile(this,'preview-img-{{ $field }}','preview-area-{{ $field }}')"/>
+                            @error($field)<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+                    @endforeach
+                </div>
             </div>
 
             {{-- PDF file --}}

@@ -1,7 +1,9 @@
 {{-- ============================================================
      PANEL: Informasi Hilal
-     Data: $hilals (paginated, from HomeController::informasiGeofisika)
-     Design mirrors the Buletin grid on pages/publikasi.blade.php
+     Data: $latestHilal (single latest active record, from
+     HomeController::informasiGeofisika)
+     Two boxes: left = image carousel (up to 3 images, with prev/next),
+     right = PDF viewer for the latest hilal bulletin.
      ============================================================ --}}
 <div id="panel-hilal" class="panel-section hidden">
     <div class="bg-white">
@@ -39,78 +41,114 @@
                 </p>
             </div>
 
-            @if($hilals->isEmpty())
+            @if(! $latestHilal)
                 <p class="text-gray-400">Belum ada informasi hilal tersedia.</p>
             @else
-                {{-- Cover-only grid — click to open PDF modal --}}
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-                    @foreach($hilals as $h)
-                        @php
-                            $pdfUrl = $h->file_path
-                                ? asset('storage/'.$h->file_path)
-                                : $h->external_url;
-                        @endphp
-                        <div class="group relative">
-                            {{-- Clickable cover --}}
-                            @if($pdfUrl)
-                                <button type="button" onclick="openHilalPdfModal('{{ addslashes($h->title) }}', '{{ $pdfUrl }}')"
-                                class="w-full text-left block rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
-                            @else
-                                <div class="block rounded-2xl overflow-hidden shadow-sm cursor-default">
-                            @endif
+                @php
+                    // thumbnail is dedicated to the PDF cover (Box 2) — the gallery
+                    // (Box 1) only shows image_2 and image_3.
+                    $hilalImages = collect([$latestHilal->image_2, $latestHilal->image_3])
+                        ->filter()->values()->toArray();
+                    $hilalPdfUrl = $latestHilal->file_path
+                        ? asset('storage/'.$latestHilal->file_path)
+                        : $latestHilal->external_url;
+                @endphp
 
-                                {{-- Cover image (aspect 3:4 like A4) --}}
-                                <div class="relative aspect-[3/4] bg-gradient-to-br from-bmkg-lightblue to-blue-100 overflow-hidden">
-                                    @if($h->thumbnail)
-                                        <img src="{{ asset('storage/'.$h->thumbnail) }}"
-                                            alt="{{ $h->title }}"
-                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                                    @else
-                                        <div class="w-full h-full flex flex-col items-center justify-center gap-2 p-4">
-                                            <span class="text-3xl">🌙</span>
-                                            <span class="text-xs text-blue-400 font-medium text-center leading-tight">{{ $h->title }}</span>
-                                        </div>
-                                    @endif
-
-                                    {{-- PDF hover overlay --}}
-                                    @if($pdfUrl)
-                                        <div class="absolute inset-0 bg-bmkg-blue/0 group-hover:bg-bmkg-blue/60 transition-all duration-300 flex items-center justify-center">
-                                            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center text-white">
-                                                <svg class="w-10 h-10 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                                <span class="text-xs font-semibold">Buka PDF</span>
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-
-                            @if($pdfUrl)
-                                </button>
-                            @else
-                                </div>
-                            @endif
-
-                            {{-- Title below cover --}}
-                            <div class="mt-2 px-1">
-                                <p class="text-xs font-semibold text-gray-700 line-clamp-2 leading-tight">{{ $h->title }}</p>
-                                <p class="text-xs text-gray-400 mt-0.5">{{ $h->published_at->isoFormat('D MMMM YYYY') }}</p>
-                            </div>
-                        </div>
-                    @endforeach
+                <div class="mb-6">
+                    <h2 class="font-heading font-bold text-lg text-bmkg-black">{{ $latestHilal->title }}</h2>
+                    <p class="text-xs text-gray-400 mt-1">{{ $latestHilal->published_at->isoFormat('D MMMM YYYY') }}</p>
+                    @if($latestHilal->description)
+                        <p class="text-sm text-gray-600 mt-2 leading-relaxed">{{ $latestHilal->description }}</p>
+                    @endif
                 </div>
-                <div class="mt-8">{{ $hilals->links() }}</div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
+                    {{-- ── Box 1: Image carousel ─────────────────────────── --}}
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+                        @if(count($hilalImages))
+                            <div class="relative flex-1">
+                                <div class="relative aspect-[3/2] overflow-hidden w-full h-full">
+                                    @foreach($hilalImages as $i => $img)
+                                        <img src="{{ asset('storage/'.$img) }}"
+                                            alt="{{ $latestHilal->title }} — Gambar {{ $i + 1 }}"
+                                            class="hilal-carousel-img absolute inset-0 w-full h-full object-contain transition-opacity duration-300 {{ $i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' }}"
+                                            data-index="{{ $i }}"/>
+                                    @endforeach
+                                </div>
+
+                                @if(count($hilalImages) > 1)
+                                    <button type="button" onclick="hilalPrevImage()"
+                                            class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-700 rounded-full w-9 h-9 flex items-center justify-center shadow-md transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                                    </button>
+                                    <button type="button" onclick="hilalNextImage()"
+                                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-700 rounded-full w-9 h-9 flex items-center justify-center shadow-md transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                                    </button>
+
+                                    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+                                        @foreach($hilalImages as $i => $img)
+                                            <button type="button" onclick="hilalGoToImage({{ $i }})"
+                                                    id="hilal-dot-{{ $i }}"
+                                                    class="hilal-dot w-2 h-2 rounded-full transition-colors {{ $i === 0 ? 'bg-bmkg-blue' : 'bg-white/70 border border-gray-300' }}"></button>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        @else
+                            <div class="aspect-[4/3] flex flex-col items-center justify-center gap-2 text-gray-300 flex-1">
+                                <span class="text-4xl">🌙</span>
+                                <span class="text-xs">Belum ada gambar</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- ── Box 2: PDF cover (Stretches automatically to match Box 1) ── --}}
+                    <div class="lg:col-span-1 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full">
+                        @if($hilalPdfUrl)
+                            <button type="button"
+                                    onclick="openHilalPdfModal('{{ addslashes($latestHilal->title) }}', '{{ $hilalPdfUrl }}')"
+                                    class="group relative flex-1 w-full h-full bg-gray-100 text-left">
+                                @if($latestHilal->thumbnail)
+                                    <img src="{{ asset('storage/'.$latestHilal->thumbnail) }}"
+                                        alt="Cover {{ $latestHilal->title }}"
+                                        class="absolute inset-0 w-full h-full object-cover"/>
+                                @else
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 bg-gradient-to-br from-bmkg-lightblue to-blue-100">
+                                        <svg class="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        <span class="text-xs text-blue-400 font-medium text-center leading-tight">{{ $latestHilal->title }}</span>
+                                    </div>
+                                @endif
+
+                                {{-- Hover overlay --}}
+                                <div class="absolute inset-0 bg-bmkg-blue/0 group-hover:bg-bmkg-blue/60 transition-all duration-300 flex items-center justify-center">
+                                    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center text-white">
+                                        <svg class="w-10 h-10 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <span class="text-xs font-semibold">Buka PDF</span>
+                                    </div>
+                                </div>
+                            </button>
+                        @else
+                            <div class="flex-1 w-full h-full flex flex-col items-center justify-center gap-2 text-gray-300">
+                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                <span class="text-xs">Belum ada dokumen PDF</span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
             @endif
         </div>
     </section>
 </div>{{-- end #panel-hilal --}}
 
-{{-- ================= PDF MODAL VIEWER (Hilal) ================= --}}
-<div id="hilalDocumentModal" class="fixed inset-0 z-50 hidden bg-black/70 flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+{{-- ================= PDF MODAL VIEWER (Informasi Hilal) ================= --}}
+<div id="hilalPdfModal" class="fixed inset-0 z-50 hidden bg-black/70 flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
     <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="hilalModalContent">
 
         <div class="flex justify-between items-center px-4 py-3 border-b border-gray-200 bg-gray-50">
             <h3 class="font-semibold text-gray-800 line-clamp-1" id="hilalModalTitle">Dokumen Hilal</h3>
             <div class="flex items-center gap-4">
-                <a href="#" id="hilalModalDownloadBtn" target="_blank" class="text-sm font-medium text-bmkg-blue hover:underline">Buka di Tab Baru</a>
+                <a href="#" id="hilalModalDownloadBtn" target="_blank" rel="noopener" class="text-sm font-medium text-bmkg-blue hover:underline">Buka di Tab Baru</a>
                 <button onclick="closeHilalPdfModal()" class="text-gray-500 hover:text-red-600 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -140,17 +178,43 @@
 
 @push('scripts')
 <script>
-    // ── Informasi Hilal: PDF modal ──────────────────────────────────────────
-    const hilalModal = document.getElementById('hilalDocumentModal');
+    // ── Informasi Hilal: image carousel ─────────────────────────────────────
+    let hilalImgIndex = 0;
+    const hilalImgEls = document.querySelectorAll('.hilal-carousel-img');
+
+    function hilalShowImage(idx) {
+        if (!hilalImgEls.length) return;
+        hilalImgIndex = (idx + hilalImgEls.length) % hilalImgEls.length;
+        hilalImgEls.forEach((img, i) => {
+            img.classList.toggle('opacity-100', i === hilalImgIndex);
+            img.classList.toggle('opacity-0', i !== hilalImgIndex);
+            img.classList.toggle('pointer-events-none', i !== hilalImgIndex);
+        });
+        document.querySelectorAll('.hilal-dot').forEach((dot, i) => {
+            dot.classList.toggle('bg-bmkg-blue', i === hilalImgIndex);
+            dot.classList.toggle('bg-white/70', i !== hilalImgIndex);
+            dot.classList.toggle('border', i !== hilalImgIndex);
+            dot.classList.toggle('border-gray-300', i !== hilalImgIndex);
+        });
+        const counter = document.getElementById('hilal-img-counter');
+        if (counter) counter.textContent = (hilalImgIndex + 1) + ' / ' + hilalImgEls.length;
+    }
+
+    function hilalNextImage() { hilalShowImage(hilalImgIndex + 1); }
+    function hilalPrevImage() { hilalShowImage(hilalImgIndex - 1); }
+    function hilalGoToImage(idx) { hilalShowImage(idx); }
+
+    // ── Informasi Hilal: PDF popup modal (same pattern as Buletin) ──────────
+    const hilalModal        = document.getElementById('hilalPdfModal');
     const hilalModalContent = document.getElementById('hilalModalContent');
-    const hilalModalIframe = document.getElementById('hilalModalIframe');
-    const hilalModalTitle = document.getElementById('hilalModalTitle');
-    const hilalModalDownloadBtn = document.getElementById('hilalModalDownloadBtn');
+    const hilalModalIframe  = document.getElementById('hilalModalIframe');
+    const hilalModalTitle   = document.getElementById('hilalModalTitle');
+    const hilalModalDlBtn   = document.getElementById('hilalModalDownloadBtn');
     const hilalIframeLoader = document.getElementById('hilalIframeLoader');
 
     function openHilalPdfModal(title, url) {
         hilalModalTitle.textContent = title;
-        hilalModalDownloadBtn.href = url;
+        hilalModalDlBtn.href = url;
         hilalIframeLoader.style.display = 'flex';
 
         let iframeUrl = url;

@@ -105,10 +105,6 @@ class HomeController extends Controller
             $ttmRegions = $ttmRegions->prepend($defaultRegion)->sort()->values();
         }
 
-        $month = (int) $request->input('month', date('n'));
-        $year  = (int) $request->input('year', date('Y'));
-        $month = max(1, min(12, $month));
-
         $locationInput = $request->input('location');
         if ($locationInput === null || $locationInput === '') {
             $location = $defaultRegion;
@@ -121,6 +117,10 @@ class HomeController extends Controller
                 : $ttmRegions->first();
         }
 
+        $month = (int) $request->input('month', date('n'));
+        $year  = (int) $request->input('year', date('Y'));
+        $month = max(1, min(12, $month));
+
         $sunrisesTable = Sunrise::whereYear('date', $year)
             ->whereMonth('date', $month)
             ->where('location', $location)
@@ -130,13 +130,92 @@ class HomeController extends Controller
         // ── Gempa Bumi Terkini (merged in as its own tab) ──────────────────
         [$earthquakes, $eqMapData] = $this->buildEarthquakeData($request);
 
-        // ── Informasi Hilal (merged in as its own tab) ─────────────────────
-        $hilals = HilalBulletin::active()->latest('published_at')->paginate(10, ['*'], 'hilal_page');
+        // ── Gempa Bumi Dirasakan (latest earthquake with ShakeMap data) ────
+        [$feltEarthquake, $feltEqMapData, $otherFeltEarthquakes] = $this->buildFeltEarthquakeData();
+
+        // ── Peta Sambaran Petir (default to latest available period, not
+        //    the current calendar month) ────────────────────────────────
+        [$petirDasMonth, $petirDasYear, $petirDasNum, $petirBulMonth, $petirBulYear] = $this->buildPetirDefaults();
+
+        // ── Informasi Hilal (merged in as its own tab) ──────────────────────
+        // Only the latest published bulletin is shown, with up to 3 images.
+        $latestHilal = HilalBulletin::active()->latest('published_at')->first();
 
         return view('pages.informasi-geofisika', compact(
             'sunrisesTable', 'month', 'year', 'location', 'ttmRegions',
-            'earthquakes', 'eqMapData', 'hilals'
+            'earthquakes', 'eqMapData',
+            'feltEarthquake', 'feltEqMapData', 'otherFeltEarthquakes',
+            'petirDasMonth', 'petirDasYear', 'petirDasNum', 'petirBulMonth', 'petirBulYear',
+            'latestHilal'
         ));
+    }
+
+    /**
+     * Build the default month/year (and, for dasarian, which 10-day period)
+     * that the "Peta Sambaran Petir" tab should open on: the most recent
+     * period that actually has data, instead of always the current date.
+     */
+    private function buildPetirDefaults(): array
+    {
+        $today = Carbon::today();
+
+        $latestDasarian = \App\Models\LightningPeriod::where('type', 'dasarian')
+            ->orderByDesc('start_date')
+            ->first();
+
+        $latestBulanan = \App\Models\LightningPeriod::where('type', 'bulanan')
+            ->orderByDesc('start_date')
+            ->first();
+
+        $petirDasMonth = $latestDasarian->month ?? (int) $today->format('n');
+        $petirDasYear  = $latestDasarian->year  ?? (int) $today->format('Y');
+
+        $petirDasNum = 1;
+        if ($latestDasarian && $latestDasarian->label) {
+            if (str_contains($latestDasarian->label, 'III')) {
+                $petirDasNum = 3;
+            } elseif (str_contains($latestDasarian->label, 'II')) {
+                $petirDasNum = 2;
+            }
+        }
+
+        $petirBulMonth = $latestBulanan->month ?? (int) $today->format('n');
+        $petirBulYear  = $latestBulanan->year  ?? (int) $today->format('Y');
+
+        return [$petirDasMonth, $petirDasYear, $petirDasNum, $petirBulMonth, $petirBulYear];
+    }
+
+    /**
+     * Build the data for the "Gempa Bumi Dirasakan" tab: the latest
+     * earthquake that has ShakeMap data, plus a handful of other
+     * ShakeMap-bearing earthquakes for context.
+     */
+    private function buildFeltEarthquakeData(): array
+    {
+        $feltQuery = Earthquake::whereNotNull('shakemap_image')
+            ->where('shakemap_image', '!=', '');
+
+        $feltEarthquake = (clone $feltQuery)->latest('occurred_at')->first();
+
+        $otherFeltEarthquakes = $feltEarthquake
+            ? (clone $feltQuery)->where('id', '!=', $feltEarthquake->id)
+                ->latest('occurred_at')
+                ->take(6)
+                ->get()
+            : collect();
+
+        $feltEqMapData = $feltEarthquake ? [[
+            'id'    => $feltEarthquake->id,
+            'lat'   => (float) $feltEarthquake->latitude,
+            'lng'   => (float) $feltEarthquake->longitude,
+            'mag'   => (float) $feltEarthquake->magnitude,
+            'loc'   => $feltEarthquake->location_description,
+            'depth' => $feltEarthquake->depth_km,
+            'time'  => $feltEarthquake->occurred_at->copy()->setTimezone('Asia/Jayapura')->format('d M Y H:i:s'),
+            'mmi'   => $feltEarthquake->felt_intensity ?? null,
+        ]] : [];
+
+        return [$feltEarthquake, $feltEqMapData, $otherFeltEarthquakes];
     }
 
     /**
