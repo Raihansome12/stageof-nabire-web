@@ -324,8 +324,9 @@
                         </div>
                     </div>
                 </form>
-            </div>
+            </div>  
         </div>
+        <img src="{{ asset('img/layanan.png') }}" alt="Panduan Layanan" class="mt-10 w-full h-auto rounded-2xl shadow-sm">
     </div>
 </section>
 

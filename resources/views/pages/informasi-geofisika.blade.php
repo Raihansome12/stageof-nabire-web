@@ -8,7 +8,7 @@
 
 {{-- Tab Navigation --}}
 <div class="border-b border-gray-200 bg-white sticky top-0 z-30 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-5 lg:px-4">
         <nav class="flex gap-0.5 overflow-x-auto" id="geo-tabs">
             <a
                 href="{{ route('home') }}"
