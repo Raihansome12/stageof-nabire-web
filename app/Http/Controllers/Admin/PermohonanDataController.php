@@ -53,8 +53,10 @@ class PermohonanDataController extends Controller
     public function update(Request $request, PermohonanData $permohonanData)
     {
         $rules = [
-            'status'         => 'required|in:baru,diproses,belum dibayar,sudah dibayar,selesai,ditolak',
-            'catatan_admin'  => 'nullable|string|max:1000',
+            'status'                    => 'required|in:baru,diproses,belum dibayar,sudah dibayar,selesai,ditolak',
+            'catatan_admin'             => 'nullable|string|max:1000',
+            'jangka_waktu_penyelesaian' => 'nullable|string|max:255',
+            'biaya_tarif'               => 'nullable|string|max:255',
         ];
 
         // Ketika admin menandai permohonan "Selesai", wajib mengisi rincian
@@ -71,7 +73,15 @@ class PermohonanDataController extends Controller
         if ($data['status'] === 'selesai') {
             // Catat waktu penyelesaian hanya pada saat pertama kali menjadi "selesai"
             // agar footer laporan PDF konsisten meski disimpan ulang.
-            $data['selesai_at'] = $permohonanData->selesai_at ?? Carbon::now('Asia/Jayapura');
+            //
+            // PENTING: jangan gunakan Carbon::now('Asia/Jayapura') di sini. Kolom ini
+            // di-cast sebagai 'datetime' dan Eloquent menyimpan/membaca nilainya dengan
+            // asumsi mewakili config('app.timezone') (UTC). Jika kita simpan jam dinding
+            // WIT (mis. 16:15), saat dibaca kembali ia dianggap 16:15 UTC, lalu di view
+            // dikonversi lagi ke WIT (+9 jam) sehingga tampil sebagai 01:15 hari berikutnya.
+            // Cukup simpan waktu saat ini apa adanya (UTC); ->setTimezone('Asia/Jayapura')
+            // di view akan mengonversinya ke WIT dengan benar, persis seperti created_at.
+            $data['selesai_at'] = $permohonanData->selesai_at ?? Carbon::now();
         } else {
             $data['dokumen_terkirim'] = null;
             $data['selesai_at'] = null;
@@ -97,7 +107,7 @@ class PermohonanDataController extends Controller
             'printedAt' => Carbon::now('Asia/Jayapura'),
         ])->setPaper('a4', 'portrait');
 
-        return $pdf->stream("detail-permohonan-{$permohonanData->id}.pdf");
+        return $pdf->download("detail-permohonan-{$permohonanData->id}.pdf");
     }
 
     // ── PDF: Laporan Selesai / Surat Pengantar ──────────────────────────────
@@ -112,7 +122,7 @@ class PermohonanDataController extends Controller
             'printedAt' => Carbon::now('Asia/Jayapura'),
         ])->setPaper('a4', 'portrait');
 
-        return $pdf->stream("surat-pengantar-{$permohonanData->id}.pdf");
+        return $pdf->download("surat-pengantar-{$permohonanData->id}.pdf");
     }
 
     // ── Destroy ───────────────────────────────────────────────────────────────

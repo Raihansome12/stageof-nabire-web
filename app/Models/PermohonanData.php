@@ -23,6 +23,8 @@ class PermohonanData extends Model
         'file_proposal',
         'status',
         'catatan_admin',
+        'jangka_waktu_penyelesaian',
+        'biaya_tarif',
         'dokumen_terkirim',
         'selesai_at',
     ];

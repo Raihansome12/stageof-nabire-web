@@ -73,6 +73,14 @@
             <td class="label">Status Permohonan</td><td class="colon">:</td>
             <td><span class="badge">{{ $item->badgeStatus()['label'] }}</span></td>
         </tr>
+        <tr>
+            <td class="label">Jangka Waktu Penyelesaian</td><td class="colon">:</td>
+            <td>{{ $item->jangka_waktu_penyelesaian ?: '-' }}</td>
+        </tr>
+        <tr>
+            <td class="label">Biaya / Tarif</td><td class="colon">:</td>
+            <td>{{ $item->biaya_tarif ?: '-' }}</td>
+        </tr>
         @if($item->catatan_admin)
         <tr>
             <td class="label">Catatan Admin</td><td class="colon">:</td>

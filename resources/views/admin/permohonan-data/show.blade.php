@@ -23,25 +23,25 @@
     </a>
 
     <div class="flex items-center gap-2">
-        <a href="{{ route('admin.permohonan-data.pdf-detail', $item) }}" target="_blank"
-           title="Lihat PDF Detail Pemohon"
+        <a href="{{ route('admin.permohonan-data.pdf-detail', $item) }}"
+           title="Unduh PDF Detail Pemohon"
            class="inline-flex items-center gap-1.5 text-xs px-3 py-2 bg-red-50 text-red-600 font-medium rounded-lg hover:bg-red-100">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
             </svg>
-            PDF Detail Pemohon
+            Unduh PDF Detail Pemohon
         </a>
 
         @if($item->status === 'selesai')
-        <a href="{{ route('admin.permohonan-data.pdf-selesai', $item) }}" target="_blank"
-           title="Lihat Laporan PDF Selesai"
+        <a href="{{ route('admin.permohonan-data.pdf-selesai', $item) }}"
+           title="Unduh Laporan PDF Selesai"
            class="inline-flex items-center gap-1.5 text-xs px-3 py-2 bg-green-50 text-green-700 font-medium rounded-lg hover:bg-green-100">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
             </svg>
-            PDF Laporan Selesai
+            Unduh PDF Laporan Selesai
         </a>
         @endif
     </div>
@@ -141,6 +141,14 @@
                     <dt class="text-gray-400 text-xs uppercase tracking-wide">Jenis Data yang Diminta</dt>
                     <dd class="text-gray-800 font-medium mt-0.5">{{ $item->jenis_data }}</dd>
                 </div>
+                <div>
+                    <dt class="text-gray-400 text-xs uppercase tracking-wide">Jangka Waktu Penyelesaian</dt>
+                    <dd class="text-gray-800 font-medium mt-0.5">{{ $item->jangka_waktu_penyelesaian ?: '—' }}</dd>
+                </div>
+                <div>
+                    <dt class="text-gray-400 text-xs uppercase tracking-wide">Biaya / Tarif</dt>
+                    <dd class="text-gray-800 font-medium mt-0.5">{{ $item->biaya_tarif ?: '—' }}</dd>
+                </div>
             </dl>
         </div>
 
@@ -212,6 +220,26 @@
                                   class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-bmkg-blue focus:border-bmkg-blue"
                                   placeholder="Catatan internal (tidak terlihat oleh pemohon)…">{{ old('catatan_admin', $item->catatan_admin) }}</textarea>
                         @error('catatan_admin') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Jangka Waktu Penyelesaian</label>
+                        <input type="text" name="jangka_waktu_penyelesaian"
+                               value="{{ old('jangka_waktu_penyelesaian', $item->jangka_waktu_penyelesaian) }}"
+                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-bmkg-blue focus:border-bmkg-blue"
+                               placeholder="cth. 3 hari kerja">
+                        @error('jangka_waktu_penyelesaian') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        <p class="text-xs text-gray-400 mt-1">Akan ditampilkan pada PDF Detail Pemohon.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Biaya / Tarif</label>
+                        <input type="text" name="biaya_tarif"
+                               value="{{ old('biaya_tarif', $item->biaya_tarif) }}"
+                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-bmkg-blue focus:border-bmkg-blue"
+                               placeholder="cth. Rp 50.000 atau Tarif Nol Rupiah">
+                        @error('biaya_tarif') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        <p class="text-xs text-gray-400 mt-1">Akan ditampilkan pada PDF Detail Pemohon.</p>
                     </div>
 
                     {{-- Input array dokumen_terkirim[] disisipkan di sini secara dinamis oleh JS
