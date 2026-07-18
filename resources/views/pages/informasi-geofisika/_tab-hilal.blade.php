@@ -32,15 +32,6 @@
                 @endauth
             </div>
 
-            {{-- Info box: link to national hilal info page --}}
-            <div class="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3.5 mb-8 text-sm text-blue-800">
-                <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <p>
-                    Untuk informasi hilal lebih lanjut dapat mengunjungi laman
-                    <a href="https://hilal.bmkg.go.id/" target="_blank" rel="noopener" class="font-semibold underline hover:text-blue-900">hilal.bmkg.go.id/</a>.
-                </p>
-            </div>
-
             @if(! $latestHilal)
                 <p class="text-gray-400">Belum ada informasi hilal tersedia.</p>
             @else
@@ -137,6 +128,20 @@
                     </div>
                 </div>
             @endif
+
+            {{-- Info box: link to national hilal info page --}}
+            <div class="mt-8 border-t border-gray-200 pt-8">
+                {{-- Info box: banner link to national earthquake archive --}}
+                <a href="https://hilal.bmkg.go.id/" 
+                target="_blank" 
+                rel="noopener" 
+                class="block overflow-hidden rounded-xl transition-all duration-200 hover:opacity-95 hover:-translate-y-1 hover:shadow-md border border-gray-200">
+                    <img src="{{ asset('img/hilal-info.png') }}" 
+                        alt="Pusat Arsip Data Kegempaan BMKG" 
+                        class="w-full h-auto object-cover">
+                </a>
+            </div>
+
         </div>
     </section>
 </div>{{-- end #panel-hilal --}}

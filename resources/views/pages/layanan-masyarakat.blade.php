@@ -328,47 +328,47 @@
         </div>
 
         {{-- Infografis Layanan --}}
-        <div class="mt-12 border-t border-gray-100 pt-10">
+        <div class="mt-12 border-t border-gray-200 pt-10">
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {{-- Box 1: Alur Pengajuan --}}
-                <button type="button" onclick="openImageModal('{{ asset('img/layanan.png') }}')" 
-                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-4 sm:p-5 gap-3 sm:gap-4 group">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button type="button" onclick="openImageModal('{{ asset('img/alur-layanan.png') }}')" 
+                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-2 sm:p-3 gap-3 sm:gap-4 group">
+                    <div class="w-20 h-20 sm:w-25 sm:h-25 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg class="w-12 h-12 sm:w-15 sm:h-15 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                     </div>
-                    <span class="font-semibold text-xs sm:text-sm text-gray-700 text-center leading-snug">Alur Pengajuan<br>Permohonan Data</span>
+                    <span class="font-semibold text-sm sm:text-base text-gray-700 text-center leading-snug">Alur Pengajuan<br>Permohonan Data</span>
                 </button>
                 {{-- Box 2: Ketersediaan Data --}}
-                <button type="button" onclick="openImageModal('{{ asset('img/ketersediaan-data.png') }}')" 
-                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-4 sm:p-5 gap-3 sm:gap-4 group">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button type="button" onclick="openImageModal('{{ asset('img/data-ready.png') }}')" 
+                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-2 sm:p-3 gap-3 sm:gap-4 group">
+                    <div class="w-20 h-20 sm:w-25 sm:h-25 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg class="w-12 h-12 sm:w-15 sm:h-15 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
                         </svg>
                     </div>
-                    <span class="font-semibold text-xs sm:text-sm text-gray-700 text-center leading-snug">Ketersediaan Data<br>Stageof Nabire</span>
+                    <span class="font-semibold text-sm sm:text-base text-gray-700 text-center leading-snug">Ketersediaan Data<br>Stageof Nabire</span>
                 </button>
                 {{-- Box 3: Syarat Nol Rupiah --}}
                 <button type="button" onclick="openImageModal('{{ asset('img/syarat-nol.png') }}')" 
-                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-4 sm:p-5 gap-3 sm:gap-4 group">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-2 sm:p-3 gap-3 sm:gap-4 group">
+                    <div class="w-20 h-20 sm:w-25 sm:h-25 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg class="w-12 h-12 sm:w-15 sm:h-15 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <span class="font-semibold text-xs sm:text-sm text-gray-700 text-center leading-snug">Syarat & Ketentuan<br>Tarif Rp. 0</span>
+                    <span class="font-semibold text-sm sm:text-base text-gray-700 text-center leading-snug">Syarat & Ketentuan<br>Tarif Nol Rupiah</span>
                 </button>
                 {{-- Box 4: Tarif Lainnya --}}
-                <button type="button" onclick="openImageModal('{{ asset('img/tarif-lainnya.png') }}')" 
-                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-4 sm:p-5 gap-3 sm:gap-4 group">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button type="button" onclick="openTarifModal()" 
+                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-2 sm:p-3 gap-3 sm:gap-4 group">
+                    <div class="w-20 h-20 sm:w-25 sm:h-25 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg class="w-12 h-12 sm:w-15 sm:h-15 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <span class="font-semibold text-xs sm:text-sm text-gray-700 text-center leading-snug">Tarif Layanan<br>MKG Lainnya</span>
+                    <span class="font-semibold text-sm sm:text-base text-gray-700 text-center leading-snug">Tarif Layanan<br>MKG Lainnya</span>
                 </button>
             </div>
         </div>

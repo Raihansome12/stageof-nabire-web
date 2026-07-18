@@ -4,82 +4,72 @@
      Leaflet CSS is loaded once in the parent informasi-geofisika.blade.php <head>.
      ============================================================ --}}
 <div id="panel-gempa" class="panel-section hidden bg-white">
-        <div class="bg-white">
+    <div class="bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center border-b border-gray-200">
-                <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Gempa Bumi Terkini</h1>
-                <p class="text-gray-500 text-sm max-w-xl mx-auto">
-                    Gempa bumi terkini adalah data waktu kejadian, magnitudo, kedalaman, beserta sebaran lokasi aktivitas seismik di wilayah Provinsi Papua Tengah.
-                </p>
-            </div>
+            <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Gempa Bumi Terkini</h1>
+            <p class="text-gray-500 text-sm max-w-xl mx-auto">
+                Gempa bumi terkini adalah data waktu kejadian, magnitudo, kedalaman, beserta sebaran lokasi aktivitas seismik di wilayah Provinsi Papua Tengah.
+            </p>
         </div>
+    </div>
+
+    {{--- ── Map & List Container ─────────────────────────────── --}}
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-15">
-    {{-- Admin quick-edit bar --}}
-    <div class="flex justify-end pb-5">
-    @auth
-        @if(auth()->user()->is_admin)
-            <a href="{{ route('admin.gempa.index') }}"
-            class="inline-flex items-center gap-2 text-xs bg-bmkg-blue text-white px-3 py-2 rounded-lg hover:opacity-90 shadow-sm">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                Kelola Data Gempa
-            </a>
-        @endif
-    @endauth
-    </div>
-    
+        {{-- Admin quick-edit bar --}}
+        <div class="flex justify-end pb-5">
+            @auth
+                @if(auth()->user()->is_admin)
+                    <a href="{{ route('admin.gempa.index') }}"
+                    class="inline-flex items-center gap-2 text-xs bg-bmkg-blue text-white px-3 py-2 rounded-lg hover:opacity-90 shadow-sm">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        Kelola Data Gempa
+                    </a>
+                @endif
+            @endauth
+        </div>
 
+        {{-- ── Filter bar ──────────────────────────────────── --}}
+        <form method="GET" action="{{ route('informasi-geofisika') }}" id="filter-form">
+            <input type="hidden" name="tab" value="gempa">
+            <div class="filter-bar">
 
-    {{-- Info box: link to national earthquake archive --}}
-    <div class="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3.5 mb-5 text-sm text-blue-800">
-        <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <p>
-            Untuk mengetahui pusat arsip data kegempaan dapat mengunjungi laman
-            <a href="https://repogempa.bmkg.go.id/" target="_blank" rel="noopener" class="font-semibold underline hover:text-blue-900">repogempa.bmkg.go.id</a>.
-        </p>
-    </div>
-
-    {{-- ── Filter bar ──────────────────────────────────── --}}
-            <form method="GET" action="{{ route('informasi-geofisika') }}" id="filter-form">
-                <input type="hidden" name="tab" value="gempa">
-                <div class="filter-bar">
-
-                    <div class="fg">
-                        <label for="mag">Magnitudo</label>
-                        <select name="mag" id="mag">
-                            <option value=""    {{ request('mag') == ''    ? 'selected':'' }}>Semua</option>
-                            <option value="gte5" {{ request('mag') == 'gte5' ? 'selected':'' }}>≥ 5.0 SR</option>
-                            <option value="lt5"  {{ request('mag') == 'lt5'  ? 'selected':'' }}>&lt; 5.0 SR</option>
-                        </select>
-                    </div>
-
-                    <div class="fg">
-                        <label for="date_from">Dari Tanggal</label>
-                        <input type="date" name="date_from" id="date_from"
-                            value="{{ request('date_from') }}"
-                            max="{{ now()->toDateString() }}">
-                    </div>
-
-                    <div class="fg">
-                        <label for="date_to">Sampai Tanggal</label>
-                        <input type="date" name="date_to" id="date_to"
-                            value="{{ request('date_to') }}"
-                            max="{{ now()->toDateString() }}">
-                        <span id="date-hint">Maksimal rentang 30 hari</span>
-                    </div>
-
-                    <div class="filter-actions">
-                        <button type="submit" class="btn-f btn-apply">Terapkan</button>
-                        <a href="{{ route('informasi-geofisika', ['tab' => 'gempa']) }}" class="btn-f btn-reset">Reset</a>
-                    </div>
+                <div class="fg">
+                    <label for="mag">Magnitudo</label>
+                    <select name="mag" id="mag">
+                        <option value=""    {{ request('mag') == ''    ? 'selected':'' }}>Semua</option>
+                        <option value="gte5" {{ request('mag') == 'gte5' ? 'selected':'' }}>≥ 5.0 SR</option>
+                        <option value="lt5"  {{ request('mag') == 'lt5'  ? 'selected':'' }}>&lt; 5.0 SR</option>
+                    </select>
                 </div>
-            </form>
 
-            @if($earthquakes->isEmpty())
+                <div class="fg">
+                    <label for="date_from">Dari Tanggal</label>
+                    <input type="date" name="date_from" id="date_from"
+                        value="{{ request('date_from') }}"
+                        max="{{ now()->toDateString() }}">
+                </div>
+
+                <div class="fg">
+                    <label for="date_to">Sampai Tanggal</label>
+                    <input type="date" name="date_to" id="date_to"
+                        value="{{ request('date_to') }}"
+                        max="{{ now()->toDateString() }}">
+                    <span id="date-hint">Maksimal rentang 30 hari</span>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn-f btn-apply">Terapkan</button>
+                    <a href="{{ route('informasi-geofisika', ['tab' => 'gempa']) }}" class="btn-f btn-reset">Reset</a>
+                </div>
+            </div>
+        </form>
+
+        @if($earthquakes->isEmpty())
             <div class="bg-white rounded-2xl shadow-sm p-12 text-center text-gray-400">
                 <div class="text-5xl mb-4">🌍</div>
                 <p>Tidak ada data gempa bumi untuk filter yang dipilih.</p>
             </div>
         @else
-
             {{-- ── Result chip ──────────────────────────────── --}}
             <div class="result-chip">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -95,69 +85,88 @@
                     – {{ \Carbon\Carbon::parse(request('date_to'))->format('d M Y') }}
                 @endif
             </div>
-
             {{-- ── Map ─────────────────────────────────────── --}}
             <div id="eq-map"></div>
 
             {{-- ── Earthquake list (scrollable, ~5 cards) ──── --}}
             <div id="eq-scroll-wrap">
-            <div id="eq-list">
-                @foreach($earthquakes as $index => $eq)
-                    <div class="eq-card bg-bmkg-lightblue"
-                         data-index="{{ $index }}"
-                         data-lat="{{ $eq->latitude }}"
-                         data-lng="{{ $eq->longitude }}">
-                        <div class="flex flex-wrap gap-4 items-start">
-
-                            {{-- Magnitude badge --}}
-                            <div class="shrink-0 w-20 h-20 rounded-[0.75rem] flex flex-col items-center justify-center {{ $eq->magnitude >= 5 ? 'mag-high' : ($eq->magnitude >= 4 ? 'mag-mid' : 'mag-low') }}">
-                                <span class="text-2xl font-bold leading-none">{{ $eq->magnitude }}</span>
-                                <span class="text-[0.7rem] font-semibold mt-1">SR</span>
-                            </div>
-
-                            {{-- Details --}}
-                            <div class="flex-1 min-w-0">
-                                <p class="text-[0.82rem] text-gray-600 mb-1">
-                                    {{ $eq->occurred_at->copy()->setTimezone('Asia/Jayapura')->format('d M Y') }} — {{ $eq->occurred_at->copy()->setTimezone('Asia/Jayapura')->format('H:i:s') }} WIT
-                                </p>
-                                <p class="font-semibold text-gray-800 mb-2">
-                                    {{ $eq->location_description }}
-                                </p>
-                                <div class="flex flex-wrap gap-2 text-[0.82rem] text-gray-600">
-                                    <span class="bg-white rounded-full px-3 py-1">
-                                        📍 {{ number_format(abs($eq->latitude),3) }}° {{ $eq->latitude < 0 ? 'LS':'LU' }},
-                                        {{ number_format(abs($eq->longitude),3) }}° BT
-                                    </span>
-                                    <span class="bg-white rounded-full px-3 py-1">
-                                        ⬇ Kedalaman: {{ $eq->depth_km }} km
-                                    </span>
+                <div id="eq-list">
+                    @foreach($earthquakes as $index => $eq)
+                        <div class="eq-card bg-bmkg-lightblue"
+                                data-index="{{ $index }}"
+                                data-lat="{{ $eq->latitude }}"
+                                data-lng="{{ $eq->longitude }}">
+                            <div class="flex flex-wrap gap-4 items-start">
+                                {{-- Magnitude badge --}}
+                                <div class="shrink-0 w-20 h-20 rounded-[0.75rem] flex flex-col items-center justify-center {{ $eq->magnitude >= 5 ? 'mag-high' : ($eq->magnitude >= 4 ? 'mag-mid' : 'mag-low') }}">
+                                    <span class="text-2xl font-bold leading-none">{{ $eq->magnitude }}</span>
+                                    <span class="text-[0.7rem] font-semibold mt-1">SR</span>
                                 </div>
-                                @if($eq->felt_intensity)
-                                    <p class="text-[0.82rem] text-emerald-600 mt-1">
-                                        <span class="font-semibold">Dirasakan (MMI):</span>
-                                        {{ $eq->felt_intensity }}
-                                    </p>
-                                @endif
 
-                                <div class="mt-2 text-right">
-                                    <a href="{{ route('earthquake.show', $eq) }}"
-                                       onclick="event.stopPropagation()"
-                                       class="inline-flex items-center gap-1 text-[0.82rem] font-semibold text-bmkg-blue hover:underline">
-                                        Lihat Detail
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                                        </svg>
-                                    </a>
+                                {{-- Details --}}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-[0.82rem] text-gray-600 mb-1">
+                                        {{ $eq->occurred_at->copy()->setTimezone('Asia/Jayapura')->format('d M Y') }} — {{ $eq->occurred_at->copy()->setTimezone('Asia/Jayapura')->format('H:i:s') }} WIT
+                                    </p>
+                                    <p class="font-semibold text-gray-800 mb-2">
+                                        {{ $eq->location_description }}
+                                    </p>
+                                    <div class="flex flex-wrap gap-2 text-[0.82rem] text-gray-600">
+                                        <span class="bg-white rounded-full px-3 py-1">
+                                            📍 {{ number_format(abs($eq->latitude),3) }}° {{ $eq->latitude < 0 ? 'LS':'LU' }},
+                                            {{ number_format(abs($eq->longitude),3) }}° BT
+                                        </span>
+                                        <span class="bg-white rounded-full px-3 py-1">
+                                            ⬇ Kedalaman: {{ $eq->depth_km }} km
+                                        </span>
+                                    </div>
+                                    @if($eq->felt_intensity)
+                                        <p class="text-[0.82rem] text-emerald-600 mt-1">
+                                            <span class="font-semibold">Dirasakan (MMI):</span>
+                                            {{ $eq->felt_intensity }}
+                                        </p>
+                                    @endif
+
+                                    <div class="mt-2 text-right">
+                                        <a href="{{ route('earthquake.show', $eq) }}"
+                                            onclick="event.stopPropagation()"
+                                            class="inline-flex items-center gap-1 text-[0.82rem] font-semibold text-bmkg-blue hover:underline">
+                                            Lihat Detail
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                            </svg>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-
+                    @endforeach
+                </div>
             </div>{{-- /eq-scroll-wrap --}}
-
         @endif
+
+        {{-- Info box: banner link to national earthquake archive --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 border-t border-gray-200 pt-8">
+            {{-- Info box: banner link to national earthquake archive --}}
+            <a href="https://repogempa.bmkg.go.id/" 
+            target="_blank" 
+            rel="noopener" 
+            class="block overflow-hidden rounded-xl transition-all duration-200 hover:opacity-95 hover:-translate-y-1 hover:shadow-md border border-gray-200">
+                <img src="{{ asset('img/repo-gempa2.png') }}" 
+                    alt="Pusat Arsip Data Kegempaan BMKG" 
+                    class="w-full h-auto object-cover">
+            </a>
+
+            {{-- Info box: banner link to InaTEWS WRS --}}
+            <a href="https://inatews.bmkg.go.id/wrs/index.html" 
+            target="_blank" 
+            rel="noopener" 
+            class="block overflow-hidden rounded-xl transition-all duration-200 hover:opacity-95 hover:-translate-y-1 hover:shadow-md border border-gray-200">
+                <img src="{{ asset('img/wrs-info2.png') }}" 
+                    alt="InaTEWS WRS Info BMKG" 
+                    class="w-full h-auto object-cover">
+            </a>
+        </div>
     </div>
 </div>{{-- end #panel-gempa --}}
 
