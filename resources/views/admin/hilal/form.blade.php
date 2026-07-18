@@ -37,7 +37,6 @@
             {{-- Cover PDF (thumbnail) — this is what shows on the clickable card in Box 2 --}}
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Cover PDF (Gambar)</label>
-                <p class="text-xs text-gray-400 mb-3">Gambar ini yang tampil sebagai <em>cover</em> di kotak "Dokumen PDF" pada halaman publik. Diklik pengguna untuk membuka PDF di jendela pop-up. Berbeda dari galeri di bawah.</p>
                 <div class="w-40">
                     <div class="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-bmkg-blue transition-colors cursor-pointer aspect-[3/4] flex flex-col items-center justify-center overflow-hidden relative"
                          onclick="document.getElementById('thumbnail').click()">
@@ -57,7 +56,6 @@
             {{-- Gallery images (up to 2) — separate from the PDF cover above --}}
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Gambar Galeri (maks. 2, opsional)</label>
-                <p class="text-xs text-gray-400 mb-3">Ditampilkan sebagai galeri (dengan tombol navigasi) di kotak "Peta / Gambar Hilal" pada halaman publik. Tidak dipakai sebagai cover PDF.</p>
                 <div class="grid grid-cols-2 gap-3 max-w-xs">
                     @foreach([1 => ['image_2', $hilal?->image_2], 2 => ['image_3', $hilal?->image_3]] as $num => [$field, $current])
                         <div>
@@ -90,7 +88,7 @@
                 @endif
                 <input type="file" name="pdf_file" accept="application/pdf"
                        class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-bmkg-blue file:font-medium hover:file:bg-blue-100 transition-colors"/>
-                <p class="text-xs text-gray-400 mt-1">Maks. 20MB. Pengguna dapat klik cover untuk membuka PDF ini.</p>
+                <p class="text-xs text-gray-400 mt-1">Maks. 20MB.</p>
                 @error('pdf_file')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
 
@@ -99,8 +97,7 @@
                 <input type="url" name="external_url" value="{{ old('external_url', $hilal?->external_url) }}"
                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-bmkg-blue"
                        placeholder="https://..."/>
-                <p class="text-xs text-gray-400 mt-1">Gunakan jika PDF dihosting di tempat lain. Diabaikan jika file PDF diupload.</p>
-            </div>
+                </div>
 
             <div class="flex items-center gap-3">
                 <input type="hidden" name="is_active" value="0"/>

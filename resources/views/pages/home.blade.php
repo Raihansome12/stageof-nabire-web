@@ -339,7 +339,7 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="text-xs font-semibold text-bmkg-blue hover:underline">
-                                    Unduh →
+                                    Lihat →
                                 </a>
                             @endif
                         </div>

@@ -99,7 +99,7 @@
                         @if($hilalPdfUrl)
                             <button type="button"
                                     onclick="openHilalPdfModal('{{ addslashes($latestHilal->title) }}', '{{ $hilalPdfUrl }}')"
-                                    class="group relative flex-1 w-full h-full bg-gray-100 text-left">
+                                    class="group relative flex-1 w-full h-full bg-gray-100 text-left cursor-pointer">
                                 @if($latestHilal->thumbnail)
                                     <img src="{{ asset('storage/'.$latestHilal->thumbnail) }}"
                                         alt="Cover {{ $latestHilal->title }}"

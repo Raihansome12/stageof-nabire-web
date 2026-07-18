@@ -64,12 +64,12 @@
                             @if($pdfUrl)
                                 {{-- Changed from <a> to <button> to trigger modal --}}
                                 <button type="button" onclick="openPdfModal('{{ addslashes($bul->title) }}', '{{ $pdfUrl }}')"
-                                class="w-full text-left block rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
+                                class="w-full text-left block rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer">
                             @else
                                 <div class="block rounded-2xl overflow-hidden shadow-sm cursor-default">
                             @endif
 
-                                {{-- Cover image (aspect 3:4 like A4) --}}
+                                {{-- Cover image --}}
                                 <div class="relative aspect-[3/4] bg-gradient-to-br from-bmkg-lightblue to-blue-100 overflow-hidden">
                                     @if($bul->thumbnail)
                                         <img src="{{ asset('storage/'.$bul->thumbnail) }}"
