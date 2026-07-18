@@ -259,7 +259,8 @@ class HomeController extends Controller
             $query->where('occurred_at', '<=', $to);
         }
 
-        $earthquakes = $query->get();
+        // Show only the 10 latest earthquakes in the Informasi Geofisika list panel.
+        $earthquakes = $query->take(10)->get();
 
         $eqMapData = $earthquakes->values()->map(function ($eq, $i) {
             return [
