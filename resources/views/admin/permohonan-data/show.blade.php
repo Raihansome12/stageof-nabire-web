@@ -197,6 +197,8 @@
                         <select name="status" id="statusSelect" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-bmkg-blue focus:border-bmkg-blue">
                             <option value="baru"     {{ $item->status === 'baru'     ? 'selected' : '' }}>Baru</option>
                             <option value="diproses" {{ $item->status === 'diproses' ? 'selected' : '' }}>Diproses</option>
+                            <option value="belum dibayar" {{ $item->status === 'belum dibayar' ? 'selected' : '' }}>Belum Dibayar</option>
+                            <option value="sudah dibayar" {{ $item->status === 'sudah dibayar' ? 'selected' : '' }}>Sudah Dibayar</option>
                             <option value="selesai"  {{ $item->status === 'selesai'  ? 'selected' : '' }}>Selesai</option>
                             <option value="ditolak"  {{ $item->status === 'ditolak'  ? 'selected' : '' }}>Ditolak</option>
                         </select>

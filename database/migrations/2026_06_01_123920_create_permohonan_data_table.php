@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('file_proposal')->nullable();
 
             // Status pengelolaan
-            $table->enum('status', ['baru', 'diproses', 'selesai', 'ditolak'])->default('baru');
+            $table->enum('status', ['baru', 'diproses', 'belum dibayar', 'sudah dibayar', 'selesai', 'ditolak'])->default('baru');
             $table->text('catatan_admin')->nullable();
 
             // Laporan penyelesaian (diisi admin saat status diubah ke "selesai")

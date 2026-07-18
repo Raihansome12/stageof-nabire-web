@@ -53,7 +53,7 @@ class PermohonanDataController extends Controller
     public function update(Request $request, PermohonanData $permohonanData)
     {
         $rules = [
-            'status'         => 'required|in:baru,diproses,selesai,ditolak',
+            'status'         => 'required|in:baru,diproses,belum dibayar,sudah dibayar,selesai,ditolak',
             'catatan_admin'  => 'nullable|string|max:1000',
         ];
 

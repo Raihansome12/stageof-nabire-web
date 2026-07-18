@@ -43,6 +43,8 @@
         <option value="">Semua Status</option>
         <option value="baru"      {{ request('status') === 'baru'      ? 'selected' : '' }}>Baru</option>
         <option value="diproses"  {{ request('status') === 'diproses'  ? 'selected' : '' }}>Diproses</option>
+        <option value="belum dibayar" {{ request('status') === 'belum dibayar' ? 'selected' : '' }}>Belum Dibayar</option>
+        <option value="sudah dibayar" {{ request('status') === 'sudah dibayar' ? 'selected' : '' }}>Sudah Dibayar</option>
         <option value="selesai"   {{ request('status') === 'selesai'   ? 'selected' : '' }}>Selesai</option>
         <option value="ditolak"   {{ request('status') === 'ditolak'   ? 'selected' : '' }}>Ditolak</option>
     </select>
