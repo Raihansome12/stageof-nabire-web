@@ -109,7 +109,7 @@ class EarthquakeController extends Controller
 
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'magnitude'            => 'required|numeric|min:0|max:10',
             'depth_km'             => 'required|integer|min:0',
             'latitude'             => 'required|numeric|between:-90,90',
@@ -121,5 +121,10 @@ class EarthquakeController extends Controller
             'shakemap_image'       => 'nullable|url|max:1000',
             'description'          => 'nullable|string|max:20000',
         ]);
+
+        $data['occurred_at'] = Carbon::parse($data['occurred_at'], 'Asia/Jayapura')
+            ->setTimezone('UTC');
+
+        return $data;
     }
 }
