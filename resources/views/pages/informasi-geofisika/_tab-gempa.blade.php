@@ -151,7 +151,7 @@
             <a href="https://repogempa.bmkg.go.id/" 
             target="_blank" 
             rel="noopener" 
-            class="block overflow-hidden rounded-xl transition-all duration-200 hover:opacity-95 hover:-translate-y-1 hover:shadow-md border border-gray-200">
+            class="block overflow-hidden rounded-xl border border-gray-200 transition-all duration-300 ease-in-out hover:scale-102 hover:shadow-lg hover:opacity-95 focus:outline-none">
                 <img src="{{ asset('img/repo-gempa2.png') }}" 
                     alt="Pusat Arsip Data Kegempaan BMKG" 
                     class="w-full h-auto object-cover">
@@ -161,7 +161,7 @@
             <a href="https://inatews.bmkg.go.id/wrs/index.html" 
             target="_blank" 
             rel="noopener" 
-            class="block overflow-hidden rounded-xl transition-all duration-200 hover:opacity-95 hover:-translate-y-1 hover:shadow-md border border-gray-200">
+            class="block overflow-hidden rounded-xl border border-gray-200 transition-all duration-300 ease-in-out hover:scale-102 hover:shadow-lg hover:opacity-95 focus:outline-none">
                 <img src="{{ asset('img/wrs-info2.png') }}" 
                     alt="InaTEWS WRS Info BMKG" 
                     class="w-full h-auto object-cover">

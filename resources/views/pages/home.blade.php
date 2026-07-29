@@ -312,7 +312,7 @@
                 @if($buletin && $buletin->thumbnail)
                     <img src="{{ asset('storage/' . $buletin->thumbnail) }}"
                         alt="{{ $buletin->title }}"
-                        class="w-full h-100 object-cover object-top bg-gray-50"/>
+                        class="w-full h-115 object-cover object-top bg-gray-50"/>
                 @else
                     <div class="w-full h-72 bg-gradient-to-br from-bmkg-lightblue to-blue-100 flex items-center justify-center">
                         <div class="text-4xl">📋</div>

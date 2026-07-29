@@ -330,48 +330,36 @@
         {{-- Infografis Layanan --}}
         <div class="mt-12 border-t border-gray-200 pt-10">
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                
                 {{-- Box 1: Alur Pengajuan --}}
                 <button type="button" onclick="openImageModal('{{ asset('img/alur-layanan.png') }}')" 
-                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-2 sm:p-3 gap-3 sm:gap-4 group">
-                    <div class="w-20 h-20 sm:w-25 sm:h-25 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <svg class="w-12 h-12 sm:w-15 sm:h-15 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </div>
-                    <span class="font-semibold text-sm sm:text-base text-gray-700 text-center leading-snug">Alur Pengajuan<br>Permohonan Data</span>
+                        class="w-full aspect-square rounded-2xl shadow-sm hover:shadow-lg hover:scale-102 transition-all duration-300 ease-in-out overflow-hidden border border-gray-100 group block focus:outline-none">
+                    <img src="{{ asset('img/tb-alur-layanan.png') }}" alt="Alur Pengajuan Permohonan Data" 
+                        class="w-full h-full object-cover">
                 </button>
+
                 {{-- Box 2: Ketersediaan Data --}}
                 <button type="button" onclick="openImageModal('{{ asset('img/data-ready.png') }}')" 
-                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-2 sm:p-3 gap-3 sm:gap-4 group">
-                    <div class="w-20 h-20 sm:w-25 sm:h-25 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <svg class="w-12 h-12 sm:w-15 sm:h-15 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-                        </svg>
-                    </div>
-                    <span class="font-semibold text-sm sm:text-base text-gray-700 text-center leading-snug">Ketersediaan Data<br>Stageof Nabire</span>
+                        class="w-full aspect-square rounded-2xl shadow-sm hover:shadow-lg hover:scale-102 transition-all duration-300 ease-in-out overflow-hidden border border-gray-100 group block focus:outline-none">
+                    <img src="{{ asset('img/tb-data-ready.png') }}" alt="Ketersediaan Data Stageof Nabire" 
+                        class="w-full h-full object-cover">
                 </button>
+
                 {{-- Box 3: Syarat Nol Rupiah --}}
                 <button type="button" onclick="openImageModal('{{ asset('img/syarat-nol.png') }}')" 
-                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-2 sm:p-3 gap-3 sm:gap-4 group">
-                    <div class="w-20 h-20 sm:w-25 sm:h-25 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <svg class="w-12 h-12 sm:w-15 sm:h-15 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <span class="font-semibold text-sm sm:text-base text-gray-700 text-center leading-snug">Syarat & Ketentuan<br>Tarif Nol Rupiah</span>
+                        class="w-full aspect-square rounded-2xl shadow-sm hover:shadow-lg hover:scale-102 transition-all duration-300 ease-in-out overflow-hidden border border-gray-100 group block focus:outline-none">
+                    <img src="{{ asset('img/tb-syarat-nol.png') }}" alt="Syarat & Ketentuan Tarif Nol Rupiah" 
+                        class="w-full h-full object-cover">
                 </button>
+
                 {{-- Box 4: Tarif Lainnya --}}
                 <button type="button" onclick="openTarifModal()" 
-                        class="w-full aspect-square bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col items-center justify-center p-2 sm:p-3 gap-3 sm:gap-4 group">
-                    <div class="w-20 h-20 sm:w-25 sm:h-25 rounded-full bg-bmkg-blue/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <svg class="w-12 h-12 sm:w-15 sm:h-15 text-bmkg-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <span class="font-semibold text-sm sm:text-base text-gray-700 text-center leading-snug">Tarif Layanan<br>MKG Lainnya</span>
+                        class="w-full aspect-square rounded-2xl shadow-sm hover:shadow-lg hover:scale-102 transition-all duration-300 ease-in-out overflow-hidden border border-gray-100 group block focus:outline-none">
+                    <img src="{{ asset('img/tb-tarif.png') }}" alt="Tarif Layanan MKG Lainnya" 
+                        class="w-full h-full object-cover">
                 </button>
+
             </div>
-        </div>
         </div>
        {{-- Modal Image (Pop-up) --}}
         <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black/85 flex items-center justify-center p-4 sm:p-8 opacity-0 transition-opacity duration-300">
@@ -386,6 +374,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </section>
 
 
