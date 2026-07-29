@@ -16,7 +16,7 @@
 
 <div class="bg-blue-50 border border-blue-100 text-blue-800 rounded-xl px-4 py-3 mb-4 text-sm">
     Halaman ini mencatat setiap perubahan status pada permohonan data masuk — kapan status
-    diubah (Diproses / Belum Dibayar / Sudah Dibayar / Selesai / Ditolak) dan admin mana yang
+    diubah (Diproses / Belum Dibayar / Sudah Dibayar / Selesai / Ditolak) dan siapa petugas yang
     melakukannya. Berguna untuk melacak proses bila terjadi pergantian petugas di tengah jalan.
 </div>
 
@@ -35,11 +35,11 @@
         <option value="selesai"       {{ request('status') === 'selesai'       ? 'selected' : '' }}>Selesai</option>
         <option value="ditolak"       {{ request('status') === 'ditolak'       ? 'selected' : '' }}>Ditolak</option>
     </select>
-    <select name="admin_id" class="border rounded-lg px-3 py-2 text-sm">
-        <option value="">Semua Admin</option>
-        @foreach($admins as $admin)
-            <option value="{{ $admin->id }}" {{ (string) request('admin_id') === (string) $admin->id ? 'selected' : '' }}>
-                {{ $admin->name }}
+    <select name="petugas" class="border rounded-lg px-3 py-2 text-sm">
+        <option value="">Semua Petugas</option>
+        @foreach($petugasList as $petugas)
+            <option value="{{ $petugas }}" {{ request('petugas') === $petugas ? 'selected' : '' }}>
+                {{ $petugas }}
             </option>
         @endforeach
     </select>
@@ -47,7 +47,7 @@
             class="bg-bmkg-blue text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition">
         Cari
     </button>
-    @if(request()->hasAny(['search','status','admin_id']))
+    @if(request()->hasAny(['search','status','petugas']))
         <a href="{{ route('admin.permohonan-data.log') }}"
            class="text-sm text-gray-500 underline px-2 py-2">Reset</a>
     @endif
@@ -65,7 +65,7 @@
                 <tr>
                     <th class="text-left px-5 py-3 font-semibold text-gray-600">Pemohon</th>
                     <th class="text-left px-5 py-3 font-semibold text-gray-600">Perubahan Status</th>
-                    <th class="text-left px-5 py-3 font-semibold text-gray-600">Admin</th>
+                    <th class="text-left px-5 py-3 font-semibold text-gray-600">Petugas</th>
                     <th class="text-left px-5 py-3 font-semibold text-gray-600 hidden lg:table-cell">Catatan</th>
                     <th class="text-left px-5 py-3 font-semibold text-gray-600 hidden md:table-cell">Waktu</th>
                     <th class="text-right px-5 py-3 font-semibold text-gray-600">Aksi</th>
@@ -92,7 +92,7 @@
                             </div>
                         </td>
                         <td class="px-5 py-3 text-gray-700">
-                            {{ $log->admin->name ?? '—' }}
+                            {{ $log->namaPetugasDisplay() }}
                         </td>
                         <td class="px-5 py-3 text-gray-500 hidden lg:table-cell max-w-[220px]">
                             <div class="line-clamp-2">{{ $log->catatan ?: '—' }}</div>

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\PermohonanData;
 use App\Models\PermohonanDataLog;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -54,8 +53,10 @@ class PermohonanDataController extends Controller
             $query->where('status_baru', $request->status);
         }
 
-        if ($request->filled('admin_id')) {
-            $query->where('admin_id', $request->admin_id);
+        // Panel admin memakai satu akun login bersama ("Admin"), jadi filter
+        // petugas dilakukan berdasarkan nama yang diisi manual, bukan admin_id.
+        if ($request->filled('petugas')) {
+            $query->where('nama_petugas', $request->petugas);
         }
 
         if ($request->filled('search')) {
@@ -67,9 +68,14 @@ class PermohonanDataController extends Controller
         }
 
         $logs = $query->paginate(20)->withQueryString();
-        $admins = User::orderBy('name')->get();
 
-        return view('admin.permohonan-data.log', compact('logs', 'admins'));
+        $petugasList = PermohonanDataLog::whereNotNull('nama_petugas')
+            ->where('nama_petugas', '!=', '')
+            ->distinct()
+            ->orderBy('nama_petugas')
+            ->pluck('nama_petugas');
+
+        return view('admin.permohonan-data.log', compact('logs', 'petugasList'));
     }
 
     // ── Show ──────────────────────────────────────────────────────────────────
@@ -85,6 +91,7 @@ class PermohonanDataController extends Controller
     {
         $rules = [
             'status'                    => 'required|in:baru,diproses,belum dibayar,sudah dibayar,selesai,ditolak',
+            'nama_petugas'              => 'required|string|max:255',
             'catatan_admin'             => 'nullable|string|max:1000',
             'jangka_waktu_penyelesaian' => 'nullable|string|max:255',
             'biaya_tarif'               => 'nullable|string|max:255',
@@ -100,6 +107,8 @@ class PermohonanDataController extends Controller
         }
 
         $data = $request->validate($rules);
+        $namaPetugas = trim($data['nama_petugas']);
+        unset($data['nama_petugas']);
 
         if ($data['status'] === 'selesai') {
             $data['selesai_at'] = $permohonanData->selesai_at ?? Carbon::now();
@@ -108,22 +117,26 @@ class PermohonanDataController extends Controller
             $data['selesai_at'] = null;
         }
 
-        // Catat admin yang sedang menangani permohonan ini setiap kali data
-        // diperbarui — informasi internal saja, tidak tampil di PDF/laporan.
+        // Panel admin memakai satu akun login bersama, sehingga admin_id saja
+        // tidak cukup untuk mengetahui siapa yang benar-benar menangani. Nama
+        // petugas diisi manual pada form dan disimpan di sini — internal saja,
+        // tidak tampil di PDF/laporan.
         $statusSebelumnya = $permohonanData->status;
-        $data['admin_penanggung_jawab_id'] = auth()->id();
+        $data['admin_penanggung_jawab_id']   = auth()->id();
+        $data['admin_penanggung_jawab_nama'] = $namaPetugas;
 
         $permohonanData->update($data);
 
-        // Setiap kali status berubah, simpan jejaknya (log) beserta admin yang
-        // melakukan perubahan tsb, agar pergantian petugas di tengah proses
-        // tetap dapat dilacak.
+        // Setiap kali status berubah, simpan jejaknya (log) beserta nama petugas
+        // yang melakukan perubahan tsb, agar pergantian petugas di tengah proses
+        // tetap dapat dilacak meski semua orang login dengan akun yang sama.
         if ($statusSebelumnya !== $data['status']) {
             PermohonanDataLog::create([
                 'permohonan_data_id' => $permohonanData->id,
                 'status_sebelumnya'  => $statusSebelumnya,
                 'status_baru'        => $data['status'],
                 'admin_id'           => auth()->id(),
+                'nama_petugas'       => $namaPetugas,
                 'catatan'            => $data['catatan_admin'] ?? null,
             ]);
         }

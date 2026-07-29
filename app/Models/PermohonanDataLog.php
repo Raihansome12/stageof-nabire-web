@@ -13,6 +13,7 @@ class PermohonanDataLog extends Model
         'status_sebelumnya',
         'status_baru',
         'admin_id',
+        'nama_petugas',
         'catatan',
     ];
 
@@ -44,5 +45,12 @@ class PermohonanDataLog extends Model
     public function labelStatusSebelumnya(): string
     {
         return $this->status_sebelumnya ? ucfirst($this->status_sebelumnya) : '—';
+    }
+
+    // Nama petugas yang ditampilkan. Diutamakan nama yang diisi manual saat itu,
+    // karena panel admin memakai satu akun login bersama.
+    public function namaPetugasDisplay(): string
+    {
+        return $this->nama_petugas ?: ($this->admin->name ?? 'Admin');
     }
 }

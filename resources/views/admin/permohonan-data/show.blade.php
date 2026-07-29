@@ -215,7 +215,8 @@
                                     </span>
                                 </div>
                                 <p class="text-xs text-gray-500 mt-1">
-                                    oleh <span class="font-medium text-gray-700">{{ $log->admin->name ?? 'Sistem' }}</span>
+                                    <span class="font-medium text-gray-700">{{ $logBadge['label'] }}</span>
+                                    oleh <span class="font-medium text-gray-700">{{ $log->namaPetugasDisplay() }}</span>
                                     &nbsp;·&nbsp;
                                     {{ $log->created_at->setTimezone('Asia/Jayapura')->format('d M Y, H:i') }} WIT
                                 </p>
@@ -241,7 +242,7 @@
             <p class="text-xs text-gray-400 mb-4">
                 Ditangani oleh:
                 <span class="font-medium text-gray-600">
-                    {{ $item->adminPenanggungJawab->name ?? 'Belum ada' }}
+                    {{ $item->admin_penanggung_jawab_nama ?? 'Belum ada' }}
                 </span>
             </p>
 
@@ -262,6 +263,19 @@
                         </select>
                         @error('status') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         <p class="text-xs text-gray-400 mt-1">Memilih <b>Selesai</b> akan meminta rincian data yang dikirimkan untuk laporan PDF.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Nama Petugas yang Menangani</label>
+                        <input type="text" name="nama_petugas" id="namaPetugasInput"
+                               value="{{ old('nama_petugas', $item->admin_penanggung_jawab_nama) }}"
+                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-bmkg-blue focus:border-bmkg-blue"
+                               placeholder="Tulis nama Anda" required>
+                        @error('nama_petugas') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        <p class="text-xs text-gray-400 mt-1">
+                            Panel ini memakai satu akun login bersama, jadi tuliskan nama Anda sendiri
+                            di sini setiap kali mengubah status agar tercatat siapa yang menangani.
+                        </p>
                     </div>
 
                     <div>
@@ -393,62 +407,47 @@
     let itemRowCount = 0;
     let selesaiConfirmed = false;
 
-    // Daftar opsi list data
-    const listOpsiData = [
-        "Informasi Peta Kegempaan untuk Perencanaan Konstruksi",
-        "Informasi Peta Percepatan Tanah",
-        "Informasi Geofisika untuk Keperluan Klaim Asuransi",
-        "Informasi Buku dan Peta Variasi Magnet Bumi (Epoch)",
-        "Informasi Peta Kerawanan Petir",
-        "Informasi Waktu Terbit dan Terbenam Matahari atau Bulan",
-        "Informasi Buku Almanak BMKG",
-        "Informasi Buku Peta Ketinggian Hilal",
-        "Informasi Titik Dasar Gaya Berat (Gravitasi)",
-        "Informasi Kejadian Petir"
-    ];
-
     function escapeAttr(str) {
         return String(str ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    // Fungsi untuk menampilkan/menyembunyikan input manual saat 'Lainnya' dipilih
-    function handleNamaChange(selectElement) {
-        const inputElement = selectElement.nextElementSibling;
-        if (selectElement.value === 'Lainnya') {
-            inputElement.classList.remove('hidden');
-            inputElement.disabled = false;
-            inputElement.focus();
-        } else {
-            inputElement.classList.add('hidden');
-            inputElement.disabled = true;
-        }
-    }
+    const namaOptions = [
+        'Informasi Peta Kegempaan untuk Perencanaan Konstruksi',
+        'Informasi Peta Percepatan Tanah',
+        'Informasi Geofisika untuk Keperluan Klaim Asuransi',
+        'Informasi Buku dan Peta Variasi Magnet Bumi (Epoch)',
+        'Informasi Peta Kerawanan Petir',
+        'Informasi Waktu Terbit dan Terbenam Matahari atau Bulan',
+        'Informasi Buku Almanak BMKG',
+        'Informasi Buku Peta Ketinggian Hilal',
+        'Informasi Titik Dasar Gaya Berat (Gravitasi)',
+        'Informasi Kejadian Petir',
+    ];
+    const NAMA_LAINNYA = '__lainnya__';
 
     function addItemRow(values = { nama: '', jumlah: '', keterangan: '' }) {
         const idx = itemRowCount++;
+        const isPreset = namaOptions.includes(values.nama);
+        const isCustom = values.nama && !isPreset;
+
         const wrap = document.createElement('div');
         wrap.className = 'grid grid-cols-12 gap-2 items-start item-row';
         wrap.dataset.idx = idx;
 
-        // Tentukan apakah nilainya adalah kustom (Lainnya) atau dari list yang ada
-        let isCustom = values.nama !== '' && !listOpsiData.includes(values.nama);
-        let selectValue = isCustom ? 'Lainnya' : values.nama;
-
-        // Bentuk opsi HTML untuk <select>
-        let optionsHtml = `<option value="">-- Pilih Jenis Data --</option>`;
-        listOpsiData.forEach(opt => {
-            optionsHtml += `<option value="${opt}" ${selectValue === opt ? 'selected' : ''}>${opt}</option>`;
-        });
-        optionsHtml += `<option value="Lainnya" ${selectValue === 'Lainnya' ? 'selected' : ''}>Lainnya... (Isi Manual)</option>`;
+        const optionsHtml = namaOptions.map(opt =>
+            `<option value="${escapeAttr(opt)}" ${opt === values.nama ? 'selected' : ''}>${escapeAttr(opt)}</option>`
+        ).join('');
 
         wrap.innerHTML = `
-            <div class="col-span-5 flex flex-col gap-1">
+            <div class="col-span-5 space-y-1.5">
                 <select class="w-full border rounded-lg px-2.5 py-1.5 text-xs focus:ring-bmkg-blue focus:border-bmkg-blue"
-                        onchange="handleNamaChange(this)">
+                        data-field="nama-select" onchange="toggleNamaLainnya(this)">
+                    <option value="">— Pilih Nama Data —</option>
                     ${optionsHtml}
+                    <option value="${NAMA_LAINNYA}" ${isCustom ? 'selected' : ''}>Lainnya...</option>
                 </select>
                 <input type="text" class="w-full border rounded-lg px-2.5 py-1.5 text-xs focus:ring-bmkg-blue focus:border-bmkg-blue ${isCustom ? '' : 'hidden'}"
-                       placeholder="Ketik nama data manual..." data-field="nama" value="${escapeAttr(values.nama)}" ${isCustom ? '' : 'disabled'}>
+                       placeholder="Tulis nama data secara manual" data-field="nama-custom" value="${escapeAttr(isCustom ? values.nama : '')}">
             </div>
             <div class="col-span-2">
                 <input type="text" class="w-full border rounded-lg px-2.5 py-1.5 text-xs focus:ring-bmkg-blue focus:border-bmkg-blue"
@@ -466,6 +465,25 @@
                 </button>
             </div>`;
         document.getElementById('itemRows').appendChild(wrap);
+    }
+
+    function toggleNamaLainnya(select) {
+        const customInput = select.closest('.item-row').querySelector('[data-field="nama-custom"]');
+        if (select.value === NAMA_LAINNYA) {
+            customInput.classList.remove('hidden');
+            customInput.focus();
+        } else {
+            customInput.classList.add('hidden');
+            customInput.value = '';
+        }
+    }
+
+    function getNamaValue(row) {
+        const select = row.querySelector('[data-field="nama-select"]');
+        if (select.value === NAMA_LAINNYA) {
+            return row.querySelector('[data-field="nama-custom"]').value.trim();
+        }
+        return select.value.trim();
     }
 
     function openSelesaiModal() {
@@ -498,18 +516,11 @@
 
     function confirmSelesaiModal() {
         const rows = [...document.querySelectorAll('#itemRows .item-row')];
-        const items = rows.map(row => {
-            // Ambil value berdasarkan apakah admin memilih 'Lainnya' atau 'opsi standar'
-            const selectEl = row.querySelector('select');
-            const inputEl = row.querySelector('[data-field="nama"]');
-            const finalNama = selectEl.value === 'Lainnya' ? inputEl.value.trim() : selectEl.value.trim();
-
-            return {
-                nama: finalNama,
-                jumlah: row.querySelector('[data-field="jumlah"]').value.trim(),
-                keterangan: row.querySelector('[data-field="keterangan"]').value.trim(),
-            };
-        }).filter(i => i.nama && i.jumlah);
+        const items = rows.map(row => ({
+            nama: getNamaValue(row),
+            jumlah: row.querySelector('[data-field="jumlah"]').value.trim(),
+            keterangan: row.querySelector('[data-field="keterangan"]').value.trim(),
+        })).filter(i => i.nama && i.jumlah);
 
         if (items.length === 0) {
             document.getElementById('itemError').classList.remove('hidden');

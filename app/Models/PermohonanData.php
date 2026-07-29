@@ -26,6 +26,7 @@ class PermohonanData extends Model
         'jangka_waktu_penyelesaian',
         'biaya_tarif',
         'admin_penanggung_jawab_id',
+        'admin_penanggung_jawab_nama',
         'dokumen_terkirim',
         'selesai_at',
     ];
