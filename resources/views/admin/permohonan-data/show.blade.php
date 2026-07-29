@@ -187,13 +187,63 @@
             @endif
         </div>
 
+        {{-- Riwayat proses: jejak setiap perubahan status & admin yang menangani.
+             Internal saja — tidak ditampilkan di PDF. --}}
+        <div class="bg-white rounded-2xl shadow-sm p-6">
+            <h3 class="font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                <span class="w-1 h-5 bg-bmkg-blue rounded-full inline-block"></span>
+                Riwayat Proses
+            </h3>
+            @if($item->logs->isEmpty())
+                <p class="text-sm text-gray-400 italic">Belum ada riwayat perubahan status.</p>
+            @else
+                <ul class="space-y-4">
+                    @foreach($item->logs as $log)
+                        @php $logBadge = $log->badgeStatus(); @endphp
+                        <li class="flex gap-3">
+                            <div class="flex flex-col items-center pt-1">
+                                <span class="w-2 h-2 rounded-full bg-bmkg-blue"></span>
+                                @if(!$loop->last)
+                                    <span class="w-px flex-1 bg-gray-200 mt-1"></span>
+                                @endif
+                            </div>
+                            <div class="pb-1">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-xs text-gray-400">{{ $log->labelStatusSebelumnya() }} →</span>
+                                    <span class="text-xs px-2 py-0.5 rounded-full font-medium {{ $logBadge['class'] }}">
+                                        {{ $logBadge['label'] }}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    oleh <span class="font-medium text-gray-700">{{ $log->admin->name ?? 'Sistem' }}</span>
+                                    &nbsp;·&nbsp;
+                                    {{ $log->created_at->setTimezone('Asia/Jayapura')->format('d M Y, H:i') }} WIT
+                                </p>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+
     </div>
 
     {{-- ── Right: Status update ── --}}
     <div class="space-y-5">
 
         <div class="bg-white rounded-2xl shadow-sm p-6">
-            <h3 class="font-semibold text-gray-700 mb-4">Ubah Status & Catatan</h3>
+            <h3 class="font-semibold text-gray-700 mb-1">Ubah Status & Catatan</h3>
+
+            {{-- Info internal: admin penanggung jawab saat ini. Tidak pernah
+                 ditampilkan di PDF Detail Pemohon maupun Laporan Selesai — hanya
+                 untuk keperluan internal admin panel, terutama bila terjadi
+                 pergantian petugas di tengah proses. --}}
+            <p class="text-xs text-gray-400 mb-4">
+                Ditangani oleh:
+                <span class="font-medium text-gray-600">
+                    {{ $item->adminPenanggungJawab->name ?? 'Belum ada' }}
+                </span>
+            </p>
 
             <form method="POST" action="{{ route('admin.permohonan-data.update', $item) }}" id="statusForm">
                 @csrf
@@ -343,8 +393,35 @@
     let itemRowCount = 0;
     let selesaiConfirmed = false;
 
+    // Daftar opsi list data
+    const listOpsiData = [
+        "Informasi Peta Kegempaan untuk Perencanaan Konstruksi",
+        "Informasi Peta Percepatan Tanah",
+        "Informasi Geofisika untuk Keperluan Klaim Asuransi",
+        "Informasi Buku dan Peta Variasi Magnet Bumi (Epoch)",
+        "Informasi Peta Kerawanan Petir",
+        "Informasi Waktu Terbit dan Terbenam Matahari atau Bulan",
+        "Informasi Buku Almanak BMKG",
+        "Informasi Buku Peta Ketinggian Hilal",
+        "Informasi Titik Dasar Gaya Berat (Gravitasi)",
+        "Informasi Kejadian Petir"
+    ];
+
     function escapeAttr(str) {
         return String(str ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Fungsi untuk menampilkan/menyembunyikan input manual saat 'Lainnya' dipilih
+    function handleNamaChange(selectElement) {
+        const inputElement = selectElement.nextElementSibling;
+        if (selectElement.value === 'Lainnya') {
+            inputElement.classList.remove('hidden');
+            inputElement.disabled = false;
+            inputElement.focus();
+        } else {
+            inputElement.classList.add('hidden');
+            inputElement.disabled = true;
+        }
     }
 
     function addItemRow(values = { nama: '', jumlah: '', keterangan: '' }) {
@@ -352,10 +429,26 @@
         const wrap = document.createElement('div');
         wrap.className = 'grid grid-cols-12 gap-2 items-start item-row';
         wrap.dataset.idx = idx;
+
+        // Tentukan apakah nilainya adalah kustom (Lainnya) atau dari list yang ada
+        let isCustom = values.nama !== '' && !listOpsiData.includes(values.nama);
+        let selectValue = isCustom ? 'Lainnya' : values.nama;
+
+        // Bentuk opsi HTML untuk <select>
+        let optionsHtml = `<option value="">-- Pilih Jenis Data --</option>`;
+        listOpsiData.forEach(opt => {
+            optionsHtml += `<option value="${opt}" ${selectValue === opt ? 'selected' : ''}>${opt}</option>`;
+        });
+        optionsHtml += `<option value="Lainnya" ${selectValue === 'Lainnya' ? 'selected' : ''}>Lainnya... (Isi Manual)</option>`;
+
         wrap.innerHTML = `
-            <div class="col-span-5">
-                <input type="text" class="w-full border rounded-lg px-2.5 py-1.5 text-xs focus:ring-bmkg-blue focus:border-bmkg-blue"
-                       placeholder="Nama data / naskah / barang" data-field="nama" value="${escapeAttr(values.nama)}">
+            <div class="col-span-5 flex flex-col gap-1">
+                <select class="w-full border rounded-lg px-2.5 py-1.5 text-xs focus:ring-bmkg-blue focus:border-bmkg-blue"
+                        onchange="handleNamaChange(this)">
+                    ${optionsHtml}
+                </select>
+                <input type="text" class="w-full border rounded-lg px-2.5 py-1.5 text-xs focus:ring-bmkg-blue focus:border-bmkg-blue ${isCustom ? '' : 'hidden'}"
+                       placeholder="Ketik nama data manual..." data-field="nama" value="${escapeAttr(values.nama)}" ${isCustom ? '' : 'disabled'}>
             </div>
             <div class="col-span-2">
                 <input type="text" class="w-full border rounded-lg px-2.5 py-1.5 text-xs focus:ring-bmkg-blue focus:border-bmkg-blue"
@@ -405,11 +498,18 @@
 
     function confirmSelesaiModal() {
         const rows = [...document.querySelectorAll('#itemRows .item-row')];
-        const items = rows.map(row => ({
-            nama: row.querySelector('[data-field="nama"]').value.trim(),
-            jumlah: row.querySelector('[data-field="jumlah"]').value.trim(),
-            keterangan: row.querySelector('[data-field="keterangan"]').value.trim(),
-        })).filter(i => i.nama && i.jumlah);
+        const items = rows.map(row => {
+            // Ambil value berdasarkan apakah admin memilih 'Lainnya' atau 'opsi standar'
+            const selectEl = row.querySelector('select');
+            const inputEl = row.querySelector('[data-field="nama"]');
+            const finalNama = selectEl.value === 'Lainnya' ? inputEl.value.trim() : selectEl.value.trim();
+
+            return {
+                nama: finalNama,
+                jumlah: row.querySelector('[data-field="jumlah"]').value.trim(),
+                keterangan: row.querySelector('[data-field="keterangan"]').value.trim(),
+            };
+        }).filter(i => i.nama && i.jumlah);
 
         if (items.length === 0) {
             document.getElementById('itemError').classList.remove('hidden');

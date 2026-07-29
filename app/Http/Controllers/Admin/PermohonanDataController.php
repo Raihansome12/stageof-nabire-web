@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PermohonanData;
+use App\Models\PermohonanDataLog;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -43,9 +45,38 @@ class PermohonanDataController extends Controller
         return view('admin.permohonan-data.index', compact('permohonan', 'counts'));
     }
 
+    // ── Log Permohonan Data (riwayat proses & petugas) ──────────────────────────
+    public function log(Request $request)
+    {
+        $query = PermohonanDataLog::with(['permohonanData', 'admin'])->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status_baru', $request->status);
+        }
+
+        if ($request->filled('admin_id')) {
+            $query->where('admin_id', $request->admin_id);
+        }
+
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->whereHas('permohonanData', function ($q) use ($s) {
+                $q->where('nama_lengkap', 'like', "%{$s}%")
+                  ->orWhere('instansi', 'like', "%{$s}%");
+            });
+        }
+
+        $logs = $query->paginate(20)->withQueryString();
+        $admins = User::orderBy('name')->get();
+
+        return view('admin.permohonan-data.log', compact('logs', 'admins'));
+    }
+
     // ── Show ──────────────────────────────────────────────────────────────────
     public function show(PermohonanData $permohonanData)
     {
+        $permohonanData->load(['logs.admin', 'adminPenanggungJawab']);
+
         return view('admin.permohonan-data.show', ['item' => $permohonanData]);
     }
 
@@ -71,23 +102,31 @@ class PermohonanDataController extends Controller
         $data = $request->validate($rules);
 
         if ($data['status'] === 'selesai') {
-            // Catat waktu penyelesaian hanya pada saat pertama kali menjadi "selesai"
-            // agar footer laporan PDF konsisten meski disimpan ulang.
-            //
-            // PENTING: jangan gunakan Carbon::now('Asia/Jayapura') di sini. Kolom ini
-            // di-cast sebagai 'datetime' dan Eloquent menyimpan/membaca nilainya dengan
-            // asumsi mewakili config('app.timezone') (UTC). Jika kita simpan jam dinding
-            // WIT (mis. 16:15), saat dibaca kembali ia dianggap 16:15 UTC, lalu di view
-            // dikonversi lagi ke WIT (+9 jam) sehingga tampil sebagai 01:15 hari berikutnya.
-            // Cukup simpan waktu saat ini apa adanya (UTC); ->setTimezone('Asia/Jayapura')
-            // di view akan mengonversinya ke WIT dengan benar, persis seperti created_at.
             $data['selesai_at'] = $permohonanData->selesai_at ?? Carbon::now();
         } else {
             $data['dokumen_terkirim'] = null;
             $data['selesai_at'] = null;
         }
 
+        // Catat admin yang sedang menangani permohonan ini setiap kali data
+        // diperbarui — informasi internal saja, tidak tampil di PDF/laporan.
+        $statusSebelumnya = $permohonanData->status;
+        $data['admin_penanggung_jawab_id'] = auth()->id();
+
         $permohonanData->update($data);
+
+        // Setiap kali status berubah, simpan jejaknya (log) beserta admin yang
+        // melakukan perubahan tsb, agar pergantian petugas di tengah proses
+        // tetap dapat dilacak.
+        if ($statusSebelumnya !== $data['status']) {
+            PermohonanDataLog::create([
+                'permohonan_data_id' => $permohonanData->id,
+                'status_sebelumnya'  => $statusSebelumnya,
+                'status_baru'        => $data['status'],
+                'admin_id'           => auth()->id(),
+                'catatan'            => $data['catatan_admin'] ?? null,
+            ]);
+        }
 
         $message = $data['status'] === 'selesai'
             ? 'Status permohonan diperbarui menjadi Selesai. Laporan PDF siap diunduh.'

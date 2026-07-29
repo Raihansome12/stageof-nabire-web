@@ -25,6 +25,7 @@ class PermohonanData extends Model
         'catatan_admin',
         'jangka_waktu_penyelesaian',
         'biaya_tarif',
+        'admin_penanggung_jawab_id',
         'dokumen_terkirim',
         'selesai_at',
     ];
@@ -33,6 +34,20 @@ class PermohonanData extends Model
         'dokumen_terkirim' => 'array',
         'selesai_at'       => 'datetime',
     ];
+
+    // ── Relations ────────────────────────────────────────────────────────────
+    // Admin yang sedang/terakhir menangani permohonan ini — hanya untuk
+    // informasi internal admin panel, tidak ditampilkan pada PDF.
+    public function adminPenanggungJawab()
+    {
+        return $this->belongsTo(User::class, 'admin_penanggung_jawab_id');
+    }
+
+    // Riwayat/log setiap perubahan status beserta admin yang melakukannya.
+    public function logs()
+    {
+        return $this->hasMany(PermohonanDataLog::class)->latest();
+    }
 
     // ── Scopes ────────────────────────────────────────────────────────────────
     public function scopeBaru($query)

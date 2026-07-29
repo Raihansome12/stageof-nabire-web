@@ -165,6 +165,7 @@ Route::prefix('admin')
         // ── Permohonan Data Masyarakat ────────────────────────────────────────
         Route::prefix('permohonan-data')->name('permohonan-data.')->group(function () {
             Route::get('/',                        [PermohonanDataController::class, 'index'])       ->name('index');
+            Route::get('/log/riwayat',              [PermohonanDataController::class, 'log'])         ->name('log');
             Route::get('/{permohonanData}',        [PermohonanDataController::class, 'show'])        ->name('show');
             Route::get('/{permohonanData}/pdf',            [PermohonanDataController::class, 'pdfDetail'])  ->name('pdf-detail');
             Route::get('/{permohonanData}/pdf-selesai',     [PermohonanDataController::class, 'pdfSelesai']) ->name('pdf-selesai');

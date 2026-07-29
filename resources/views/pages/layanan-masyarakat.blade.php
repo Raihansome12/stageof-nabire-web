@@ -707,8 +707,8 @@ function handleLingkup(value) {
         const year  = now.getFullYear();
         const month = now.getMonth() + 1; // 1-12
 
-        // 1 = Jan-Jul (1-7), 2 = Aug-Dec (8-12)
-        const periodFlag = (month >= 1 && month <= 7) ? 1 : 2;
+        // 1 = Jan-Jun (1-6), 2 = Jul-Dec (7-12)
+        const periodFlag = (month >= 1 && month <= 6) ? 1 : 2;
         const mm = String(month).padStart(2, '0');
 
         link.href = `https://eskm.bmkg.go.id/survey/251070/0/${periodFlag}/${year}-${mm}/${year}/0`;
