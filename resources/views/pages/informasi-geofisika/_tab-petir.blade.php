@@ -9,7 +9,7 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center border-b border-gray-200">
             <h1 class="font-heading font-bold text-3xl text-bmkg-blue mb-2">Peta Sambaran Petir</h1>
             <p class="text-gray-500 text-sm max-w-xl mx-auto">
-                Informasi distribusi dan kerapatan sambaran petir di wilayah Papua Tengah dan sekitarnya,
+                Informasi kejadian petir di wilayah Papua Tengah dan sekitarnya,
                 tersedia dalam periode dasarian maupun bulanan.
             </p>
         </div>
@@ -129,7 +129,7 @@
                 <div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col border border-gray-100">
                     <div class="px-6 pt-5 pb-3 border-b border-gray-50 flex items-center justify-between gap-3">
                         <div>
-                            <h3 class="font-semibold text-gray-800 text-sm">Peta Kerapatan Petir</h3>
+                            <h3 class="font-semibold text-gray-800 text-sm">Peta Sambaran Petir</h3>
                             <p id="das-map-subtitle" class="text-xs text-gray-400 mt-0.5">—</p>
                         </div>
                         <span class="inline-flex items-center gap-1 text-xs text-gray-400 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 flex-shrink-0">
