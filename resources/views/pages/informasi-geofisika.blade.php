@@ -148,7 +148,7 @@ function buildBarChart(canvasId, labels, values, color, titleText) {
             },
             scales: {
                 x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 }, color: '#6b7280', maxRotation: 45 } },
-                y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { display: false }, beginAtZero: true }
+                y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { display: true }, beginAtZero: true }
             }
         }
     });
