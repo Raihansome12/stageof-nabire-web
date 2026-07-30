@@ -510,7 +510,7 @@ class HomeController extends Controller
 
         $phone = env('OFFICE_WA_NUMBER'); 
         
-        $message = "*Permohonan Data Baru* (#{$permohonan->id})\n\n"
+        $message = "*PTSP Stageof Nabire - Permohonan Data* (#{$permohonan->id})\n\n"
             . "Halo Admin, saya telah mengirimkan permohonan data via website dengan detail:\n"
             . "*{$permohonan->nama_lengkap}*\n"
             . "*{$permohonan->instansi}*\n"
@@ -534,8 +534,8 @@ class HomeController extends Controller
         $subject = "[Permohonan Data] {$p->labelJenisPermohonan()} – {$p->nama_lengkap} ({$p->instansi})";
 
         $body = "
-Permohonan Data Baru Masuk
-==========================
+PTSP Stageof Nabire - Permohonan Data
+=====================================
 ID Permohonan : #{$p->id}
 Tanggal       : {$p->created_at->format('d M Y, H:i')} WIT
 
