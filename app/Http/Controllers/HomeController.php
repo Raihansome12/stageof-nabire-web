@@ -529,7 +529,7 @@ class HomeController extends Controller
 
     private function sendEmailNotification(PermohonanData $p): void
     {
-        $officeEmail = config('services.office_email', 'stageof.nabire@bmkg.go.id');
+        $officeEmail = config('services.office_email', 'stageof.nabire98@gmail.com');
 
         $subject = "[Permohonan Data] {$p->labelJenisPermohonan()} – {$p->nama_lengkap} ({$p->instansi})";
 

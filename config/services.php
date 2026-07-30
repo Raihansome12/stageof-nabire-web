@@ -39,6 +39,6 @@ return [
         'number' => env('OFFICE_WA_NUMBER', '6282190796122'),
     ],
 
-    'office_email' => env('OFFICE_EMAIL', 'stageof.nabire@bmkg.go.id'),
+    'office_email' => env('OFFICE_EMAIL', 'stageof.nabire98@gmail.com'),
 
 ];
