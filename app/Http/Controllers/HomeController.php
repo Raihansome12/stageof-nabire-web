@@ -508,7 +508,7 @@ class HomeController extends Controller
         // ── Send Email Notification ───────────────────────────────────────────
         $this->sendEmailNotification($permohonan);
 
-        $phone = env('OFFICE_WA_NUMBER'); 
+        $phone = config('services.office_wa.number');
         
         $message = "*PTSP Stageof Nabire - Permohonan Data* (#{$permohonan->id})\n\n"
             . "Halo Admin, saya telah mengirimkan permohonan data via website dengan detail:\n"
@@ -529,7 +529,7 @@ class HomeController extends Controller
 
     private function sendEmailNotification(PermohonanData $p): void
     {
-        $officeEmail = config('mail.office_email', env('OFFICE_EMAIL', 'stageof.nabire@bmkg.go.id'));
+        $officeEmail = config('services.office_email', 'stageof.nabire@bmkg.go.id');
 
         $subject = "[Permohonan Data] {$p->labelJenisPermohonan()} – {$p->nama_lengkap} ({$p->instansi})";
 
