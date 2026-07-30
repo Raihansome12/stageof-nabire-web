@@ -544,10 +544,10 @@ function handleJenis(value) {
             <div class="space-y-3">
                 <label class="block text-sm font-medium text-gray-700">
                     Upload Surat Permohonan Informasi
-                    <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
+                    <span class="text-gray-400 font-normal">(PDF, maks 5MB)</span>
                 </label>
                 <input type="file" name="file_surat_permohonan"
-                       accept=".pdf,.jpg,.jpeg,.png"
+                       accept=".pdf"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
             </div>
         `;
@@ -586,21 +586,40 @@ function handleLingkup(value) {
 
     if (value === '') return;
 
+    // Ganti URL di bawah ini dengan link Google Drive contoh surat masing-masing dokumen
+    const contohSuratLinks = {
+        surat_pengantar:    { url: 'https://drive.google.com/file/d/1cM0Hy4LNNXiO1HucRmCU4LGn0q0vDEjP/preview', title: 'Contoh Surat Pengantar' },
+        surat_permohonan:   { url: 'https://drive.google.com/file/d/1WRxLzWF07I0H9y3lfRyk4Y19DawDGeF9/preview', title: 'Contoh Surat Permohonan Informasi' },
+        surat_pernyataan:   { url: 'https://drive.google.com/file/d/16ug3PMrviCWcMaok7Dq3Zh5Pq-bujlqZ/preview', title: 'Contoh Surat Pernyataan' },
+    };
+
     let html = `
         <div>
             <label class="block text-sm font-medium">Surat Pengantar
-                <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
+                <span class="text-red-500">*</span>
+                <span class="text-gray-400 font-normal">(PDF, maks 5MB)</span>
             </label>
-            <input type="file" name="file_surat_pengantar" accept=".pdf,.jpg,.jpeg,.png"
+            <input type="file" name="file_surat_pengantar" accept=".pdf" required
                    class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1">
+            <button type="button"
+                    onclick="openContohSuratModal('${contohSuratLinks.surat_pengantar.url}', '${contohSuratLinks.surat_pengantar.title}')"
+                    class="text-blue-600 hover:text-blue-800 hover:underline text-xs italic transition-colors text-left cursor-pointer mt-1">
+                Contoh Surat
+            </button>
         </div>
 
         <div>
             <label class="block text-sm font-medium">Surat Permohonan Informasi
-                <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
+                <span class="text-red-500">*</span>
+                <span class="text-gray-400 font-normal">(PDF, maks 5MB)</span>
             </label>
-            <input type="file" name="file_surat_permohonan" accept=".pdf,.jpg,.jpeg,.png"
+            <input type="file" name="file_surat_permohonan" accept=".pdf" required
                    class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1">
+            <button type="button"
+                    onclick="openContohSuratModal('${contohSuratLinks.surat_permohonan.url}', '${contohSuratLinks.surat_permohonan.title}')"
+                    class="text-blue-600 hover:text-blue-800 hover:underline text-xs italic transition-colors text-left cursor-pointer mt-1">
+                Contoh Surat
+            </button>
         </div>
     `;
 
@@ -608,17 +627,24 @@ function handleLingkup(value) {
         html += `
             <div>
                 <label class="block text-sm font-medium">Surat Pernyataan
-                    <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
+                    <span class="text-red-500">*</span>
+                    <span class="text-gray-400 font-normal">(PDF, maks 5MB)</span>
                 </label>
-                <input type="file" name="file_surat_pernyataan" accept=".pdf,.jpg,.jpeg,.png"
+                <input type="file" name="file_surat_pernyataan" accept=".pdf" required
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1">
+                <button type="button"
+                        onclick="openContohSuratModal('${contohSuratLinks.surat_pernyataan.url}', '${contohSuratLinks.surat_pernyataan.title}')"
+                        class="text-blue-600 hover:text-blue-800 hover:underline text-xs italic transition-colors text-left cursor-pointer mt-1">
+                    Contoh Surat
+                </button>
             </div>
 
             <div>
                 <label class="block text-sm font-medium">Proposal Penelitian
-                    <span class="text-gray-400 font-normal">(PDF/JPG/PNG, maks 5MB)</span>
+                    <span class="text-red-500">*</span>
+                    <span class="text-gray-400 font-normal">(PDF, maks 5MB)</span>
                 </label>
-                <input type="file" name="file_proposal" accept=".pdf,.jpg,.jpeg,.png"
+                <input type="file" name="file_proposal" accept=".pdf" required
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1">
             </div>
         `;
@@ -633,6 +659,26 @@ function handleLingkup(value) {
     if (oldJenis) handleJenis(oldJenis);
 })();
 </script>
+
+<div id="contohSuratModal" class="fixed inset-0 z-50 hidden bg-black/60 flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="contohSuratModalContent">
+        <div class="flex justify-between items-center px-4 py-3 border-b border-gray-200 bg-gray-50">
+            <h3 class="font-semibold text-gray-800" id="contohSuratModalTitle">Contoh Surat</h3>
+            <button onclick="closeContohSuratModal()" class="text-gray-500 hover:text-red-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="flex-1 w-full bg-gray-100">
+            <iframe id="contohSuratModalFrame"
+                    src=""
+                    class="w-full h-full border-0"
+                    allow="autoplay">
+            </iframe>
+        </div>
+    </div>
+</div>
 
 <script>
     // 1. FUNGSI UTAMA (GENERIC) PEMBUKA & PENUTUP
@@ -668,6 +714,17 @@ function handleLingkup(value) {
     function openTarifModal() { openModal('tarifModal', 'tarifModalContent'); }
     function closeTarifModal() { closeModal('tarifModal', 'tarifModalContent'); }
 
+    // Untuk Modal Contoh Surat (dinamis per dokumen)
+    function openContohSuratModal(url, title) {
+        document.getElementById('contohSuratModalFrame').src = url;
+        document.getElementById('contohSuratModalTitle').textContent = title || 'Contoh Surat';
+        openModal('contohSuratModal', 'contohSuratModalContent');
+    }
+    function closeContohSuratModal() {
+        closeModal('contohSuratModal', 'contohSuratModalContent');
+        setTimeout(() => { document.getElementById('contohSuratModalFrame').src = ''; }, 300);
+    }
+
     // Untuk Modal Image (Infografis 4 Kolom)
     function openImageModal(src) {
         document.getElementById('imageModalSrc').src = src;
@@ -683,6 +740,7 @@ function handleLingkup(value) {
         if (event.target.id === 'documentModal') closePdfModal();
         if (event.target.id === 'tarifModal') closeTarifModal();
         if (event.target.id === 'imageModal') closeImageModal();
+        if (event.target.id === 'contohSuratModal') closeContohSuratModal();
     });
 </script>
 

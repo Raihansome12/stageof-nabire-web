@@ -143,14 +143,32 @@ function buildBarChart(canvasId, labels, values, color, titleText) {
             responsive: true,
             plugins: {
                 legend: { display: false },
-                title: { display: true, text: titleText, font: { size: 12, weight: '600', family: 'inherit' }, color: '#374151', padding: { bottom: 10 } }
+                tooltip: { enabled: false },
+                title: { display: true, text: titleText, font: { size: 20, weight: '600', family: 'inherit' }, color: '#374151', padding: { bottom: 10 } }
             },
             scales: {
                 x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 }, color: '#6b7280', maxRotation: 45 } },
-                y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 }, color: '#6b7280' }, beginAtZero: true }
+                y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { display: false }, beginAtZero: true }
             }
         }
     });
+}
+
+// Builds a "terbanyak / paling sedikit" note without ever exposing the underlying numbers.
+function buildMinMaxNote(entries, getName, getValue, mostLabel, leastLabel) {
+    if (!entries || !entries.length) return '';
+    if (entries.length === 1) {
+        return mostLabel + ' <strong>' + getName(entries[0]) + '</strong>.';
+    }
+    let maxItem = entries[0], minItem = entries[0];
+    entries.forEach(e => {
+        if (getValue(e) > getValue(maxItem)) maxItem = e;
+        if (getValue(e) < getValue(minItem)) minItem = e;
+    });
+    if (getName(maxItem) === getName(minItem)) {
+        return mostLabel + ' dan ' + leastLabel + ' sama, yaitu <strong>' + getName(maxItem) + '</strong>.';
+    }
+    return mostLabel + ' <strong>' + getName(maxItem) + '</strong>, ' + leastLabel + ' <strong>' + getName(minItem) + '</strong>.';
 }
 
 function apiFetch(params) {
@@ -245,9 +263,13 @@ function loadDasarianData() {
                     data.subdistrict_stats.map(s=>s.subdistrict),
                     data.subdistrict_stats.map(s=>s.total_strikes),
                     DAS_BLUE, 'Total Kejadian Petir – ' + label);
+                document.getElementById('das-sub-note').innerHTML = buildMinMaxNote(
+                    data.subdistrict_stats, s=>s.subdistrict, s=>s.total_strikes,
+                    'Sambaran petir terbanyak tercatat di', 'sedangkan paling sedikit di');
             } else {
                 document.getElementById('das-sub-nodata').classList.remove('hidden');
                 document.getElementById('das-chart-sub').classList.add('hidden');
+                document.getElementById('das-sub-note').innerHTML = '';
             }
 
             if (data.daily_densities && data.daily_densities.length) {
@@ -257,9 +279,13 @@ function loadDasarianData() {
                     data.daily_densities.map(d=>d.date),
                     data.daily_densities.map(d=>d.total_density),
                     DAS_BLUE, 'Kerapatan Harian – ' + label);
+                document.getElementById('das-daily-note').innerHTML = buildMinMaxNote(
+                    data.daily_densities, d=>d.date, d=>d.total_density,
+                    'Kerapatan sambaran petir tertinggi terjadi pada tanggal', 'dan terendah pada tanggal');
             } else {
                 document.getElementById('das-daily-nodata').classList.remove('hidden');
                 document.getElementById('das-chart-daily').classList.add('hidden');
+                document.getElementById('das-daily-note').innerHTML = '';
             }
 
             switchDasChart('sub');
@@ -327,9 +353,13 @@ function loadBulananData() {
                     data.subdistrict_stats.map(s=>s.subdistrict),
                     data.subdistrict_stats.map(s=>s.total_strikes),
                     BUL_TEAL, 'Total Kejadian Petir – ' + label);
+                document.getElementById('bul-sub-note').innerHTML = buildMinMaxNote(
+                    data.subdistrict_stats, s=>s.subdistrict, s=>s.total_strikes,
+                    'Sambaran petir terbanyak tercatat di', 'sedangkan paling sedikit di');
             } else {
                 document.getElementById('bul-sub-nodata').classList.remove('hidden');
                 document.getElementById('bul-chart-sub').classList.add('hidden');
+                document.getElementById('bul-sub-note').innerHTML = '';
             }
 
             if (data.daily_densities && data.daily_densities.length) {
@@ -339,9 +369,13 @@ function loadBulananData() {
                     data.daily_densities.map(d=>d.date),
                     data.daily_densities.map(d=>d.total_density),
                     BUL_TEAL, 'Kerapatan Harian – ' + label);
+                document.getElementById('bul-daily-note').innerHTML = buildMinMaxNote(
+                    data.daily_densities, d=>d.date, d=>d.total_density,
+                    'Kerapatan sambaran petir tertinggi terjadi pada tanggal', 'dan terendah pada tanggal');
             } else {
                 document.getElementById('bul-daily-nodata').classList.remove('hidden');
                 document.getElementById('bul-chart-daily').classList.add('hidden');
+                document.getElementById('bul-daily-note').innerHTML = '';
             }
 
             switchBulChart('sub');
