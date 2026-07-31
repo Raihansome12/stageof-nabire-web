@@ -85,7 +85,7 @@
 
     <div class="ttd-block">
         Pengirim<br>
-        Kepala Stasiun Geofisika Nabire
+        Kepala,
         <div class="ttd-space"></div>
         <div class="">{{ $namaPejabat ?? 'GEORGE F. AUGUSTO MUABUAY' }}</div>
         @if(!empty($nipPejabat))
