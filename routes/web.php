@@ -27,8 +27,14 @@ Route::get('/informasi-publik/{informasiPublik}', [HomeController::class, 'infor
 
 // Layanan Masyarakat — GET (display) + POST (submit form)
 Route::get('/layanan-masyarakat', [HomeController::class, 'layananMasyarakat'])->name('layanan-masyarakat');
-Route::post('/layanan-masyarakat', [HomeController::class, 'layananMasyarakatStore'])->name('layanan-masyarakat.store');
-Route::post('/layanan-masyarakat/saran', [HomeController::class, 'storeSuggestion'])->name('layanan-masyarakat.saran.store');
+// Throttled: public, unauthenticated, accepts file uploads and collects NIK/PII —
+// rate limiting prevents disk-filling / inbox-spamming / DB-flooding abuse.
+Route::post('/layanan-masyarakat', [HomeController::class, 'layananMasyarakatStore'])
+    ->middleware('throttle:5,1')
+    ->name('layanan-masyarakat.store');
+Route::post('/layanan-masyarakat/saran', [HomeController::class, 'storeSuggestion'])
+    ->middleware('throttle:5,1')
+    ->name('layanan-masyarakat.saran.store');
 
 // Informasi Geofisika (TTM + Petir)
 Route::get('/informasi-geofisika', [HomeController::class, 'informasiGeofisika'])
@@ -59,7 +65,7 @@ Route::middleware('guest')->group(function () {
         }
 
         return back()->withErrors(['email' => 'Email atau password salah.'])->onlyInput('email');
-    });
+    })->middleware('throttle:5,1'); // max 5 attempts/minute per IP — brute-force protection
 });
 
 Route::post('/logout', function (\Illuminate\Http\Request $request) {
@@ -167,6 +173,7 @@ Route::prefix('admin')
             Route::get('/',                        [PermohonanDataController::class, 'index'])       ->name('index');
             Route::get('/log/riwayat',              [PermohonanDataController::class, 'log'])         ->name('log');
             Route::get('/{permohonanData}',        [PermohonanDataController::class, 'show'])        ->name('show');
+            Route::get('/{permohonanData}/file/{field}',   [PermohonanDataController::class, 'downloadFile'])->name('file');
             Route::get('/{permohonanData}/pdf',            [PermohonanDataController::class, 'pdfDetail'])  ->name('pdf-detail');
             Route::get('/{permohonanData}/pdf-selesai',     [PermohonanDataController::class, 'pdfSelesai']) ->name('pdf-selesai');
             Route::put('/{permohonanData}',        [PermohonanDataController::class, 'update'])      ->name('update');

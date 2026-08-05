@@ -60,6 +60,16 @@
             </div>
         @endif
 
+        {{-- Info Waktu Pelayanan --}}
+        <div class="mb-6 bg-blue-50 border border-blue-200 text-blue-900 rounded-2xl px-5 py-3 flex items-start gap-3">
+            <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-sm font-medium text-blue-600">
+                Waktu pelayanan pada hari kerja Senin&ndash;Jumat, pukul 08.00&ndash;16.00 WIT (kecuali tanggal merah atau cuti bersama).
+            </p>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8 items-start">
 
             {{-- ================= LEFT SIDE ================= --}}

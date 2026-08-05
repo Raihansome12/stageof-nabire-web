@@ -32,7 +32,7 @@ class PublikasiController extends Controller
             'is_active'    => 'boolean',
             'thumbnail'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'pdf_file'     => 'nullable|file|mimes:pdf|max:20480',
-            'external_url' => 'nullable|url|max:500',
+            'external_url' => ['nullable', 'url:http,https', 'max:500'],
         ]);
 
         $data['type']      = 'buletin';
@@ -65,7 +65,7 @@ class PublikasiController extends Controller
             'is_active'    => 'boolean',
             'thumbnail'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'pdf_file'     => 'nullable|file|mimes:pdf|max:20480',
-            'external_url' => 'nullable|url|max:500',
+            'external_url' => ['nullable', 'url:http,https', 'max:500'],
         ]);
 
         $data['is_active'] = $request->boolean('is_active', true);

@@ -34,6 +34,10 @@ class PermohonanData extends Model
     protected $casts = [
         'dokumen_terkirim' => 'array',
         'selesai_at'       => 'datetime',
+        // NIK (national ID number) is sensitive PII — encrypt at rest.
+        // Requires the 'nik' column to be TEXT, not VARCHAR(16); see the
+        // 2026_08_03_000000_widen_nik_column_for_encryption migration.
+        'nik'              => 'encrypted',
     ];
 
     // ── Relations ────────────────────────────────────────────────────────────

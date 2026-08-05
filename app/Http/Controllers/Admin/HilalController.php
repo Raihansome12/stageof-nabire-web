@@ -31,7 +31,7 @@ class HilalController extends Controller
             'image_2'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'image_3'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'pdf_file'     => 'nullable|file|mimes:pdf|max:20480',
-            'external_url' => 'nullable|url|max:500',
+            'external_url' => ['nullable', 'url:http,https', 'max:500'],
         ]);
 
         $data['is_active'] = $request->boolean('is_active', true);
@@ -67,7 +67,7 @@ class HilalController extends Controller
             'image_2'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'image_3'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'pdf_file'     => 'nullable|file|mimes:pdf|max:20480',
-            'external_url' => 'nullable|url|max:500',
+            'external_url' => ['nullable', 'url:http,https', 'max:500'],
         ]);
 
         $data['is_active'] = $request->boolean('is_active', true);

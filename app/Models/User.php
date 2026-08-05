@@ -11,7 +11,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'is_admin'])]
+// 'is_admin' is intentionally NOT mass-assignable — it must always be set
+// explicitly (see Admin\UserController) so a stray `is_admin=1` in an
+// unrelated authenticated request can never escalate to admin.
+#[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {

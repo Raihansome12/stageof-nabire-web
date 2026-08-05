@@ -1,44 +1,59 @@
 # Office Web
 
-Office Web is a Laravel-based website for presenting institutional information, public services, and geophysical data. The application includes a public-facing portal for visitors and an admin panel for managing content and data.
+Office Web is a Laravel 13 application for managing institutional information, public services, and geophysical data. It combines a public-facing website with an administrative dashboard for content and data management.
 
-## Features
+## Overview
+
+This project is designed for:
+- presenting institutional profile and news content to the public
+- publishing articles and bulletins
+- displaying geophysical information such as sunrise/sunset, lightning, hilal, and earthquake data
+- collecting community service requests and suggestions
+- managing content and operational data from an admin panel
+
+## Main features
 
 ### Public website
-- Home page with latest updates
+- Home page with latest updates, sunrise data, lightning updates, and earthquake highlights
 - Profile page
 - Publications and articles
-- Earthquake information page
+- Public information pages
 - Geophysics information pages for:
   - sunrise/sunset data
-  - lightning information
-- Public information page
+  - lightning maps and periods
+  - hilal bulletin information
+  - earthquake information and maps
 - Community service / data request form
+- Suggestion submission form
 
 ### Admin panel
 - Dashboard
 - Staff management
 - Publication and article management
-- Sunrise data management with CSV import support
+- Sunrise data management with CSV import support and template download
 - Lightning data management
 - Earthquake data management
+- Hilal bulletin management
 - Public information management
-- Community data request management
+- Community data request management and request logs
+- Suggestions management
+- User account management
+- API token management
 
 ## Tech stack
-- PHP 8.3
+- PHP 8.3+
 - Laravel 13
-- MySQL/PostgreSQL/SQLite-compatible Laravel database support
-- Vite + Tailwind CSS
 - Composer
-- npm
+- Node.js and npm
+- Vite + Tailwind CSS
+- Database support via Laravel for SQLite, MySQL, or PostgreSQL
 
 ## Requirements
 Before running the project, make sure you have installed:
 - PHP 8.3 or higher
 - Composer
 - Node.js and npm
-- A database server (MySQL/PostgreSQL/SQLite)
+- A database server (SQLite works out of the box using the provided example environment file)
 
 ## Installation
 
@@ -58,7 +73,7 @@ Before running the project, make sure you have installed:
    npm install
    ```
 
-4. Create environment file
+4. Create the environment file
    ```bash
    copy .env.example .env
    ```
@@ -67,22 +82,22 @@ Before running the project, make sure you have installed:
    cp .env.example .env
    ```
 
-5. Generate application key
+5. Generate the application key
    ```bash
    php artisan key:generate
    ```
 
-6. Configure your database in the `.env` file
+6. Configure the database in the `.env` file
+   The repository includes a SQLite-based example configuration by default.
+
+   Example:
    ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=office_web
-   DB_USERNAME=root
-   DB_PASSWORD=
+   DB_CONNECTION=sqlite
    ```
 
-7. Run database migrations
+   If you prefer MySQL/PostgreSQL, update the corresponding values accordingly.
+
+7. Run the database migrations
    ```bash
    php artisan migrate
    ```
@@ -92,10 +107,29 @@ Before running the project, make sure you have installed:
    php artisan storage:link
    ```
 
-9. Build frontend assets
+9. Build the frontend assets
    ```bash
    npm run build
    ```
+
+## Configuration
+
+The application uses Laravel's default environment configuration with database-backed sessions, cache, and queues. The example environment file already sets up SQLite plus database-backed queue/session/cache drivers.
+
+Key environment values to confirm:
+```env
+APP_NAME=Office Web
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=sqlite
+
+QUEUE_CONNECTION=database
+SESSION_DRIVER=database
+CACHE_STORE=database
+```
 
 ## Running the project
 
@@ -105,44 +139,15 @@ composer run dev
 ```
 
 This starts:
-- Laravel development server
-- queue worker
-- Vite dev server
+- the Laravel development server
+- the queue worker
+- the Vite development server
 
-### Production build
+### Production-style run
 ```bash
 npm run build
 php artisan optimize
 php artisan queue:work
-```
-
-## Environment variables
-The following variables are commonly required:
-
-```env
-APP_NAME=Office Web
-APP_ENV=local
-APP_KEY=
-APP_DEBUG=true
-APP_URL=http://localhost
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=office_web
-DB_USERNAME=root
-DB_PASSWORD=
-
-MAIL_MAILER=smtp
-MAIL_HOST=mailpit
-MAIL_PORT=1025
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-MAIL_ENCRYPTION=null
-MAIL_FROM_ADDRESS=no-reply@example.com
-MAIL_FROM_NAME="Office Web"
-
-OFFICE_WA_NUMBER=6281234567890
 ```
 
 ## Testing
@@ -151,18 +156,26 @@ Run the test suite with:
 php artisan test
 ```
 
+You can also use:
+```bash
+composer test
+```
+
 ## Project structure
-- `app/` — application logic, controllers, models, and services
-- `database/` — migrations and seeders
+- `app/` — controllers, models, middleware, and providers
+- `bootstrap/` — Laravel bootstrap files
+- `config/` — application configuration
+- `database/` — migrations, seeders, and factories
 - `public/` — public entry point and uploaded assets
 - `resources/` — views, CSS, and JavaScript
-- `routes/` — web routes
-- `tests/` — automated tests
+- `routes/` — web and API routes
+- `tests/` — Pest test suite
 
 ## Notes
-- Uploaded files are stored in the public storage disk.
-- The admin area is protected by authentication and role-based access.
-- The geophysics sections and public service form rely on database-backed content and external notifications.
+- Uploaded files are stored through Laravel's public storage disk.
+- The admin area is protected by authentication and the `admin` middleware.
+- The public geophysics and community service modules rely on database-backed content and background queues.
+- The API endpoint for earthquake ingestion is available under `routes/api.php` and requires a Sanctum token with the `earthquakes:write` ability.
 
 ## License
-This project is open for internal use unless otherwise specified by the repository owner.
+This project is intended for internal use unless otherwise specified by the repository owner.

@@ -149,6 +149,19 @@ class PermohonanDataController extends Controller
             ->with('success', $message);
     }
 
+    // ── Dokumen: unduh file citizen-submitted (disk private, hanya admin) ───────
+    public function downloadFile(PermohonanData $permohonanData, string $field)
+    {
+        // Only these four fields are ever file paths — block arbitrary attribute reads.
+        $allowed = ['file_surat_permohonan', 'file_surat_pengantar', 'file_surat_pernyataan', 'file_proposal'];
+        abort_unless(in_array($field, $allowed, true), 404);
+
+        $path = $permohonanData->$field;
+        abort_unless($path && Storage::disk('local')->exists($path), 404);
+
+        return Storage::disk('local')->response($path);
+    }
+
     // ── PDF: Detail Pemohon ──────────────────────────────────────────────────
     public function pdfDetail(PermohonanData $permohonanData)
     {
@@ -182,7 +195,7 @@ class PermohonanDataController extends Controller
     {
         foreach (['file_surat_permohonan', 'file_surat_pengantar', 'file_surat_pernyataan', 'file_proposal'] as $field) {
             if ($permohonanData->$field) {
-                Storage::disk('public')->delete($permohonanData->$field);
+                Storage::disk('local')->delete($permohonanData->$field);
             }
         }
         $permohonanData->delete();
@@ -199,7 +212,7 @@ class PermohonanDataController extends Controller
         $items = PermohonanData::whereIn('id', $request->ids)->get();
         foreach ($items as $item) {
             foreach (['file_surat_permohonan', 'file_surat_pengantar', 'file_surat_pernyataan', 'file_proposal'] as $field) {
-                if ($item->$field) Storage::disk('public')->delete($item->$field);
+                if ($item->$field) Storage::disk('local')->delete($item->$field);
             }
             $item->delete();
         }

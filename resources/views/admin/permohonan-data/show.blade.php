@@ -175,7 +175,7 @@
                         @if($item->{$doc['field']})
                             <li class="flex items-center justify-between text-sm">
                                 <span class="text-gray-700">{{ $doc['label'] }}</span>
-                                <a href="{{ asset('storage/' . $item->{$doc['field']}) }}"
+                                <a href="{{ route('admin.permohonan-data.file', ['permohonanData' => $item, 'field' => $doc['field']]) }}"
                                    target="_blank"
                                    class="text-xs px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-medium">
                                     Lihat / Unduh

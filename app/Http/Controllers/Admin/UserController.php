@@ -30,10 +30,12 @@ class UserController extends Controller
             'is_admin' => 'boolean',
         ]);
 
+        $isAdmin = $request->boolean('is_admin');
         $data['password'] = Hash::make($data['password']);
-        $data['is_admin'] = $request->boolean('is_admin');
+        unset($data['is_admin']); // not mass-assignable — set explicitly below
 
-        User::create($data);
+        $user = new User($data);
+        $user->forceFill(['is_admin' => $isAdmin])->save();
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Akun pengguna berhasil dibuat.');
@@ -64,9 +66,10 @@ class UserController extends Controller
         } else {
             unset($data['password']);
         }
-        $data['is_admin'] = $wantsAdmin;
+        unset($data['is_admin']); // not mass-assignable — set explicitly below
 
-        $user->update($data);
+        $user->fill($data);
+        $user->forceFill(['is_admin' => $wantsAdmin])->save();
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Akun pengguna berhasil diperbarui.');

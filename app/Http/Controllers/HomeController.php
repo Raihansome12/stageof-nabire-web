@@ -496,10 +496,13 @@ class HomeController extends Controller
             'jenis_data.required'       => 'Jenis data yang diminta wajib diisi.',
         ]);
 
-        // Store uploaded files
+        // Store uploaded files on the PRIVATE ('local') disk — these contain citizen
+        // PII (NIK, ID scans, etc.) and must never be reachable via a guessable public
+        // URL. They are served back to admins only through an authenticated route
+        // (see PermohonanDataController::downloadFile).
         foreach (['file_surat_permohonan', 'file_surat_pengantar', 'file_surat_pernyataan', 'file_proposal'] as $field) {
             if ($request->hasFile($field)) {
-                $validated[$field] = $request->file($field)->store('permohonan-data', 'public');
+                $validated[$field] = $request->file($field)->store('permohonan-data', 'local');
             }
         }
 
