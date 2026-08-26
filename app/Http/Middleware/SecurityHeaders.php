@@ -46,7 +46,7 @@ class SecurityHeaders
                 "object-src 'self' blob: data:; ". 
                 "frame-ancestors 'self'; ".
                 "base-uri 'self'; ".
-                "form-action 'self'; ".
+                "form-action 'self';"
             );
         }
 
