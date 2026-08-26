@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Trust aaPanel / Nginx reverse proxy headers
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'admin'      => \App\Http\Middleware\EnsureUserIsAdmin::class,
             // Sanctum ships these classes but does not auto-register the aliases
