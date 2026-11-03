@@ -107,16 +107,16 @@
                             </ul>
                         </div>
                         <div>
-                            <button onclick="openPdfModal()" class="text-blue-600 hover:text-blue-800 hover:underline text-xs italic transition-colors text-left cursor-pointer">
+                            <button onclick="openPerkaModal()" class="text-blue-600 hover:text-blue-800 hover:underline text-xs italic transition-colors text-left cursor-pointer">
                                 Sumber: Perka BMKG No 12 Tahun 2019
                             </button>
                         </div>
 
-                        <div id="documentModal" class="fixed inset-0 z-50 hidden bg-black/60 flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
-                            <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="modalContent">
-                                <div class="flex justify-between items-center px-4 py-3 border-b border-gray-200 bg-gray-50">
+                        <div id="modalPerka" class="fixed inset-0 z-50 hidden bg-black/60 flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+                            <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300">
+                                <div id="contentPerka" class="flex justify-between items-center px-4 py-3 border-b border-gray-200 bg-gray-50">
                                     <h3 class="font-semibold text-gray-800">Dokumen: Perka BMKG No 12 Tahun 2019</h3>
-                                    <button onclick="closePdfModal()" class="text-gray-500 hover:text-red-600 transition-colors">
+                                    <button onclick="closePerkaModal()" class="text-gray-500 hover:text-red-600 transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
@@ -189,19 +189,19 @@
                                     &rarr; Tarif Layanan Meteorologi Klimatologi Geofisika lainnya 
                                 </button>
                                 
-                                <button type="button" onclick="openPdfModal()" class="text-blue-600 hover:text-blue-800 hover:underline text-xs italic transition-colors text-left cursor-pointer">
+                                <button type="button" onclick="openPP47Modal()" class="text-blue-600 hover:text-blue-800 hover:underline text-xs italic transition-colors text-left cursor-pointer">
                                     &rarr; Sumber: PP No 47 Tahun 2018
                                 </button>
                             </div>
 
                             @include('pages.modal-tarif')
 
-                            <div id="documentModal" class="fixed inset-0 z-50 hidden bg-black/60 flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
-                                <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="modalContent">
+                            <div id="modalPP47" class="fixed inset-0 z-50 hidden bg-black/60 flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+                                <div id="contentPP47" class="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300">
                                     
                                     <div class="flex justify-between items-center px-4 py-3 border-b border-gray-200 bg-gray-50">
                                         <h3 class="font-semibold text-gray-800">Dokumen: PP No 47 Tahun 2018</h3>
-                                        <button onclick="closePdfModal()" class="text-gray-500 hover:text-red-600 transition-colors">
+                                        <button onclick="closePP47Modal()" class="text-gray-500 hover:text-red-600 transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                             </svg>
@@ -716,9 +716,13 @@ function handleLingkup(value) {
     }
 
     // 2. SAMBUNGAN KE TOMBOL HTML (WRAPPER)
-    // Untuk Modal PDF (Perka BMKG)
-    function openPdfModal() { openModal('documentModal', 'modalContent'); }
-    function closePdfModal() { closeModal('documentModal', 'modalContent'); }
+    // Untuk Modal PDF (Perka BMKG No 12)
+    function openPerkaModal() { openModal('modalPerka', 'contentPerka'); }
+    function closePerkaModal() { closeModal('modalPerka', 'contentPerka'); }
+
+    // Untuk Modal PDF (PP No 47)
+    function openPP47Modal() { openModal('modalPP47', 'contentPP47'); }
+    function closePP47Modal() { closeModal('modalPP47', 'contentPP47'); }
 
     // Untuk Modal Tarif
     function openTarifModal() { openModal('tarifModal', 'tarifModalContent'); }
@@ -747,7 +751,8 @@ function handleLingkup(value) {
 
     // 3. FITUR TUTUP SAAT KLIK AREA GELAP LINGKUNGAN LUAR
     document.addEventListener('click', function(event) {
-        if (event.target.id === 'documentModal') closePdfModal();
+        if (event.target.id === 'modalPerka') closeModal('modalPerka', 'contentPerka');
+        if (event.target.id === 'modalPP47') closeModal('modalPP47', 'contentPP47');
         if (event.target.id === 'tarifModal') closeTarifModal();
         if (event.target.id === 'imageModal') closeImageModal();
         if (event.target.id === 'contohSuratModal') closeContohSuratModal();
