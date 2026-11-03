@@ -511,7 +511,7 @@ class HomeController extends Controller
         // ── Send Email Notification ───────────────────────────────────────────
         $this->sendEmailNotification($permohonan);
 
-        $phone = config('services.office_wa.number');
+        $phone = config('services.office_wa.number', '6282190796122');
         
         $message = "*PTSP Stageof Nabire - Permohonan Data* (#{$permohonan->id})\n\n"
             . "Halo Admin, saya telah mengirimkan permohonan data via website dengan detail:\n"

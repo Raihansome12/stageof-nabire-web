@@ -166,18 +166,22 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="">
-                                <h3 class="font-semibold text-gray-800 mb-2">B. Sesuai Permintaan</h3>
-
+                            <div>
+                                <h3 class="font-semibold text-gray-800 mb-2">B. Informasi Khusus Sesuai Permintaan</h3>
                                 <table class="w-full text-sm">
                                     <tbody class="divide-y divide-gray-100">
-                                        <tr><td class="py-2">Variasi Magnet Bumi</td><td class="py-2 text-right">Rp300.000</td></tr>
-                                        <tr><td class="py-2">Peta Kerawanan Petir</td><td class="py-2 text-right">Rp200.000</td></tr>
                                         <tr><td class="py-2">Waktu Terbit/Terbenam</td><td class="py-2 text-right">Rp50.000</td></tr>
                                         <tr><td class="py-2">Almanak BMKG</td><td class="py-2 text-right">Rp150.000</td></tr>
                                         <tr><td class="py-2">Peta Hilal</td><td class="py-2 text-right">Rp150.000</td></tr>
-                                        <tr><td class="py-2">Titik Gravitasi</td><td class="py-2 text-right">Rp150.000</td></tr>
                                         <tr><td class="py-2">Kejadian Petir</td><td class="py-2 text-right">Rp75.000</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800 mb-2">C. Jasa Penggunaan Alat</h3>
+                                <table class="w-full text-sm">
+                                    <tbody class="divide-y divide-gray-100">
+                                        <tr><td class="py-2">Seismograf Portable (BB)</td><td class="py-2 text-right">Rp970.000</td></tr>
                                     </tbody>
                                 </table>
                             </div>
