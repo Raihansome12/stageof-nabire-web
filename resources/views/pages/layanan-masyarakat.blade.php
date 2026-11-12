@@ -353,7 +353,7 @@
                 </button>
 
                 {{-- Box 2: Ketersediaan Data --}}
-                <button type="button" onclick="openImageModal('{{ asset('img/data-ready.png') }}')" 
+                <button type="button" onclick="openImageModal('{{ asset('img/data-ready.jpg') }}')" 
                         class="w-full aspect-square rounded-2xl shadow-sm hover:shadow-lg hover:scale-102 transition-all duration-300 ease-in-out overflow-hidden border border-gray-100 group block focus:outline-none">
                     <img src="{{ asset('img/tb-data-ready.png') }}" alt="Ketersediaan Data Stageof Nabire" 
                         class="w-full h-full object-cover">
